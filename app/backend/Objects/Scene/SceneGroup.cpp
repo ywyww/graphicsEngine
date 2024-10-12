@@ -1,1 +1,1 @@
-#include "app/backend/Objects/Scene/SceneGroup.h"
+#include "SceneGroup.h"

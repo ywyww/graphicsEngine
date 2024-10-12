@@ -9,7 +9,8 @@ SOURCES += app/backend/Objects/GL/Shader.cpp app/backend/Objects/GL/Lines.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 LIBS = -lSDL2 -lGL 
-INC = -I/include -I/app/backend/Interfaces -I/app/backend/Objects/GL -I/app/backend/Objects/Scene -I/app/backend/Types
+INC = -I/include
+INC += -I/app/backend/Interfaces -I/app/backend/Types -I/app/backend/Objects/GL -I/app/backend/Objects/Scene
 
 EXECUTABLE = cg_app
 

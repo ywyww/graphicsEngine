@@ -1,5 +1,5 @@
 #include <vector>
-#include "app/backend/Objects/Scene/SceneGroup.h"
+#include "SceneGroup.h"
 
 #include <iostream>
 

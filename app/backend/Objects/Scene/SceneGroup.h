@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 
-#include "app/backend/Interfaces/ISceneObjects.h"
+#include "../../Interfaces/ISceneObjects.h"
 
 #ifndef SCENE_NODE_H
 #define SCENE_NODE_H

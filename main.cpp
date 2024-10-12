@@ -8,8 +8,8 @@
 
 #include <iostream>
 
-#include "app/backend/Objects/GL/Shader.cpp"
-#include "app/backend/Objects/GL/Lines.cpp"
+#include "app/backend/Objects/GL/Lines.h"
+#include "app/backend/Objects/GL/Shader.h"
 
 
 int main(int argc, char** args) {
