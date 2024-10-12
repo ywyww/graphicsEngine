@@ -1,6 +1,6 @@
 #include "Lines.h"
 
-Line::Line(float x1, float y1, float x2, float y2) {
+Line::Line(const float x1, const float y1, const float x2, const float y2) {
         buffer = new float[6]{x1, y1, 0.5f, 
                               x2, y2, 1.0f};
 
@@ -17,6 +17,7 @@ Line::Line(float x1, float y1, float x2, float y2) {
         glBindVertexArray(0);
 
         shader = Shader("data/line.vertexshader", "data/line.fragmentshader");
+        transformation = glm::mat4x4(1.0f);
 }
 
 GLuint Line::getVAO() {
@@ -30,3 +31,20 @@ GLuint Line::getVBO() {
 GLuint Line::getShaderID() {
     return shader.getProgramID();
 }
+
+void Line::setTransformation(const glm::mat4x4& other)
+{
+    transformation = other;
+}
+
+void Line::draw()
+{
+    glUseProgram(getShaderID());
+
+	GLuint matrixName = glGetUniformLocation(getShaderID(), "MVP");
+    glUniformMatrix4fv(matrixName, 1, GL_FALSE, glm::value_ptr(transformation));
+
+    glBindVertexArray(getVAO());
+	glDrawArrays(GL_LINES, 0, 2);
+}
+

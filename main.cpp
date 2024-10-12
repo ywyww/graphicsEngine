@@ -11,6 +11,8 @@
 #include "app/backend/Objects/GL/Lines.h"
 #include "app/backend/Objects/GL/Shader.h"
 
+#include "app/backend/Objects/Scene/Scene.h"
+
 
 int main(int argc, char** args) {
 	SDL_Window* window = NULL;
@@ -32,10 +34,17 @@ int main(int argc, char** args) {
 	
 	float counter = 0;
 
-	Line line = Line(-0.5, 0.5, 0.5, 0.5);	// need transformation matrix
+
+	SceneNamespace::Scene scene = SceneNamespace::Scene();
+	
+	Line* line1 = new Line(-1.0, 0.5, 0.5, -0.5);
+	scene.addLine(line1);
+
+
+	Line* line = new Line(1.0, 0.5, -0.5, -0.5);
+	scene.addLine(line);
 
 	glm::mat4x4 transform = glm::mat4x4(1.0f);
-
 	
 	while (runningWindow)
 	{
@@ -47,6 +56,11 @@ int main(int argc, char** args) {
 			{
 				runningWindow = false;
 			}
+
+			if (event.type = SDL_MOUSEMOTION)
+			{
+				std::cout << event.motion.x << " " << event.motion.y << std::endl;
+			}
 		}
 
 		glClearColor(0.0f, 0.0f, 0.3f, 1.0f);
@@ -54,13 +68,10 @@ int main(int argc, char** args) {
 
 		transform = glm::rotate(transform, 0.01f, glm::vec3(0.0f, 1.0f, 1.0f));
 
-		glUseProgram(line.getShaderID());
-		GLuint matrixName = glGetUniformLocation(line.getShaderID(), "MVP");
-		glUniformMatrix4fv(matrixName, 1, GL_FALSE, glm::value_ptr(transform));
+		line->setTransformation(transform);
 
-		glBindVertexArray(line.getVAO());
-		glDrawArrays(GL_LINES, 0, 2);
-		
+		scene.drawLines();
+
 
 		SDL_GL_SwapWindow(window);
 		counter += 0.01f;

@@ -1,6 +1,7 @@
 #include <GL/gl.h>
 #include <GLES3/gl3.h>
 #include <glm/mat4x4.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "Shader.h"
 
@@ -13,14 +14,20 @@ class Line
     GLuint VBO;
     Shader shader;
 
-    float* buffer;
+    glm::mat4x4 transformation; // transformation matrix
+
+    float* buffer;  // 4 floats
 
 public:
-    Line(float x1, float y1, float x2, float y2);
+    Line(const float x1, const float y1, const float x2, const float y2);
 
     GLuint getVAO();
     GLuint getVBO();
     GLuint getShaderID();
+
+    void setTransformation(const glm::mat4x4& );
+
+    void draw();
 };
 
 

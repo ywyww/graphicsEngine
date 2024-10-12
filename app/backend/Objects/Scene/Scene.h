@@ -1,7 +1,7 @@
-#include <vector>
-#include "SceneGroup.h"
-
 #include <iostream>
+#include <vector>
+
+#include "Groups.h"
 
 #ifndef SCENE_H
 #define SCENE_H
@@ -10,15 +10,13 @@ namespace SceneNamespace
 {
     class Scene
     {
-        // shapes;
-        // texts;
-        // lines
-    public:
+        Lines lines;
+        std::string linesName;
 
-    Scene()
-    {
-        
-    }
+    public:
+        Scene();
+        void addLine(Line* line);
+        void drawLines();
 
     };
 }
