@@ -56,10 +56,11 @@ int main(int argc, char** args) {
 			{
 				runningWindow = false;
 			}
-
-			if (event.type = SDL_MOUSEMOTION)
+			
+			if (event.type == SDL_MOUSEMOTION)
 			{
-				std::cout << event.motion.x << " " << event.motion.y << std::endl;
+				float x = event.motion.xrel;
+				float y = event.motion.yrel;
 			}
 		}
 
@@ -71,7 +72,6 @@ int main(int argc, char** args) {
 		line->setTransformation(transform);
 
 		scene.drawLines();
-
 
 		SDL_GL_SwapWindow(window);
 		counter += 0.01f;

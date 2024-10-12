@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 
-#include "GL/Lines.h"
+#include "../GL/Lines.h"
 
 #ifndef LINE_GROUP_H
 #define LINE_GROUP_H
