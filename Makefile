@@ -4,14 +4,14 @@ CC = g++
 SOURCES = main.cpp 
 SOURCES += include/imgui.cpp include/imgui_widgets.cpp include/imgui_draw.cpp include/imgui_tables.cpp include/imgui_demo.cpp
 SOURCES += include/imgui_impl_opengl3.cpp include/imgui_impl_sdl2.cpp
-SOURCES += backend/Scene/Scene.cpp backend/Scene/SceneGroup.cpp backend/Interfaces/ISceneObjects.cpp backend/Types/Node.cpp
-SOURCES += gl/Types/Shader.cpp gl/Lines.cpp
+SOURCES += app/backend/Interfaces/ISceneObjects.cpp app/backend/Types/Node.cpp app/backend/Objects/Scene/Scene.cpp app/backend/Objects/Scene/SceneGroup.cpp
+SOURCES += app/backend/Objects/GL/Shader.cpp app/backend/Objects/GL/Lines.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 LIBS = -lSDL2 -lGL 
-INC = -I/include -I/backend
+INC = -I/include -I/app/backend/Interfaces -I/app/backend/Objects/GL -I/app/backend/Objects/Scene -I/app/backend/Types
 
-EXECUTABLE = app 
+EXECUTABLE = cg_app
 
 all: $(SOURCES) $(EXECUTABLE)
 
@@ -23,10 +23,12 @@ $(EXECUTABLE): $(OBJECTS)
 
 clean:
 	rm -rf $(EXECUTABLE)
-	rm -rf ./include/*.o 
 	rm -rf *.o
-	rm -rf backend/Scene/*.o
-	rm -rf backend/Interfaces/*.o
-	rm -rf backend/Types/*.o
-	rm -rf gl/Types/*.o
-	rm -rf gl/*.o
+	rm -rf ./include/*.o
+	rm -rf app/backend/Interfaces/*.o
+	rm -rf app/backend/Types/*.o
+	rm -rf app/backend/Objects/Scene/*.o
+	rm -rf app/backend/Objects/GL/*.o
+
+	
+

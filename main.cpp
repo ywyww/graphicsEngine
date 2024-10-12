@@ -1,12 +1,16 @@
-#include <iostream>
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
 #include <GLES3/gl3.h>
-#include "gl/Lines.h"
+
 #include <glm/glm.hpp>
 #include <glm/mat3x3.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "gl/Types/Shader.h"
+
+#include <iostream>
+
+#include "app/backend/Objects/GL/Shader.cpp"
+#include "app/backend/Objects/GL/Lines.cpp"
+
 
 int main(int argc, char** args) {
 	SDL_Window* window = NULL;
