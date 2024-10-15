@@ -6,6 +6,8 @@
 class Controller
 {
     SceneNamespace::Scene scene;
+    std::vector<bool> LinesState;
+    
 public:
     Controller()
     {

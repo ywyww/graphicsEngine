@@ -15,10 +15,12 @@ namespace SceneNamespace
 
     public:
         Scene();
+        
         void addLine(Line* line);
+
+        Lines getLines();
+
         void drawLines();
-
-
     };
 }
 #endif

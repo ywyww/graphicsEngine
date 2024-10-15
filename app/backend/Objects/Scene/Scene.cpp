@@ -17,6 +17,11 @@ namespace SceneNamespace
         lines.push_back(lineGrp);
     }
 
+    Lines Scene::getLines()
+    {
+        return lines;
+    }
+
     void Scene::drawLines()
     {
         for (int i = 0; i < lines.size(); i++)
