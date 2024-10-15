@@ -5,7 +5,8 @@ SOURCES = main.cpp
 SOURCES += include/imgui.cpp include/imgui_widgets.cpp include/imgui_draw.cpp include/imgui_tables.cpp include/imgui_demo.cpp
 SOURCES += include/imgui_impl_opengl3.cpp include/imgui_impl_sdl2.cpp
 SOURCES += app/backend/Objects/Scene/Scene.cpp app/backend/Objects/Scene/Groups.cpp
-SOURCES += app/backend/Objects/GL/Shader.cpp app/backend/Objects/GL/Lines.cpp
+SOURCES += app/backend/Objects/GL/Shader.cpp app/backend/Objects/GL/Line.cpp
+SOURCES += app/frontend/FrontendApp.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 LIBS = -lSDL2 -lGL 
@@ -30,6 +31,6 @@ clean:
 	rm -rf app/backend/Types/*.o
 	rm -rf app/backend/Objects/Scene/*.o
 	rm -rf app/backend/Objects/GL/*.o
-
+	rm -rf app/frontend/*.o
 	
 

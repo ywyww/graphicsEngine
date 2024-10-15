@@ -1,7 +1,8 @@
 #include <string>
 #include <vector>
 
-#include "../GL/Lines.h"
+#include <glm/glm.hpp>
+#include "../GL/Line.h"
 
 #ifndef LINE_GROUP_H
 #define LINE_GROUP_H
@@ -13,7 +14,15 @@ struct NodeGroup
     std::string name;
 };
 
+template<class NodeType>
+struct TransformationNodeGroup: public NodeGroup<NodeType>
+{
+    glm::mat4x4 transformation;
+};
+
 typedef std::vector<NodeGroup<Line>> Lines;
 
+
 #endif
+
 

@@ -25,7 +25,8 @@ public:
     GLuint getVBO();
     GLuint getShaderID();
 
-    void setTransformation(const glm::mat4x4& );
+    void setTransformation(const glm::mat4x4&);
+    glm::mat4x4& getTransformation();
 
     void draw();
 };
