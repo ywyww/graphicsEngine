@@ -16,6 +16,8 @@
 #include "include/imgui_impl_opengl3.h"
 #include "include/imgui.h"
 
+
+
 void loop(SceneNamespace::Scene& scene, SDL_Window* window);
 
 int main(int argc, char** args) {
@@ -61,7 +63,6 @@ int main(int argc, char** args) {
 
     // END[SCENE WORK]
 
-
 	loop(scene, window);
 
 
@@ -83,7 +84,7 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window)
     bool runningWindow = true;
 
     glm::mat4x4 transform = glm::mat4x4(1.0f);
-
+    float value = 0.0f;
     while (runningWindow)
     {
         SDL_Event event;
@@ -98,25 +99,30 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window)
         }
 
 
-		 ImGui_ImplOpenGL3_NewFrame();
-         ImGui_ImplSDL2_NewFrame();
-         ImGui::NewFrame();
+        // [IMGUI]
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL2_NewFrame();
+        ImGui::NewFrame();
 
-             ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-             ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-
-		 	ImGui::End();
+        ImGui::SliderFloat("float", &value, 0.0f, 1.0f);
+        
 		
-		 ImGui::EndFrame();
-		 ImGui::Render();
-         
+		ImGui::EndFrame();
+		ImGui::Render();
+
+        // [ENDIMGUI]
 
 		glClearColor(0.0f, 0.0f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+		
+        transform = glm::rotate(transform, value, glm::vec3(0.0f, 1.0f, 1.0f));
+        scene.getLines()[0].node->setTransformation(transform);
+
+
         scene.drawLines();
 	 	
+
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         SDL_GL_SwapWindow(window);
