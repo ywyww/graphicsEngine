@@ -14,7 +14,7 @@ public:
         scene = SceneNamespace::Scene();
     }
 
-    static void addLine()
+    static void render()
     {
 
     }

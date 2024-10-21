@@ -15,10 +15,19 @@
 #include "include/imgui_impl_sdl2.h"
 #include "include/imgui_impl_opengl3.h"
 #include "include/imgui.h"
-
-
+#include "app/frontend/Renderer.h"
 
 void loop(SceneNamespace::Scene& scene, SDL_Window* window);
+
+// global coordinates into view coordinates
+// coordinateFormatter to create objects in absolute coordinates (not above window size and height)
+// add trimCoordinates (glScissors) in variables (height, width, shifts)
+// add window dimensions in variables (height, width)
+// add recalculator for trimmed coordinates;
+// camera class
+
+
+// рисует одну линию вместо двух. непорядок. вторую часть точек вообще не рассматривает
 
 int main(int argc, char** args) {
 
@@ -36,7 +45,7 @@ int main(int argc, char** args) {
 
     SDL_GLContext glContext = SDL_GL_CreateContext(window);
     
-	glViewport(0, 0, 1280, 720);
+	//glViewport(0, 0, 1280, 720);
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -55,11 +64,8 @@ int main(int argc, char** args) {
     // [SCENE WORK]
 
 	SceneNamespace::Scene scene = SceneNamespace::Scene();
-	Line* line1 = new Line(-1.0, 0.5, 0.5, -0.5);
+	Line* line1 = new Line(-1.0, 0.5, 2, 0.5, -0.5, -2);
 	scene.addLine(line1);
-
-	Line* line = new Line(1.0, 0.5, -0.5, -0.5);
-	scene.addLine(line);
 
     // END[SCENE WORK]
 
@@ -83,8 +89,10 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window)
 {
     bool runningWindow = true;
 
-    glm::mat4x4 transform = glm::mat4x4(1.0f);
-    float value = 0.0f;
+    Renderer renderer(scene);
+    float x, y;
+
+    bool flag = false;
     while (runningWindow)
     {
         SDL_Event event;
@@ -96,34 +104,43 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window)
             {
                 runningWindow = false;
             }
+            if (event.type == SDL_MOUSEMOTION)
+            {
+                x = event.motion.x - 20;
+                y = event.motion.y - 30;
+            }
         }
-
-
-        // [IMGUI]
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplSDL2_NewFrame();
-        ImGui::NewFrame();
-
-        ImGui::SliderFloat("float", &value, 0.0f, 1.0f);
         
-		
-		ImGui::EndFrame();
-		ImGui::Render();
+        // clear imgui buffer
+        glViewport(0, 0, 1280, 720);
+        glDisable(GL_SCISSOR_TEST);
+        glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
 
-        // [ENDIMGUI]
+        glViewport(20, 50, 900, 640);
+        glScissor(20, 50, 900, 640);
+        glEnable(GL_SCISSOR_TEST);
+
 
 		glClearColor(0.0f, 0.0f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
 		
-        transform = glm::rotate(transform, value, glm::vec3(0.0f, 1.0f, 1.0f));
-        scene.getLines()[0].node->setTransformation(transform);
-
-
         scene.drawLines();
-	 	
+        
 
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL2_NewFrame();
+        ImGui::NewFrame();
+
+        renderer.status(x, y);
+        renderer.sceneInfo();
+        renderer.createLine(flag);
+
+        
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         SDL_GL_SwapWindow(window);
 	}

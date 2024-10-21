@@ -1,8 +1,8 @@
 #include "Line.h"
 
-Line::Line(const float x1, const float y1, const float x2, const float y2) {
-        buffer = new float[6]{x1, y1, 0.5f, 
-                              x2, y2, 1.0f};
+Line::Line(const float x1, const float y1, const float z1, const float x2, const float y2, const float z2) {
+        buffer = new float[6]{x1, y1, z1, 
+                              x2, y2, z2};
 
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
@@ -18,6 +18,11 @@ Line::Line(const float x1, const float y1, const float x2, const float y2) {
 
         shader = Shader("data/line.vertexshader", "data/line.fragmentshader");
         transformation = glm::mat4x4(1.0f);
+}
+
+Line::~Line()
+{
+    delete[] buffer;
 }
 
 
@@ -41,6 +46,11 @@ void Line::setTransformation(const glm::mat4x4& other)
 glm::mat4x4& Line::getTransformation()
 {
     return transformation;
+}
+
+float* Line::getBuffer()
+{
+    return buffer;
 }
 
 void Line::draw()

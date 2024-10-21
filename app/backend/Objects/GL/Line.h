@@ -19,7 +19,8 @@ class Line
     float* buffer;  // 4 floats
 
 public:
-    Line(const float x1, const float y1, const float x2, const float y2);
+    Line(const float x1, const float y1, const float z1, const float x2, const float y2, const float z2);
+    ~Line();
 
     GLuint getVAO();
     GLuint getVBO();
@@ -27,6 +28,8 @@ public:
 
     void setTransformation(const glm::mat4x4&);
     glm::mat4x4& getTransformation();
+
+    float* getBuffer();
 
     void draw();
 };
