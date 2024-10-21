@@ -16,7 +16,7 @@ class Line
 
     glm::mat4x4 transformation; // transformation matrix
 
-    float* buffer;  // 4 floats
+    float buffer[6];  // 6 floats
 
 public:
     Line(const float x1, const float y1, const float z1, const float x2, const float y2, const float z2);
