@@ -1,23 +1,15 @@
 #include "Line.h"
 
 Line::Line(const float x1, const float y1, const float z1, const float x2, const float y2, const float z2) {
-        //buffer = float[6] {x1, y1, z1, 
-        //                  x2, y2, z2};
-
-        buffer[0] = x1;
-        buffer[1] = y1;
-        buffer[2] = z1;
-        buffer[3] = x2;
-        buffer[4] = y2;
-        buffer[5] = z2;
-        
+        buffer = new float[6] {x1, y1, z1, 
+                         x2, y2, z2};
 
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
         glBindVertexArray(VAO);
 
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(buffer), buffer, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, buffer, GL_STATIC_DRAW);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
             glEnableVertexAttribArray(0);
 
