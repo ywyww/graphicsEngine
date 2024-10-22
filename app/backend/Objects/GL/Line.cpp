@@ -57,8 +57,8 @@ void Line::draw()
 {
     glUseProgram(getShaderID());
 
-	//GLuint matrixName = glGetUniformLocation(getShaderID(), "MVP");
-    //glUniformMatrix4fv(matrixName, 1, GL_FALSE, glm::value_ptr(transformation));
+	GLuint matrixName = glGetUniformLocation(getShaderID(), "MVP");
+    glUniformMatrix4fv(matrixName, 1, GL_FALSE, glm::value_ptr(transformation));
 
     glBindVertexArray(VAO);
 	glDrawArrays(GL_LINES, 0, 2);

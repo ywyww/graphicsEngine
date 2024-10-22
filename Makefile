@@ -25,7 +25,7 @@ $(EXECUTABLE): $(OBJECTS)
 clean:
 	rm -rf $(EXECUTABLE)
 	rm -rf *.o
-	rm -rf ./include/*.o
+	#rm -rf ./include/*.o
 	rm -rf app/backend/Interfaces/*.o
 	rm -rf app/backend/Types/*.o
 	rm -rf app/backend/Objects/Scene/*.o

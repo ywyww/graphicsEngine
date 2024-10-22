@@ -19,16 +19,6 @@
 
 void loop(SceneNamespace::Scene& scene, SDL_Window* window);
 
-// global coordinates into view coordinates
-// coordinateFormatter to create objects in absolute coordinates (not above window size and height)
-// add trimCoordinates (glScissors) in variables (height, width, shifts)
-// add window dimensions in variables (height, width)
-// add recalculator for trimmed coordinates;
-// camera class
-
-
-// рисует одну линию вместо двух. непорядок. вторую часть точек вообще не рассматривает
-
 int main(int argc, char** args) {
 
     // [CONTEXT_CREATION]
@@ -61,11 +51,9 @@ int main(int argc, char** args) {
 
     // END[CONTEXT_CREATION]
 
-    // [SCENE WORK]
+    // [SCENE WORK] 
 
 	SceneNamespace::Scene scene = SceneNamespace::Scene();
-	Line* line1 = new Line(-1.0, 0.5, 2, 0.5, -0.5, -2);
-	scene.addLine(line1);
 
     // END[SCENE WORK]
 
@@ -126,21 +114,23 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window)
 		glClearColor(0.0f, 0.0f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-		
+		// draw scene
         scene.drawLines();
-        
 
+
+        // draw imgui
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        renderer.status(x, y);
-        renderer.sceneInfo();
+        renderer.drawStatusBar(x, y);
+        renderer.drawSceneTree();
         renderer.createLine(flag);
 
         
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 
         SDL_GL_SwapWindow(window);
 	}

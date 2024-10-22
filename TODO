@@ -1,0 +1,19 @@
+======================= TODO ======================= 
+[ ] подумать над машиной состояний, которая будет следить и управлять за каждым объектом
+[ ] do dynamic coordinates (dynamic VBO)
+[ ] global coordinates into view coordinates
+[ ] do coordinate transformation
+[ ] make unique coefficients for each object to infinity transformations flag (in scene tree)
+[ ] coordinateFormatter to create objects in absolute coordinates (not above window size and height)
+[ ] add trimCoordinates (glScissors) in variables (height, width, shifts)
+[ ] add window dimensions in variables (height, width)
+[ ] add recalculator for trimmed coordinates;
+[ ] camera class
+======================= TODO ======================= 
+
+
+
+
+======================= DONE ======================= 
+
+======================= DONE ======================= 
