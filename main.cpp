@@ -19,10 +19,9 @@
 #include "include/imgui.h"
 
 
-void loop(SceneNamespace::Scene* scene, SDL_Window* window);
+void loop(SDL_Window* window);
 
-// CODE REFACTORING:: RENDERER, CONTROLLER, MAIN.CPP
-
+// scene not in main loop. put scene into controller or renderer
 
 int main(int argc, char** args) {
 
@@ -54,13 +53,10 @@ int main(int argc, char** args) {
 
     // END[CONTEXT_CREATION]
 
-    // [SCENE WORK] 
 
-	SceneNamespace::Scene* scene = new SceneNamespace::Scene();
 
-    // END[SCENE WORK]
+	loop(window);
 
-	loop(scene, window);
 
 
     // [CONTEXT DESTROYING]
@@ -76,10 +72,11 @@ int main(int argc, char** args) {
 	return 0;
 }
     
-void loop(SceneNamespace::Scene* scene, SDL_Window* window) // put sizes into variables
+void loop(SDL_Window* window)
 {
     bool runningWindow = true;
 
+    SceneNamespace::Scene* scene = new SceneNamespace::Scene();
     Controller* controller = new Controller(scene);
     Renderer renderer(controller);
 
@@ -126,7 +123,6 @@ void loop(SceneNamespace::Scene* scene, SDL_Window* window) // put sizes into va
 
 		// draw scene
         scene->drawLines();
-
 
         // draw imgui
         ImGui_ImplOpenGL3_NewFrame();

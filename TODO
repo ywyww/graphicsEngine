@@ -1,23 +1,27 @@
 ======================= TODO ======================= 
-[ ] divide renderer class to the controller class and renderer
-[ ] trim gl coordinates (loop)
-[ ] put sizes into variables (refactoring)
-[ ] do SDL rect for polling glViewport data.
-[ ] подумать над машиной состояний, которая будет следить и управлять за каждым объектом
 [ ] do dynamic coordinates (dynamic VBO)
 [ ] global coordinates into view coordinates
-[ ] do coordinate transformation
 [ ] make unique coefficients for each object to infinity transformations flag (in scene tree)
-[ ] coordinateFormatter to create objects in absolute coordinates (not above window size and height)
-[ ] add trimCoordinates (glScissors) in variables (height, width, shifts)
-[ ] add window dimensions in variables (height, width)
-[ ] add recalculator for trimmed coordinates;
 [ ] camera class
+[ ] scene not in main loop. put scene into controller or renderer
 ======================= TODO ======================= 
 
 
 
 
 ======================= DONE ======================= 
-
+[x] divide renderer class to the controller class and renderer
+[x] trim gl coordinates (loop)
+[x] put sizes into variables (refactoring)
+[x] do SDL rect for polling glViewport data.
+[x] подумать над машиной состояний, которая будет следить и управлять за каждым объектом
+[x] do coordinate transformation
+[x] add trimCoordinates (glScissors) in variables (height, width, shifts)
+[x] add window dimensions in variables (height, width)
+[x] add recalculator for trimmed coordinates;
 ======================= DONE ======================= 
+
+
+======================= NONE ======================= 
+[-] coordinateFormatter to create objects in absolute coordinates (not above window size and height)
+======================= NONE ======================= 

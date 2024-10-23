@@ -31,6 +31,7 @@
         Lines& getLines();
         LineInputData* getLineInput();
         
+        
         float producePixelCoordinatesToGL(float coord, int dimension);
     };
 

@@ -49,7 +49,7 @@ void Renderer::drawLineTransformation(Line* line)
     {
         float* angle = &controller->getLineInput()->angle;
 
-        if (ImGui::InputFloat3("Rotation coeff", angle))
+        if (ImGui::InputFloat("Rotation coeff", angle))
         {
             glm::mat4x4 transform = line->getTransformation();
             transform = glm::rotate(transform, *angle, glm::vec3(0.0f, 0.0f, 1.0f));
