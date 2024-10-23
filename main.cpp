@@ -78,6 +78,7 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window) // put sizes into va
     bool runningWindow = true;
 
     Renderer renderer(scene);
+    
 
     float x, y;
     float glX, glY;
