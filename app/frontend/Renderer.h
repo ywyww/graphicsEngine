@@ -106,7 +106,16 @@ public:
         // dynamic VBO
     }
 
-    void createLine(bool& flag)
+private:
+    float pixelCoordinatesToGl(float coord, int dimension)    // without z coordinates
+    {
+        return coord * 2 / (dimension) - 1;
+    }
+
+public:
+
+    void createLine(bool& flag, int width, int height)  // glViewport width and height
+    // TODO Z coordinate!!!!
     {
         ImGui::Begin("Create line");
             ImGui::InputFloat("x1", &lineCoordinates[0]);
@@ -121,11 +130,11 @@ public:
         if (ImGui::Button("Go"))
         {
             Line* line = new Line(
-                lineCoordinates[0],
-                lineCoordinates[1],
+                pixelCoordinatesToGl(lineCoordinates[0], width),
+                pixelCoordinatesToGl(lineCoordinates[1], height),
                 lineCoordinates[2],
-                lineCoordinates[3],
-                lineCoordinates[4],
+                pixelCoordinatesToGl(lineCoordinates[3], width),
+                pixelCoordinatesToGl(lineCoordinates[4], height),
                 lineCoordinates[5]
             );
             scene->addLine(line);

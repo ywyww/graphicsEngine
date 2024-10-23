@@ -1,4 +1,8 @@
 ======================= TODO ======================= 
+[ ] divide renderer class to the controller class and renderer
+[ ] trim gl coordinates (loop)
+[ ] put sizes into variables (refactoring)
+[ ] do SDL rect for polling glViewport data.
 [ ] подумать над машиной состояний, которая будет следить и управлять за каждым объектом
 [ ] do dynamic coordinates (dynamic VBO)
 [ ] global coordinates into view coordinates

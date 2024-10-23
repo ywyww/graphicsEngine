@@ -73,12 +73,16 @@ int main(int argc, char** args) {
 	return 0;
 }
     
-void loop(SceneNamespace::Scene& scene, SDL_Window* window)
+void loop(SceneNamespace::Scene& scene, SDL_Window* window) // put sizes into variables
 {
     bool runningWindow = true;
 
     Renderer renderer(scene);
+
     float x, y;
+    float glX, glY;
+    SDL_Rect glRenderArea = {20, 50, 900, 640};
+    
 
     bool flag = false;
     while (runningWindow)
@@ -94,8 +98,11 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window)
             }
             if (event.type == SDL_MOUSEMOTION)
             {
-                x = event.motion.x - 20;
-                y = event.motion.y - 30;
+                x = event.motion.x;
+                y = event.motion.y;
+
+                glX = 2 * y / 900 - 1;  // trim to the viewport
+                glY = 2 * x / 640 - 1;  // trim to the viewport
             }
         }
         
@@ -123,9 +130,9 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window)
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        renderer.drawStatusBar(x, y);
+        renderer.drawStatusBar(x - 20, 720 - y - 50);
         renderer.drawSceneTree();
-        renderer.createLine(flag);
+        renderer.createLine(flag, 900, 640);
 
         
         ImGui::Render();

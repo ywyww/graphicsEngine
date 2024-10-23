@@ -5,13 +5,14 @@
 
 class Controller
 {
-    SceneNamespace::Scene scene;
-    std::vector<bool> LinesState;
+    SceneNamespace::Scene* scene;
+
+
     
 public:
-    Controller()
+    Controller(Scene* scene)
     {
-        scene = SceneNamespace::Scene();
+        this->scene = scene;
     }
 
     static void render()
