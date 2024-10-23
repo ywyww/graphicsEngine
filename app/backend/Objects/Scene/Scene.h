@@ -18,7 +18,7 @@ namespace SceneNamespace
         
         void addLine(Line* line);
 
-        Lines getLines();
+        Lines& getLines();
 
         void drawLines();
     };

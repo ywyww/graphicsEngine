@@ -3,34 +3,34 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-class Controller
-{
-    SceneNamespace::Scene* scene;
-
-
-    // [SCENE TREE]
-
-    // transformation coefficients
-    float * translationValues
-
-
-public:
-    Controller(Scene* scene)
+    struct LineInputData
     {
-        this->scene = scene;
-    }
+        float* coordinates; // 6 (x, y, z) * 2
 
-    static void render()
+        float* translation; // 3 x y z
+        float* rotation; // 3 x y z
+        float angle;
+
+    public:
+        LineInputData();
+        ~LineInputData();
+    };
+
+    class Controller
     {
+        SceneNamespace::Scene* scene;
 
-    }
+        LineInputData lineInputData; 
 
-    void draw()
-    {
+    public:
+        Controller();
+        Controller(SceneNamespace::Scene* scene);
 
-    }
-
-};
-
+        SceneNamespace::Scene* getScene();
+        Lines& getLines();
+        LineInputData& getLineInput();
+        
+        float producePixelCoordinatesToGL(float coord, int dimension);
+    };
 
 #endif

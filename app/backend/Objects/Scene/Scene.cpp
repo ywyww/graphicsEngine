@@ -17,7 +17,7 @@ namespace SceneNamespace
         lines.push_back(lineGrp);
     }
 
-    Lines Scene::getLines()
+    Lines& Scene::getLines()
     {
         return lines;
     }

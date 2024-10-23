@@ -11,13 +11,18 @@
 #include "app/backend/Objects/GL/Line.h"
 #include "app/backend/Objects/GL/Shader.h"
 #include "app/backend/Objects/Scene/Scene.h"
+#include "app/backend/Controller.h"
+#include "app/frontend/Renderer.h"
 
 #include "include/imgui_impl_sdl2.h"
 #include "include/imgui_impl_opengl3.h"
 #include "include/imgui.h"
-#include "app/frontend/Renderer.h"
+
 
 void loop(SceneNamespace::Scene& scene, SDL_Window* window);
+
+// CODE REFACTORING:: RENDERER, CONTROLLER, MAIN.CPP
+
 
 int main(int argc, char** args) {
 
@@ -75,7 +80,8 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window) // put sizes into va
 {
     bool runningWindow = true;
 
-    Renderer renderer(scene);
+    Controller controller(&scene);
+    Renderer renderer(&controller);
 
     float x, y;
     float glX, glY;
