@@ -8,7 +8,12 @@ class Controller
     SceneNamespace::Scene* scene;
 
 
-    
+    // [SCENE TREE]
+
+    // transformation coefficients
+    float * translationValues
+
+
 public:
     Controller(Scene* scene)
     {

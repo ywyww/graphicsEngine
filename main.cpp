@@ -35,8 +35,6 @@ int main(int argc, char** args) {
 
     SDL_GLContext glContext = SDL_GL_CreateContext(window);
     
-	//glViewport(0, 0, 1280, 720);
-
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -83,7 +81,6 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window) // put sizes into va
     float glX, glY;
     SDL_Rect glRenderArea = {20, 50, 900, 640};
     
-
     bool flag = false;
     while (runningWindow)
     {
@@ -101,8 +98,8 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window) // put sizes into va
                 x = event.motion.x;
                 y = event.motion.y;
 
-                glX = 2 * y / 900 - 1;  // trim to the viewport
-                glY = 2 * x / 640 - 1;  // trim to the viewport
+                glX = 2 * y / glRenderArea.w - 1;  // trim to the viewport
+                glY = 2 * x / glRenderArea.h - 1;  // trim to the viewport
             }
         }
         
@@ -113,8 +110,8 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window) // put sizes into va
         glClear(GL_COLOR_BUFFER_BIT);
         
 
-        glViewport(20, 50, 900, 640);
-        glScissor(20, 50, 900, 640);
+        glViewport(glRenderArea.x, glRenderArea.y, glRenderArea.w, glRenderArea.h);
+        glScissor(glRenderArea.x, glRenderArea.y, glRenderArea.w, glRenderArea.h);
         glEnable(GL_SCISSOR_TEST);
 
 
@@ -130,9 +127,9 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window) // put sizes into va
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        renderer.drawStatusBar(x - 20, 720 - y - 50);
+        renderer.drawStatusBar(x - glRenderArea.x, glRenderArea.h - glRenderArea.y - y );
         renderer.drawSceneTree();
-        renderer.createLine(flag, 900, 640);
+        renderer.createLine(flag, glRenderArea.w, glRenderArea.h);
 
         
         ImGui::Render();
