@@ -20,15 +20,16 @@
     {
         SceneNamespace::Scene* scene;
 
-        LineInputData lineInputData; 
+        LineInputData* lineInputData; 
 
     public:
         Controller();
         Controller(SceneNamespace::Scene* scene);
+        ~Controller();
 
         SceneNamespace::Scene* getScene();
         Lines& getLines();
-        LineInputData& getLineInput();
+        LineInputData* getLineInput();
         
         float producePixelCoordinatesToGL(float coord, int dimension);
     };

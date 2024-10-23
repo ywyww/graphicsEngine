@@ -47,7 +47,7 @@ void Renderer::drawLineTransformation(Line* line)
 {
     if (ImGui::BeginMenu("Rotation"))
     {
-        float* angle = &controller->getLineInput().angle;
+        float* angle = &controller->getLineInput()->angle;
 
         if (ImGui::InputFloat3("Rotation coeff", angle))
         {
@@ -60,7 +60,7 @@ void Renderer::drawLineTransformation(Line* line)
 
     if (ImGui::BeginMenu("Translation"))
     {
-        float* translation = controller->getLineInput().translation;
+        float* translation = controller->getLineInput()->translation;
         ImGui::InputFloat3("Translations: x, y, z", translation);
 
         if (ImGui::Button("Click me for the translation"))
@@ -81,7 +81,7 @@ void Renderer::drawLineTransformation(Line* line)
 
 void Renderer::createLine(bool& flag, int width, int height)
 {
-    float* coordinates = controller->getLineInput().coordinates;
+    float* coordinates = controller->getLineInput()->coordinates;
     ImGui::Begin("Create line");
         ImGui::InputFloat("x1", &coordinates[0]);
         ImGui::InputFloat("y1", &coordinates[1]);

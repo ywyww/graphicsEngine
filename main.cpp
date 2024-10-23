@@ -19,7 +19,7 @@
 #include "include/imgui.h"
 
 
-void loop(SceneNamespace::Scene& scene, SDL_Window* window);
+void loop(SceneNamespace::Scene* scene, SDL_Window* window);
 
 // CODE REFACTORING:: RENDERER, CONTROLLER, MAIN.CPP
 
@@ -56,7 +56,7 @@ int main(int argc, char** args) {
 
     // [SCENE WORK] 
 
-	SceneNamespace::Scene scene = SceneNamespace::Scene();
+	SceneNamespace::Scene* scene = new SceneNamespace::Scene();
 
     // END[SCENE WORK]
 
@@ -76,12 +76,12 @@ int main(int argc, char** args) {
 	return 0;
 }
     
-void loop(SceneNamespace::Scene& scene, SDL_Window* window) // put sizes into variables
+void loop(SceneNamespace::Scene* scene, SDL_Window* window) // put sizes into variables
 {
     bool runningWindow = true;
 
-    Controller controller(&scene);
-    Renderer renderer(&controller);
+    Controller* controller = new Controller(scene);
+    Renderer renderer(controller);
 
     float x, y;
     float glX, glY;
@@ -125,7 +125,7 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window) // put sizes into va
         glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw scene
-        scene.drawLines();
+        scene->drawLines();
 
 
         // draw imgui

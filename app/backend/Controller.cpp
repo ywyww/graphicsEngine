@@ -2,13 +2,18 @@
 
     Controller::Controller()
     {
-        lineInputData = LineInputData();
+        lineInputData = new LineInputData();
     }
 
     Controller::Controller(SceneNamespace::Scene* scene)
     {
-        lineInputData = LineInputData();
+        lineInputData = new LineInputData();
         this->scene = scene;
+    }
+
+    Controller::~Controller()
+    {
+        delete lineInputData;
     }
 
     Lines& Controller::getLines()
@@ -21,7 +26,7 @@
         return scene;
     }
 
-    LineInputData& Controller::getLineInput()
+    LineInputData* Controller::getLineInput()
     {
         return lineInputData;
     }
