@@ -79,6 +79,15 @@ void loop(SDL_Window* window)
     SceneNamespace::Scene* scene = new SceneNamespace::Scene();
     Controller* controller = new Controller(scene);
     Renderer renderer(controller);
+
+    float x, y;
+    float glX, glY;
+    SDL_Rect glRenderArea = {20, 50, 900, 640};
+    
+    while (runningWindow)
+    {
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
         {
             ImGui_ImplSDL2_ProcessEvent(&event);
 
