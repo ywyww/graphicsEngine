@@ -79,7 +79,7 @@ void Renderer::drawLineTransformation(Line* line)
     }
 }
 
-void Renderer::createLine(bool& flag, int width, int height)
+void Renderer::drawLineCreation(int width, int height)
 {
     float* coordinates = controller->getLineInput()->coordinates;
     ImGui::Begin("Create line");
@@ -103,4 +103,9 @@ void Renderer::createLine(bool& flag, int width, int height)
         controller->getScene()->addLine(line);
     }
     ImGui::End();
+}
+
+void Renderer::draw()
+{
+    controller->getScene()->drawLines();
 }

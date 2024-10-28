@@ -12,15 +12,18 @@ class Renderer {
 public:
     Renderer(Controller* controller);
 
+    // IMGUI
     void drawStatusBar(const float& x, const float& y);
     void drawSceneTree();
+    void drawLineCreation(int width, int height);  // glViewport width and height
+
+
+    // GL
+    void draw();
+
+private:
     void drawLineTransformation(Line* line);
 
-    void drawLineInfo();
-
-public:
-
-    void createLine(bool& flag, int width, int height);  // glViewport width and height
 
 };
 

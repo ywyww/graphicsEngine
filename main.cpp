@@ -79,16 +79,6 @@ void loop(SDL_Window* window)
     SceneNamespace::Scene* scene = new SceneNamespace::Scene();
     Controller* controller = new Controller(scene);
     Renderer renderer(controller);
-
-    float x, y;
-    float glX, glY;
-    SDL_Rect glRenderArea = {20, 50, 900, 640};
-    
-    bool flag = false;
-    while (runningWindow)
-    {
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
         {
             ImGui_ImplSDL2_ProcessEvent(&event);
 
@@ -101,8 +91,8 @@ void loop(SDL_Window* window)
                 x = event.motion.x;
                 y = event.motion.y;
 
-                glX = 2 * y / glRenderArea.w - 1;  // trim to the viewport
-                glY = 2 * x / glRenderArea.h - 1;  // trim to the viewport
+                // glX = 2 * y / glRenderArea.w - 1;  // trim to the viewport
+                // glY = 2 * x / glRenderArea.h - 1;  // trim to the viewport
             }
         }
         
@@ -112,7 +102,6 @@ void loop(SDL_Window* window)
         glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
-
         glViewport(glRenderArea.x, glRenderArea.y, glRenderArea.w, glRenderArea.h);
         glScissor(glRenderArea.x, glRenderArea.y, glRenderArea.w, glRenderArea.h);
         glEnable(GL_SCISSOR_TEST);
@@ -122,16 +111,16 @@ void loop(SDL_Window* window)
         glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw scene
-        scene->drawLines();
+        renderer.draw();
 
         // draw imgui
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        renderer.drawStatusBar(x - glRenderArea.x, glRenderArea.h - glRenderArea.y - y );
         renderer.drawSceneTree();
-        renderer.createLine(flag, glRenderArea.w, glRenderArea.h);
+        renderer.drawStatusBar(x - glRenderArea.x, glRenderArea.h - glRenderArea.y - y );
+        renderer.drawLineCreation(glRenderArea.w, glRenderArea.h);
 
         
         ImGui::Render();

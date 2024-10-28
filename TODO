@@ -1,8 +1,9 @@
 ======================= TODO ======================= 
+[ ] camera class
+[ ] do interaction with lines
 [ ] do dynamic coordinates (dynamic VBO)
 [ ] global coordinates into view coordinates
 [ ] make unique coefficients for each object to infinity transformations flag (in scene tree)
-[ ] camera class
 [ ] scene not in main loop. put scene into controller or renderer
 ======================= TODO ======================= 
 
