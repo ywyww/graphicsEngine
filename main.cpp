@@ -19,7 +19,7 @@
 #include "include/imgui.h"
 
 
-void loop(SDL_Window* window);
+void loop(SDL_Window* window, const float& wWidth, const float& wHeight);
 
 // scene not in main loop. put scene into controller or renderer
 
@@ -53,9 +53,7 @@ int main(int argc, char** args) {
 
     // END[CONTEXT_CREATION]
 
-
-
-	loop(window);
+	loop(window, 1280, 720);
 
 
 
@@ -72,13 +70,27 @@ int main(int argc, char** args) {
 	return 0;
 }
     
-void loop(SDL_Window* window)
+void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 {
     bool runningWindow = true;
 
     SceneNamespace::Scene* scene = new SceneNamespace::Scene();
     Controller* controller = new Controller(scene);
     Renderer renderer(controller);
+
+    float x, y;
+    float glX, glY;
+    float belongX = 0; 
+    float belongY = 0;
+    float belongGLX = 0;
+    float belongGLY = 0;
+
+    SDL_Rect glRenderArea = {20, 50, 900, 640};
+    
+    while (runningWindow)
+    {
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
         {
             ImGui_ImplSDL2_ProcessEvent(&event);
 
@@ -91,13 +103,25 @@ void loop(SDL_Window* window)
                 x = event.motion.x;
                 y = event.motion.y;
 
-                // glX = 2 * y / glRenderArea.w - 1;  // trim to the viewport
-                // glY = 2 * x / glRenderArea.h - 1;  // trim to the viewport
+                // glX = 2 * x / glRenderArea.w - 1;  // trim to the viewport
+                // glY = 2 * y / glRenderArea.h - 1;  // trim to the viewport
+            }
+            if (event.type == SDL_MOUSEBUTTONDOWN && event.motion.x < glRenderArea.w + glRenderArea.x)
+            {
+                belongX = x - glRenderArea.x;
+                belongY = wHeight - glRenderArea.y - y;
+                belongGLX = belongX * 2 / (glRenderArea.w) - 1;
+                belongGLY = belongY * 2 / (glRenderArea.h) - 1;
+                
+                std::cout << "=======================" << std::endl;
+                std::cout << belongX << " " << belongY << std::endl;
+                std::cout << belongGLX << " " << belongGLY << std::endl;
+                std::cout << "=======================" << std::endl;
             }
         }
         
         // clear imgui buffer
-        glViewport(0, 0, 1280, 720);
+        glViewport(0, 0, wWidth, wHeight);
         glDisable(GL_SCISSOR_TEST);
         glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -119,8 +143,10 @@ void loop(SDL_Window* window)
         ImGui::NewFrame();
 
         renderer.drawSceneTree();
-        renderer.drawStatusBar(x - glRenderArea.x, glRenderArea.h - glRenderArea.y - y );
+
+        renderer.drawStatusBar(x - glRenderArea.x, wHeight - glRenderArea.y - y);
         renderer.drawLineCreation(glRenderArea.w, glRenderArea.h);
+        renderer.drawPointBelongWindow(belongX, belongY);
 
         
         ImGui::Render();

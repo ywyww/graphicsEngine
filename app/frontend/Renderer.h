@@ -17,6 +17,8 @@ public:
     void drawSceneTree();
     void drawLineCreation(int width, int height);  // glViewport width and height
 
+    void drawPointBelongWindow(const float& x, const float& y);
+
 
     // GL
     void draw();

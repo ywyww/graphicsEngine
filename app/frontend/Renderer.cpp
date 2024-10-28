@@ -105,6 +105,34 @@ void Renderer::drawLineCreation(int width, int height)
     ImGui::End();
 }
 
+void Renderer::drawPointBelongWindow(const float& x, const float& y)
+{
+    // hard code
+    ImGui::Begin("Create line");
+
+    if (ImGui::Button("Check"))
+    {
+        
+        Lines lines = controller->getLines();
+
+        if (lines.size() != 0)
+        {
+            Line* lineToCheck = lines[0].node;
+
+
+            if (lineToCheck->isPointBelongs(x, y, 0))
+                std::cout << "WORK!" << std::endl;
+            else 
+                std::cout << "NOT WORK!" << std::endl;
+        }
+        else
+        {
+            std::cout << "ADD 1 element.";
+        }
+    }
+    ImGui::End();
+}
+
 void Renderer::draw()
 {
     controller->getScene()->drawLines();

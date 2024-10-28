@@ -10,8 +10,11 @@ namespace SceneNamespace
 {
     class Scene
     {
+        // polyline as std::vector<Lines>
         Lines lines;
         std::string linesName;
+
+        NodeGroup<Object>* activeNode;
 
     public:
         Scene();

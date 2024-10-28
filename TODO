@@ -1,16 +1,24 @@
 ======================= TODO ======================= 
+[ ] refactoring point belong function
+[ ] make 3d capable for isPointBelong function: Line class
+[ ] active node (scene mode)
+
 [ ] camera class
-[ ] do interaction with lines
+[ ] do basic interaction with lines
 [ ] do dynamic coordinates (dynamic VBO)
 [ ] global coordinates into view coordinates
+
 [ ] make unique coefficients for each object to infinity transformations flag (in scene tree)
-[ ] scene not in main loop. put scene into controller or renderer
+[ ] make polyline as std::vector of Lines class
 ======================= TODO ======================= 
 
 
 
 
 ======================= DONE ======================= 
+[x] add point belong function (not working correctly)
+[x] fix status bar render  
+[x] object class
 [x] divide renderer class to the controller class and renderer
 [x] trim gl coordinates (loop)
 [x] put sizes into variables (refactoring)
@@ -20,6 +28,7 @@
 [x] add trimCoordinates (glScissors) in variables (height, width, shifts)
 [x] add window dimensions in variables (height, width)
 [x] add recalculator for trimmed coordinates;
+[x] scene not in main loop. put scene into controller or renderer
 ======================= DONE ======================= 
 
 
