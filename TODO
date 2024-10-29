@@ -13,8 +13,6 @@
 ======================= TODO ======================= 
 
 
-
-
 ======================= DONE ======================= 
 [x] add point belong function (not working correctly)
 [x] fix status bar render  
@@ -35,3 +33,8 @@
 ======================= NONE ======================= 
 [-] coordinateFormatter to create objects in absolute coordinates (not above window size and height)
 ======================= NONE ======================= 
+
+======================= NOTE ======================= 
+[ ] delete Scene class and turn its data to Controller;
+
+======================= NOTE ======================= 
