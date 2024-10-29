@@ -1,5 +1,9 @@
 ======================= TODO ======================= 
+[ ] make own class for each type of objects
+[ ] make sceneRenderer class for render gl data: division GUI renderer and GL renderer
+[ ] make structure for Controller`s objects 
 [ ] refactoring point belong function
+[ ] fix point belong function: add transformation data into coordinates
 [ ] make 3d capable for isPointBelong function: Line class
 [ ] active node (scene mode)
 
@@ -12,8 +16,9 @@
 [ ] make polyline as std::vector of Lines class
 ======================= TODO ======================= 
 
-
+[x] delete Scene class and turn its data to Controller;
 ======================= DONE ======================= 
+[x] delete Scene class and turn its data to Controller;
 [x] add point belong function (not working correctly)
 [x] fix status bar render  
 [x] object class
@@ -35,6 +40,5 @@
 ======================= NONE ======================= 
 
 ======================= NOTE ======================= 
-[ ] delete Scene class and turn its data to Controller;
 
 ======================= NOTE ======================= 

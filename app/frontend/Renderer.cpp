@@ -100,7 +100,7 @@ void Renderer::drawLineCreation(int width, int height)
             controller->producePixelCoordinatesToGL(coordinates[4], height),
             coordinates[5]
         );
-        controller->getScene()->addLine(line);
+        controller->addLine(line);
     }
     ImGui::End();
 }
@@ -135,5 +135,5 @@ void Renderer::drawPointBelongWindow(const float& x, const float& y)
 
 void Renderer::draw()
 {
-    controller->getScene()->drawLines();
+    controller->drawLines();
 }

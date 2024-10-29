@@ -5,12 +5,6 @@
         lineInputData = new LineInputData();
     }
 
-    Controller::Controller(SceneNamespace::Scene* scene)
-    {
-        lineInputData = new LineInputData();
-        this->scene = scene;
-    }
-
     Controller::~Controller()
     {
         delete lineInputData;
@@ -18,12 +12,7 @@
 
     Lines& Controller::getLines()
     {
-        return scene->getLines();
-    }
-
-    SceneNamespace::Scene* Controller::getScene()
-    {
-        return scene;
+        return lines;
     }
 
     LineInputData* Controller::getLineInput()
@@ -36,7 +25,22 @@
         return coord * 2 / (dimension) - 1;
     }
 
+    void Controller::addLine(Line* line)
+    {
+        NodeGroup<Line> lineGrp;
+        lineGrp.node = line;
+        lineGrp.name = "line1";
 
+        lines.push_back(lineGrp);
+    }
+    
+    void Controller::drawLines()
+    {
+        for (int i = 0; i < lines.size(); i++)
+        {
+            lines[i].node->draw();
+        }
+    }
 
 
     LineInputData::LineInputData()

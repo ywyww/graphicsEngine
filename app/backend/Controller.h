@@ -1,4 +1,5 @@
-#include "Objects/Scene/Scene.h"
+#include "Objects/Scene/Groups.h"
+#include "Interfaces/Object.h"
 
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
@@ -17,21 +18,27 @@
     };
 
     class Controller
-    {
-        SceneNamespace::Scene* scene;
+    {   
+        // make structure for this objects.
+        Lines lines;
+        std::string linesName;
+
+        NodeGroup<Object>* activeNode;
 
         LineInputData* lineInputData; 
 
     public:
         Controller();
-        Controller(SceneNamespace::Scene* scene);
         ~Controller();
 
-        SceneNamespace::Scene* getScene();
         Lines& getLines();
         LineInputData* getLineInput();
         
+        void addLine(Line*);
+        void drawLines();
+        
         float producePixelCoordinatesToGL(float coord, int dimension);
+
     };
 
 #endif

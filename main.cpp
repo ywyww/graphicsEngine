@@ -10,7 +10,6 @@
 
 #include "app/backend/Objects/GL/Line.h"
 #include "app/backend/Objects/GL/Shader.h"
-#include "app/backend/Objects/Scene/Scene.h"
 #include "app/backend/Controller.h"
 #include "app/frontend/Renderer.h"
 
@@ -74,8 +73,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 {
     bool runningWindow = true;
 
-    SceneNamespace::Scene* scene = new SceneNamespace::Scene();
-    Controller* controller = new Controller(scene);
+    Controller* controller = new Controller();
     Renderer renderer(controller);
 
     float x, y;
@@ -110,12 +108,9 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
             {
                 belongX = x - glRenderArea.x;
                 belongY = wHeight - glRenderArea.y - y;
-                belongGLX = belongX * 2 / (glRenderArea.w) - 1;
-                belongGLY = belongY * 2 / (glRenderArea.h) - 1;
                 
                 std::cout << "=======================" << std::endl;
                 std::cout << belongX << " " << belongY << std::endl;
-                std::cout << belongGLX << " " << belongGLY << std::endl;
                 std::cout << "=======================" << std::endl;
             }
         }
