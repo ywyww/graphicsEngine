@@ -19,7 +19,10 @@ public:
         return transformation;
     };
 
-    virtual void draw() = 0;
+    virtual void draw()
+    {
+
+    }
 };
 
 

@@ -1,23 +1,34 @@
-======================= TODO ======================= 
-[ ] make own class for each type of objects
-[ ] make sceneRenderer class for render gl data: division GUI renderer and GL renderer
+======================= TODO =======================
+[ ] do something with incapsulation: controller and renderer class are callable from main loop. (but controller lying in renderer) 
+[ ] turn belong window to the status bar.
+[ ] fix lineName change function
+[ ] refactoring hard code: main.cpp: belongX while belongWindow
+[ ] refactoring hard code: Line.cpp: renderWindowWidth and renderWindowHeight
+ 
+[ ] make own class for each type x - glRenderArea.xof objects
 [ ] make structure for Controller`s objects 
-[ ] refactoring point belong function
+
+[ ] fix point belong function: one line overlaps another
 [ ] fix point belong function: add transformation data into coordinates
-[ ] make 3d capable for isPointBelong function: Line class
 [ ] active node (scene mode)
+
 
 [ ] camera class
 [ ] do basic interaction with lines
 [ ] do dynamic coordinates (dynamic VBO)
 [ ] global coordinates into view coordinates
-
 [ ] make unique coefficients for each object to infinity transformations flag (in scene tree)
+
 [ ] make polyline as std::vector of Lines class
+[ ] make 3d capable for isPointBelong function: Line class
+
+
+[ ] add tip feature: when cursor on the object, it`s show it`s name
 ======================= TODO ======================= 
 
-[x] delete Scene class and turn its data to Controller;
 ======================= DONE ======================= 
+[x] fix object chose.
+[x] add class member lineName in LineInputData class
 [x] delete Scene class and turn its data to Controller;
 [x] add point belong function (not working correctly)
 [x] fix status bar render  
@@ -36,6 +47,7 @@
 
 
 ======================= NONE ======================= 
+[-] make sceneRenderer class for render gl data: division GUI renderer and GL renderer
 [-] coordinateFormatter to create objects in absolute coordinates (not above window size and height)
 ======================= NONE ======================= 
 

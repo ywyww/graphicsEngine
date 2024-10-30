@@ -25,8 +25,8 @@ public:
     GLuint getVBO();
     GLuint getShaderID();
 
-    bool isGLPointBelongs(const float x, const float y, const float z);  // only 2d  // point in gl coordinates
-    bool isPointBelongs(const float x, const float y, const float z);   // only 2d  // point in human coordinates
+    bool isGLPointBelongs(const float& x, const float& y, const float z = 0);  // only 2d  // point in gl coordinates
+    bool isPointBelongs(const float& x, const float& y, const float z = 0, bool coefficientTrim = true);   // only 2d  // point in human coordinates
 
     float* getBuffer();
 

@@ -12,6 +12,9 @@
         float* rotation; // 3 x y z
         float angle;
 
+        char* lineName;
+        size_t lineNameSize = 36;
+
     public:
         LineInputData();
         ~LineInputData();
@@ -33,7 +36,10 @@
 
         Lines& getLines();
         LineInputData* getLineInput();
-        
+
+        NodeGroup<Object>* getActiveNode();
+        void setActiveNode(const float& x, const float& y);
+
         void addLine(Line*);
         void drawLines();
         

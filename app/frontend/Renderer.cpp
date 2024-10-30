@@ -1,15 +1,29 @@
 #include "Renderer.h"
 
+
 Renderer::Renderer(Controller* controller)
 {
     this->controller = controller;
 }
 
-void Renderer::drawStatusBar(const float& x, const float& y)
+void Renderer::drawStatusBar(const float& x, const float& y, const float& lastClickedX, const float& lastClickedY)
 {
+    // add data here
+
     ImGui::Begin("StatusBar");
     std::string cursor = std::to_string(x) + " " + std::to_string(y);
     ImGui::Text(cursor.c_str());
+
+    ImGui::BeginChild("Line chosen");
+        controller->setActiveNode(lastClickedX, lastClickedY);
+        
+        NodeGroup<Object>* activeNode = controller->getActiveNode();
+        if (activeNode == nullptr)
+            ImGui::Text("No object chosen");
+        else
+            ImGui::Text("Chosen: %s", activeNode->name.c_str());     // here
+    ImGui::EndChild();
+    
     ImGui::End();
 }
 
@@ -22,16 +36,28 @@ void Renderer::drawSceneTree()
 
     if (ImGui::BeginMenu("Lines"))
     {   
+        LineInputData* lineInput = controller->getLineInput();
         for (int i = 0; i < lines->size(); i++)
         {
-            Line* line = lines->operator[](i).node;
-            const char* lineName = (std::to_string(i) + ": " + lines->operator[](i).name).c_str();
+            NodeGroup<Line>* node = &lines->operator[](i);
+            Line* line = node->node;
 
-            if (ImGui::BeginMenu(lineName))
+            // beginMenu has own name. It shouldn't change. So:
+            //const char* lineMenuName = ("Line #" + std::to_string(i + 1) + ": " + node->name.c_str()).c_str();  /
+            const char* lineMenuName = ("Line #" + std::to_string(i + 1)).c_str();
+
+            if (ImGui::BeginMenu(lineMenuName))
             {
+                ImGui::Text("Line name: %s", node->name.c_str());
+                
                 drawLineTransformation(line);
-                  
-                ImGui::Text(lineName);
+
+                ImGui::InputText("Line name", lineInput->lineName, lineInput->lineNameSize);
+
+                if (ImGui::Button("Change name"))
+                {
+                    node->name = std::string(lineInput->lineName, lineInput->lineNameSize);
+                }
 
                 ImGui::EndMenu();
             }
@@ -101,34 +127,6 @@ void Renderer::drawLineCreation(int width, int height)
             coordinates[5]
         );
         controller->addLine(line);
-    }
-    ImGui::End();
-}
-
-void Renderer::drawPointBelongWindow(const float& x, const float& y)
-{
-    // hard code
-    ImGui::Begin("Create line");
-
-    if (ImGui::Button("Check"))
-    {
-        
-        Lines lines = controller->getLines();
-
-        if (lines.size() != 0)
-        {
-            Line* lineToCheck = lines[0].node;
-
-
-            if (lineToCheck->isPointBelongs(x, y, 0))
-                std::cout << "WORK!" << std::endl;
-            else 
-                std::cout << "NOT WORK!" << std::endl;
-        }
-        else
-        {
-            std::cout << "ADD 1 element.";
-        }
     }
     ImGui::End();
 }

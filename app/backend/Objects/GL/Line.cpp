@@ -1,6 +1,6 @@
 #include "Line.h"
 
-Line::Line(const float x1, const float y1, const float z1, const float x2, const float y2, const float z2) {
+Line::Line(const float x1, const float y1, const float z1, const float x2, const float y2, const float z2) : Object() {
         buffer = new float[6] {x1, y1, z1, 
                          x2, y2, z2};
 
@@ -47,12 +47,12 @@ float* Line::getBuffer()
     return buffer;
 }
 
-bool Line::isGLPointBelongs(const float x, const float y, const float z)    // only 2d
+bool Line::isGLPointBelongs(const float& x, const float& y, const float z)    // only 2d
 {
     return false;
 }
 
-bool Line::isPointBelongs(const float x, const float y, const float z = 0)  // only 2d
+bool Line::isPointBelongs(const float& x, const float& y, const float z, bool coefficientTrim)  // only 2d
 {
     // x(t) = x1 + (x2 - x1) * t, 0 <= t <= 1
 
@@ -65,16 +65,20 @@ bool Line::isPointBelongs(const float x, const float y, const float z = 0)  // o
     float y1Normal = height * (buffer[1] + 1) / 2;
     float y2Normal = height * (buffer[4] + 1) / 2;
         
-    if (x2Normal == x1Normal == x)
-        throw std::invalid_argument("add later");
-    else if (y2Normal == y1Normal == x)
-        throw std::invalid_argument("add later");
+    // if (x2Normal == x1Normal == x)
+    //     throw std::invalid_argument("add later (x)");
+    // else if (y2Normal == y1Normal == x)
+    //     throw std::invalid_argument("add later (y)");
     
     float xCoefficient = (x - x1Normal) / (x2Normal - x1Normal);
     float yCoefficient = (y - y1Normal) / (y2Normal - y1Normal);
     
-    std::cout << "xCoeff t: " << xCoefficient << std::endl;
-    std::cout << "yCoeff t: " << yCoefficient << std::endl;
+    if (coefficientTrim)
+    {
+        if (xCoefficient > 1 || xCoefficient < -1 || yCoefficient > 1 || yCoefficient < -1)
+            return false;
+    }
+        
 
     if (xCoefficient >= yCoefficient)
         return xCoefficient - yCoefficient < 0.03f;
