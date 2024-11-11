@@ -33,12 +33,12 @@
         return activeNode;
     }
 
-    void Controller::setActiveNode(const float& x, const float& y)
+    void Controller::setActiveNode(const float& x, const float& y, const float& width, const float& height)
     {
         NodeGroup<Object>* current = new NodeGroup<Object>();
         for (int i = 0; i < lines.size(); i++)
         {
-            if (lines[i].node->isPointBelongs(x, y, 0, true))
+            if (lines[i].node->isPointBelongs(x, y, 0, width, height, true))
             {
                 current->node = lines[i].node;
                 current->name = lines[i].name;
@@ -50,6 +50,11 @@
             current = nullptr;
         }
         activeNode = current;
+    }
+
+    void Controller::setActiveNode(NodeGroup<Object>* object)
+    {
+        activeNode = object;
     }
 
     void Controller::setMode(const WorkModes& mode)

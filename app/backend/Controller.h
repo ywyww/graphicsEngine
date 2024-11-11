@@ -55,7 +55,8 @@
         LineInputData* getLineInput();
 
         NodeGroup<Object>* getActiveNode();
-        void setActiveNode(const float& x, const float& y);
+        void setActiveNode(const float& x, const float& y, const float& width, const float& height);
+        void setActiveNode(NodeGroup<Object>* object);
 
         void setMode(const WorkModes& mode);
         const WorkModes& getMode();

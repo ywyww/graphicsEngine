@@ -1,9 +1,8 @@
 ======================= TODO =======================
+[ ] refactoring: long width chain: see Line->Controller->Renderer->main (width and height);
+
 [ ] changement for current node (menu)
 
-[ ] radiobutton for enum to change modes
-[ ] enum with modes
-[ ] add color change in line settings
 [ ] do something with incapsulation: controller and renderer class are callable from main loop. (but controller lying in renderer) 
 [ ] refactoring hard code: main.cpp: belongX while belongWindow
 [ ] refactoring hard code: Line.cpp: renderWindowWidth and renderWindowHeight
@@ -13,7 +12,8 @@
 
 [ ] fix point belong function: one line overlaps another
 [ ] fix point belong function: add transformation data into coordinates
-[ ] active node (scene mode)
+[ ] if x1 == x2 or y1 == y2 in LineBelongFunction, it isn`t work
+[ ] make unified transformation coordinates
 
 
 [ ] camera class
@@ -29,9 +29,14 @@
 [ ] add tip feature: when cursor on the object, it`s show it`s name
 [ ] refactoring: xml other enum with stringss
 [ ] optimize code: make areas without render
+[ ] drawSceneTree: fix Object->Line inheritance
 ======================= TODO ======================= 
 
 ======================= DONE ======================= 
+[x] enum with modes
+[x] add color change in line settings
+[x] button for enum to change modes
+[x] active node (scene mode)
 [x] fix lineName change function
 [x] turn belong window to the status bar.
 [x] fix object chose.
@@ -54,6 +59,7 @@
 
 
 ======================= NONE ======================= 
+[-] radiobutton for enum to change modes
 [-] make sceneRenderer class for render gl data: division GUI renderer and GL renderer
 [-] coordinateFormatter to create objects in absolute coordinates (not above window size and height)
 ======================= NONE ======================= 

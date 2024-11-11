@@ -9,17 +9,28 @@
 class Renderer {
     Controller* controller;
 
+    float wWidth;
+    float wHeight;
+
 public:
-    Renderer(Controller* controller);
+    Renderer(Controller* controller, const float& width, const float& height);
 
     // IMGUI
     void drawStatusBar(const float& x, const float& y, const float& lastClickedX, const float& lastClickedY);
     void drawSceneTree();
-    void drawLineCreation(int width, int height);  // glViewport width and height
+    void drawLineCreation();  // glViewport width and height
     void drawModes();
+
 
     // GL
     void draw();
+
+
+    // events
+    void setActiveNode(float lastClickedX, float lastClickedY);
+
+    void translateObject(float relX, float relY);      // now only lines, then all objects.
+    void rotateObject(float relX, float relY);
 
 private:
     void drawLineTransformation(Line* line);

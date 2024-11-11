@@ -30,7 +30,10 @@ int main(int argc, char** args) {
     if ( SDL_Init( SDL_INIT_EVERYTHING ) < 0 ) {
         throw std::runtime_error("Failed to init");
     } 
-    window = SDL_CreateWindow("CG", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL);
+
+    int windowH = 900;
+    int windowW = 1800;
+    window = SDL_CreateWindow("CG", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowW, windowH, SDL_WINDOW_OPENGL);
 
     if ( !window ) {
         throw std::runtime_error("Failed to create window");
@@ -52,7 +55,7 @@ int main(int argc, char** args) {
 
     // END[CONTEXT_CREATION]
 
-	loop(window, 1280, 720);
+	loop(window, windowW, windowH);
 
 
 
@@ -73,8 +76,9 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 {
     bool runningWindow = true;
 
+    SDL_Rect glRenderArea = {20, 50, 1400, 800};
     Controller* controller = new Controller();
-    Renderer renderer(controller);
+    Renderer renderer(controller, glRenderArea.w, glRenderArea.h);
 
     float x, y;
     float glX, glY;
@@ -85,8 +89,10 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
     float lastMouseClickedY = 0;
 
     bool isCursorVirginClicked = false;
-    SDL_Rect glRenderArea = {20, 50, 900, 640};
     
+    bool mouseDown = false;
+    
+
     while (runningWindow)
     {
         SDL_Event event;
@@ -105,6 +111,15 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
                 belongX = x - glRenderArea.x;
                 belongY = wHeight - glRenderArea.y - y;
+
+                if (mouseDown)
+                {
+                    float xRel = event.motion.xrel;
+                    float yRel = event.motion.yrel;
+
+                    renderer.translateObject(xRel, -yRel);
+                    renderer.rotateObject(xRel, -yRel);
+                }
             }
             if (event.type == SDL_MOUSEBUTTONDOWN && 
                 event.motion.x < glRenderArea.w + glRenderArea.x && 
@@ -112,8 +127,15 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
             {
                 lastMouseClickedX = belongX;
                 lastMouseClickedY = belongY;
-                //controller->setActiveNode(belongX, belongY);
+                mouseDown = true;
+
+                renderer.setActiveNode(lastMouseClickedX, lastMouseClickedY);
             }
+            if (event.type == SDL_MOUSEBUTTONUP)
+            {
+                mouseDown = false;
+            }
+            
         }
         
         // clear imgui buffer
@@ -139,9 +161,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         ImGui::NewFrame();
 
         renderer.drawSceneTree();
-
         renderer.drawStatusBar(belongX, belongY, lastMouseClickedX, lastMouseClickedY);
-        renderer.drawLineCreation(glRenderArea.w, glRenderArea.h);
+        renderer.drawLineCreation();
         renderer.drawModes();
 
         

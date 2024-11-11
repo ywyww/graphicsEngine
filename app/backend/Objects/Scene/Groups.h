@@ -18,6 +18,7 @@ struct NodeGroup
         node = nullptr;
         name = "";
     }
+    
     NodeGroup& operator=(const NodeGroup<NodeType>& other){
         if (this == &other)
             return *this;
