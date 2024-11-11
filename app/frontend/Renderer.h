@@ -13,10 +13,10 @@ public:
     Renderer(Controller* controller);
 
     // IMGUI
-    void drawStatusBar(const float& x, const float& y);
+    void drawStatusBar(const float& x, const float& y, const float& lastClickedX, const float& lastClickedY);
     void drawSceneTree();
     void drawLineCreation(int width, int height);  // glViewport width and height
-
+    void drawModes();
 
     // GL
     void draw();

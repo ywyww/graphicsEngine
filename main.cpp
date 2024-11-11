@@ -10,7 +10,6 @@
 
 #include "app/backend/Objects/GL/Line.h"
 #include "app/backend/Objects/GL/Shader.h"
-#include "app/backend/Objects/Scene/Scene.h"
 #include "app/backend/Controller.h"
 #include "app/frontend/Renderer.h"
 
@@ -19,7 +18,7 @@
 #include "include/imgui.h"
 
 
-void loop(SDL_Window* window);
+void loop(SDL_Window* window, const float& wWidth, const float& wHeight);
 
 // scene not in main loop. put scene into controller or renderer
 
@@ -53,9 +52,7 @@ int main(int argc, char** args) {
 
     // END[CONTEXT_CREATION]
 
-
-
-	loop(window);
+	loop(window, 1280, 720);
 
 
 
@@ -72,16 +69,22 @@ int main(int argc, char** args) {
 	return 0;
 }
     
-void loop(SDL_Window* window)
+void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 {
     bool runningWindow = true;
 
-    SceneNamespace::Scene* scene = new SceneNamespace::Scene();
-    Controller* controller = new Controller(scene);
+    Controller* controller = new Controller();
     Renderer renderer(controller);
 
     float x, y;
     float glX, glY;
+    float belongX = 0; 
+    float belongY = 0;
+    
+    float lastMouseClickedX = 0;
+    float lastMouseClickedY = 0;
+
+    bool isCursorVirginClicked = false;
     SDL_Rect glRenderArea = {20, 50, 900, 640};
     
     while (runningWindow)
@@ -100,13 +103,21 @@ void loop(SDL_Window* window)
                 x = event.motion.x;
                 y = event.motion.y;
 
-                // glX = 2 * y / glRenderArea.w - 1;  // trim to the viewport
-                // glY = 2 * x / glRenderArea.h - 1;  // trim to the viewport
+                belongX = x - glRenderArea.x;
+                belongY = wHeight - glRenderArea.y - y;
+            }
+            if (event.type == SDL_MOUSEBUTTONDOWN && 
+                event.motion.x < glRenderArea.w + glRenderArea.x && 
+                event.motion.y < glRenderArea.h + glRenderArea.y)
+            {
+                lastMouseClickedX = belongX;
+                lastMouseClickedY = belongY;
+                //controller->setActiveNode(belongX, belongY);
             }
         }
         
         // clear imgui buffer
-        glViewport(0, 0, 1280, 720);
+        glViewport(0, 0, wWidth, wHeight);
         glDisable(GL_SCISSOR_TEST);
         glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -128,8 +139,10 @@ void loop(SDL_Window* window)
         ImGui::NewFrame();
 
         renderer.drawSceneTree();
-        renderer.drawStatusBar(x - glRenderArea.x, glRenderArea.h - glRenderArea.y - y );
+
+        renderer.drawStatusBar(belongX, belongY, lastMouseClickedX, lastMouseClickedY);
         renderer.drawLineCreation(glRenderArea.w, glRenderArea.h);
+        renderer.drawModes();
 
         
         ImGui::Render();

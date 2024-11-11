@@ -1,15 +1,34 @@
 #include "Renderer.h"
 
+
 Renderer::Renderer(Controller* controller)
 {
     this->controller = controller;
 }
 
-void Renderer::drawStatusBar(const float& x, const float& y)
+void Renderer::drawStatusBar(const float& x, const float& y, const float& lastClickedX, const float& lastClickedY)
 {
+    // add data here
+
     ImGui::Begin("StatusBar");
     std::string cursor = std::to_string(x) + " " + std::to_string(y);
     ImGui::Text(cursor.c_str());
+
+    ImGui::BeginChild("Line chosen");
+        controller->setActiveNode(lastClickedX, lastClickedY);
+        
+        NodeGroup<Object>* activeNode = controller->getActiveNode();
+        if (activeNode == nullptr)
+            ImGui::Text("No object chosen");
+        else
+            ImGui::Text("Chosen: %s", activeNode->name.c_str());     // here
+    ImGui::EndChild();
+
+    ImGui::BeginChild("Active mode: ");
+        ImGui::Text("Active mode: %d", controller->getMode());
+
+    ImGui::EndChild();
+    
     ImGui::End();
 }
 
@@ -18,20 +37,32 @@ void Renderer::drawSceneTree()
     ImGui::Begin("Scene Tree");
 
     Lines* lines = &controller->getLines();
-       
+    
 
     if (ImGui::BeginMenu("Lines"))
     {   
+        LineInputData* lineInput = controller->getLineInput();
         for (int i = 0; i < lines->size(); i++)
         {
-            Line* line = lines->operator[](i).node;
-            const char* lineName = (std::to_string(i) + ": " + lines->operator[](i).name).c_str();
+            NodeGroup<Line>* node = &lines->operator[](i);
+            Line* line = node->node;
 
-            if (ImGui::BeginMenu(lineName))
+            // beginMenu has own name. It shouldn't change. So:
+            //const char* lineMenuName = ("Line #" + std::to_string(i + 1) + ": " + node->name.c_str()).c_str();  /
+            const char* lineMenuName = ("Line #" + std::to_string(i + 1)).c_str();
+
+            if (ImGui::BeginMenu(lineMenuName))
             {
+                ImGui::Text("Line name: %s", node->name.c_str());
+                
                 drawLineTransformation(line);
-                  
-                ImGui::Text(lineName);
+
+                ImGui::InputText("Line name", lineInput->lineName, lineInput->lineNameSize);
+
+                if (ImGui::Button("Change name"))
+                {
+                    node->name = std::string(lineInput->lineName, lineInput->lineNameSize);
+                }
 
                 ImGui::EndMenu();
             }
@@ -72,40 +103,74 @@ void Renderer::drawLineTransformation(Line* line)
 
         ImGui::EndMenu();
     }
+    if (ImGui::BeginMenu("ColorPicker"))
+    {
+        float* color = controller->getLineInput()->color;
+        ImGui::InputFloat3("Colors: rgb", color);
 
+        if (ImGui::Button("Click me for change color"))
+        {
+            glm::vec3 colorVec = glm::vec3(color[0], color[1], color[2]);
+            line->setColor(colorVec);
+        }
+        ImGui::EndMenu();
+    }
     if (ImGui::Button("Reset"))
     {
         line->setTransformation(glm::mat4x4(1.0f));
+        line->setColor(glm::vec3(1.0f));
     }
 }
 
 void Renderer::drawLineCreation(int width, int height)
 {
-    float* coordinates = controller->getLineInput()->coordinates;
-    ImGui::Begin("Create line");
-        ImGui::InputFloat("x1", &coordinates[0]);
-        ImGui::InputFloat("y1", &coordinates[1]);
-        ImGui::InputFloat("z1", &coordinates[2]);
-        ImGui::InputFloat("x2", &coordinates[3]);
-        ImGui::InputFloat("y2", &coordinates[4]);
-        ImGui::InputFloat("z2", &coordinates[5]);
-
-    if (ImGui::Button("Go"))
+    if (controller->getMode() == WorkModes::DRAW_LINE)
     {
-        Line* line = new Line(
-            controller->producePixelCoordinatesToGL(coordinates[0], width),
-            controller->producePixelCoordinatesToGL(coordinates[1], height),
-            coordinates[2],
-            controller->producePixelCoordinatesToGL(coordinates[3], width),
-            controller->producePixelCoordinatesToGL(coordinates[4], height),
-            coordinates[5]
-        );
-        controller->getScene()->addLine(line);
+        float* coordinates = controller->getLineInput()->coordinates;
+        ImGui::Begin("Create line");
+            ImGui::InputFloat("x1", &coordinates[0]);
+            ImGui::InputFloat("y1", &coordinates[1]);
+            ImGui::InputFloat("z1", &coordinates[2]);
+            ImGui::InputFloat("x2", &coordinates[3]);
+            ImGui::InputFloat("y2", &coordinates[4]);
+            ImGui::InputFloat("z2", &coordinates[5]);
+
+        if (ImGui::Button("Go"))
+        {
+            Line* line = new Line(
+                controller->producePixelCoordinatesToGL(coordinates[0], width),
+                controller->producePixelCoordinatesToGL(coordinates[1], height),
+                coordinates[2],
+                controller->producePixelCoordinatesToGL(coordinates[3], width),
+                controller->producePixelCoordinatesToGL(coordinates[4], height),
+                coordinates[5]
+            );
+            controller->addLine(line);
+        }
+        ImGui::End();
     }
+
+}
+
+void Renderer::drawModes()
+{
+    ImGui::Begin("Modes");
+
+    std::map<WorkModes, const char*> map = controller->modeMap;
+    
+    for (auto iter = map.begin(); iter != map.end(); iter++)
+    {
+        if (ImGui::Button(iter->second))
+        {
+            controller->setMode(iter->first);
+            std::cout << "Selected: " << iter->second << std::endl;
+        }
+    }
+
     ImGui::End();
 }
 
 void Renderer::draw()
 {
-    controller->getScene()->drawLines();
+    controller->drawLines();
 }

@@ -12,6 +12,22 @@ struct NodeGroup
 {
     NodeType* node;
     std::string name;
+
+    NodeGroup()
+    {
+        node = nullptr;
+        name = "";
+    }
+    NodeGroup& operator=(const NodeGroup<NodeType>& other){
+        if (this == &other)
+            return *this;
+
+        this->node = other.node;
+        this->name = other.name;
+
+        return *this;
+    }
+    virtual ~NodeGroup() = default;
 };
 
 template<class NodeType>

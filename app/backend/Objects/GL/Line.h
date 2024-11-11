@@ -4,17 +4,18 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Shader.h"
+#include "../../Interfaces/Object.h"
 
 #ifndef LINES_H
 #define LINES_H
 
-class Line
+class Line: public Object
 {
     GLuint VAO;
     GLuint VBO;
     Shader shader;
 
-    glm::mat4x4 transformation; // transformation matrix
+    glm::vec3 color;
 
     float* buffer;  // 6 floats
 
@@ -26,12 +27,14 @@ public:
     GLuint getVBO();
     GLuint getShaderID();
 
-    void setTransformation(const glm::mat4x4&);
-    glm::mat4x4& getTransformation();
+    void setColor(const glm::vec3& color);
+    
+    bool isGLPointBelongs(const float& x, const float& y, const float z = 0);  // only 2d  // point in gl coordinates
+    bool isPointBelongs(const float& x, const float& y, const float z = 0, bool coefficientTrim = true);   // only 2d  // point in human coordinates
 
     float* getBuffer();
 
-    void draw();
+    void draw() override;
 };
 
 
