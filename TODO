@@ -1,23 +1,69 @@
-======================= TODO ======================= 
-[ ] divide renderer class to the controller class and renderer
-[ ] trim gl coordinates (loop)
-[ ] put sizes into variables (refactoring)
-[ ] do SDL rect for polling glViewport data.
-[ ] подумать над машиной состояний, которая будет следить и управлять за каждым объектом
+======================= TODO =======================
+[ ] refactoring: long width chain: see Line->Controller->Renderer->main (width and height);
+
+[ ] changement for current node (menu)
+
+[ ] do something with incapsulation: controller and renderer class are callable from main loop. (but controller lying in renderer) 
+[ ] refactoring hard code: main.cpp: belongX while belongWindow
+[ ] refactoring hard code: Line.cpp: renderWindowWidth and renderWindowHeight
+ 
+[ ] make own class for each type x - glRenderArea.xof objects
+[ ] make structure for Controller`s objects 
+
+[ ] fix point belong function: one line overlaps another
+[ ] fix point belong function: add transformation data into coordinates
+[ ] if x1 == x2 or y1 == y2 in LineBelongFunction, it isn`t work
+[ ] make unified transformation coordinates
+
+
+[ ] camera class
+[ ] do basic interaction with lines
 [ ] do dynamic coordinates (dynamic VBO)
 [ ] global coordinates into view coordinates
-[ ] do coordinate transformation
 [ ] make unique coefficients for each object to infinity transformations flag (in scene tree)
-[ ] coordinateFormatter to create objects in absolute coordinates (not above window size and height)
-[ ] add trimCoordinates (glScissors) in variables (height, width, shifts)
-[ ] add window dimensions in variables (height, width)
-[ ] add recalculator for trimmed coordinates;
-[ ] camera class
+
+[ ] make polyline as std::vector of Lines class
+[ ] make 3d capable for isPointBelong function: Line class
+
+
+[ ] add tip feature: when cursor on the object, it`s show it`s name
+[ ] refactoring: xml other enum with stringss
+[ ] optimize code: make areas without render
+[ ] drawSceneTree: fix Object->Line inheritance
 ======================= TODO ======================= 
 
-
-
-
+======================= DONE ======================= 
+[x] enum with modes
+[x] add color change in line settings
+[x] button for enum to change modes
+[x] active node (scene mode)
+[x] fix lineName change function
+[x] turn belong window to the status bar.
+[x] fix object chose.
+[x] add class member lineName in LineInputData class
+[x] delete Scene class and turn its data to Controller;
+[x] add point belong function (not working correctly)
+[x] fix status bar render  
+[x] object class
+[x] divide renderer class to the controller class and renderer
+[x] trim gl coordinates (loop)
+[x] put sizes into variables (refactoring)
+[x] do SDL rect for polling glViewport data.
+[x] подумать над машиной состояний, которая будет следить и управлять за каждым объектом
+[x] do coordinate transformation
+[x] add trimCoordinates (glScissors) in variables (height, width, shifts)
+[x] add window dimensions in variables (height, width)
+[x] add recalculator for trimmed coordinates;
+[x] scene not in main loop. put scene into controller or renderer
 ======================= DONE ======================= 
 
-======================= DONE ======================= 
+
+======================= NONE ======================= 
+[-] radiobutton for enum to change modes
+[-] make sceneRenderer class for render gl data: division GUI renderer and GL renderer
+[-] coordinateFormatter to create objects in absolute coordinates (not above window size and height)
+======================= NONE ======================= 
+
+======================= NOTE ======================= 
+
+======================= NOTE ======================= 

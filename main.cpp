@@ -10,14 +10,17 @@
 
 #include "app/backend/Objects/GL/Line.h"
 #include "app/backend/Objects/GL/Shader.h"
-#include "app/backend/Objects/Scene/Scene.h"
+#include "app/backend/Controller.h"
+#include "app/frontend/Renderer.h"
 
 #include "include/imgui_impl_sdl2.h"
 #include "include/imgui_impl_opengl3.h"
 #include "include/imgui.h"
-#include "app/frontend/Renderer.h"
 
-void loop(SceneNamespace::Scene& scene, SDL_Window* window);
+
+void loop(SDL_Window* window, const float& wWidth, const float& wHeight);
+
+// scene not in main loop. put scene into controller or renderer
 
 int main(int argc, char** args) {
 
@@ -27,7 +30,10 @@ int main(int argc, char** args) {
     if ( SDL_Init( SDL_INIT_EVERYTHING ) < 0 ) {
         throw std::runtime_error("Failed to init");
     } 
-    window = SDL_CreateWindow("CG", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL);
+
+    int windowH = 900;
+    int windowW = 1800;
+    window = SDL_CreateWindow("CG", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowW, windowH, SDL_WINDOW_OPENGL);
 
     if ( !window ) {
         throw std::runtime_error("Failed to create window");
@@ -35,8 +41,6 @@ int main(int argc, char** args) {
 
     SDL_GLContext glContext = SDL_GL_CreateContext(window);
     
-	//glViewport(0, 0, 1280, 720);
-
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -51,13 +55,8 @@ int main(int argc, char** args) {
 
     // END[CONTEXT_CREATION]
 
-    // [SCENE WORK] 
+	loop(window, windowW, windowH);
 
-	SceneNamespace::Scene scene = SceneNamespace::Scene();
-
-    // END[SCENE WORK]
-
-	loop(scene, window);
 
 
     // [CONTEXT DESTROYING]
@@ -73,19 +72,27 @@ int main(int argc, char** args) {
 	return 0;
 }
     
-void loop(SceneNamespace::Scene& scene, SDL_Window* window) // put sizes into variables
+void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 {
     bool runningWindow = true;
 
-    Renderer renderer(scene);
-    
+    SDL_Rect glRenderArea = {20, 50, 1400, 800};
+    Controller* controller = new Controller();
+    Renderer renderer(controller, glRenderArea.w, glRenderArea.h);
 
     float x, y;
     float glX, glY;
-    SDL_Rect glRenderArea = {20, 50, 900, 640};
+    float belongX = 0; 
+    float belongY = 0;
+    
+    float lastMouseClickedX = 0;
+    float lastMouseClickedY = 0;
+
+    bool isCursorVirginClicked = false;
+    
+    bool mouseDown = false;
     
 
-    bool flag = false;
     while (runningWindow)
     {
         SDL_Event event;
@@ -102,20 +109,43 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window) // put sizes into va
                 x = event.motion.x;
                 y = event.motion.y;
 
-                glX = 2 * y / 900 - 1;  // trim to the viewport
-                glY = 2 * x / 640 - 1;  // trim to the viewport
+                belongX = x - glRenderArea.x;
+                belongY = wHeight - glRenderArea.y - y;
+
+                if (mouseDown)
+                {
+                    float xRel = event.motion.xrel;
+                    float yRel = event.motion.yrel;
+
+                    renderer.translateObject(xRel, -yRel);
+                    renderer.rotateObject(xRel, -yRel);
+                }
             }
+            if (event.type == SDL_MOUSEBUTTONDOWN && 
+                event.motion.x < glRenderArea.w + glRenderArea.x && 
+                event.motion.y < glRenderArea.h + glRenderArea.y)
+            {
+                lastMouseClickedX = belongX;
+                lastMouseClickedY = belongY;
+                mouseDown = true;
+
+                renderer.setActiveNode(lastMouseClickedX, lastMouseClickedY);
+            }
+            if (event.type == SDL_MOUSEBUTTONUP)
+            {
+                mouseDown = false;
+            }
+            
         }
         
         // clear imgui buffer
-        glViewport(0, 0, 1280, 720);
+        glViewport(0, 0, wWidth, wHeight);
         glDisable(GL_SCISSOR_TEST);
         glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
-
-        glViewport(20, 50, 900, 640);
-        glScissor(20, 50, 900, 640);
+        glViewport(glRenderArea.x, glRenderArea.y, glRenderArea.w, glRenderArea.h);
+        glScissor(glRenderArea.x, glRenderArea.y, glRenderArea.w, glRenderArea.h);
         glEnable(GL_SCISSOR_TEST);
 
 
@@ -123,17 +153,17 @@ void loop(SceneNamespace::Scene& scene, SDL_Window* window) // put sizes into va
         glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw scene
-        scene.drawLines();
-
+        renderer.draw();
 
         // draw imgui
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        renderer.drawStatusBar(x - 20, 720 - y - 50);
         renderer.drawSceneTree();
-        renderer.createLine(flag, 900, 640);
+        renderer.drawStatusBar(belongX, belongY, lastMouseClickedX, lastMouseClickedY);
+        renderer.drawLineCreation();
+        renderer.drawModes();
 
         
         ImGui::Render();
