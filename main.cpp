@@ -142,6 +142,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
         renderer.drawStatusBar(belongX, belongY, lastMouseClickedX, lastMouseClickedY);
         renderer.drawLineCreation(glRenderArea.w, glRenderArea.h);
+        renderer.drawModes();
 
         
         ImGui::Render();

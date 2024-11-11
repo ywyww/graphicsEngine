@@ -16,6 +16,7 @@ public:
     void drawStatusBar(const float& x, const float& y, const float& lastClickedX, const float& lastClickedY);
     void drawSceneTree();
     void drawLineCreation(int width, int height);  // glViewport width and height
+    void drawModes();
 
     // GL
     void draw();

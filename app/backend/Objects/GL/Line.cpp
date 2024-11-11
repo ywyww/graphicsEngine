@@ -22,6 +22,7 @@ Line::Line(const float x1, const float y1, const float z1, const float x2, const
 
         shader = Shader("data/line.vertexshader", "data/line.fragmentshader");
         transformation = glm::identity<glm::mat4x4>();
+        color = glm::vec3(1.0f, 0.5f, 0.2f);
 }
 
 Line::~Line()
@@ -45,6 +46,11 @@ GLuint Line::getShaderID() {
 float* Line::getBuffer()
 {
     return buffer;
+}
+
+void Line::setColor(const glm::vec3& color)
+{
+    this->color = color;
 }
 
 bool Line::isGLPointBelongs(const float& x, const float& y, const float z)    // only 2d
@@ -94,6 +100,10 @@ void Line::draw()
 
 	GLuint matrixName = glGetUniformLocation(getShaderID(), "MVP");
     glUniformMatrix4fv(matrixName, 1, GL_FALSE, glm::value_ptr(transformation));
+
+    GLuint colorName = glGetUniformLocation(getShaderID(), "color");
+    glUniform3fv(colorName, 1, glm::value_ptr(color));
+
 
     glBindVertexArray(VAO);
 	glDrawArrays(GL_LINES, 0, 2);

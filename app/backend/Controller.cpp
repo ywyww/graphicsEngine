@@ -4,6 +4,13 @@
     {
         activeNode = nullptr;
         lineInputData = new LineInputData();
+        mode = WorkModes::POINTER;
+
+        modeMap.insert(std::pair(WorkModes::POINTER, "Pointer"));
+        modeMap.insert(std::pair(WorkModes::DRAW_POINT, "DrawPoint"));
+        modeMap.insert(std::pair(WorkModes::DRAW_LINE, "DrawLine"));
+        modeMap.insert(std::pair(WorkModes::ROTATE, "Rotate"));
+        modeMap.insert(std::pair(WorkModes::TRANSLATE, "Translate"));
     }
 
     Controller::~Controller()
@@ -36,15 +43,23 @@
                 current->node = lines[i].node;
                 current->name = lines[i].name;
             }
-                // current = static_cast<NodeGroup<Object>>(lines[i]);
         }
-        //activeNode = dynamic_cast<NodeGrsoup<Object>*>(current);
         if (current->node == nullptr)
         {
             delete current;
             current = nullptr;
         }
         activeNode = current;
+    }
+
+    void Controller::setMode(const WorkModes& mode)
+    {
+        this->mode = mode;
+    }
+
+    const WorkModes& Controller::getMode()
+    {
+        return mode;
     }
 
     float Controller::producePixelCoordinatesToGL(float coord, int dimension)
@@ -72,6 +87,7 @@
     LineInputData::LineInputData()
     {
         lineName = new char[lineNameSize] {};
+        color = new float[3] {.5f, .5f, .5f};
         coordinates = new float[6] {.0f, .0f, .0f, .0f, .0f, .0f};
         translation = new float[3] {.0f, .0f, .0f};
         rotation = new float[3] {.0f, .0f, .0f};

@@ -1,7 +1,10 @@
 ======================= TODO =======================
+[ ] changement for current node (menu)
+
+[ ] radiobutton for enum to change modes
+[ ] enum with modes
+[ ] add color change in line settings
 [ ] do something with incapsulation: controller and renderer class are callable from main loop. (but controller lying in renderer) 
-[ ] turn belong window to the status bar.
-[ ] fix lineName change function
 [ ] refactoring hard code: main.cpp: belongX while belongWindow
 [ ] refactoring hard code: Line.cpp: renderWindowWidth and renderWindowHeight
  
@@ -24,9 +27,13 @@
 
 
 [ ] add tip feature: when cursor on the object, it`s show it`s name
+[ ] refactoring: xml other enum with stringss
+[ ] optimize code: make areas without render
 ======================= TODO ======================= 
 
 ======================= DONE ======================= 
+[x] fix lineName change function
+[x] turn belong window to the status bar.
 [x] fix object chose.
 [x] add class member lineName in LineInputData class
 [x] delete Scene class and turn its data to Controller;
