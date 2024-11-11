@@ -21,7 +21,7 @@ void Renderer::drawStatusBar(const float& x, const float& y, const float& lastCl
         ImGui::BeginChild("Line chosen");
 
 
-            NodeGroup<Object>* activeNode = controller->getActiveNode();
+            NodeGroup* activeNode = controller->getActiveNode();
             if (activeNode == nullptr)
                 ImGui::Text("No object chosen");
             else
@@ -45,13 +45,9 @@ void Renderer::drawSceneTree()
         LineInputData* lineInput = controller->getLineInput();
         for (int i = 0; i < lines->size(); i++)
         {
-            NodeGroup<Line>* node = &lines->operator[](i);
-            //NodeGroup<Object>* object = node;
-            
-            //object->name = node->name;
-            //object->node = node->node;
+            NodeGroup* node = &lines->operator[](i);
 
-            Line* line = node->node;
+            Line* line = dynamic_cast<Line*>(node);
 
             // beginMenu has own name. It shouldn't change. So:
             //const char* lineMenuName = ("Line #" + std::to_string(i + 1) + ": " + node->name.c_str()).c_str();  /
@@ -71,7 +67,7 @@ void Renderer::drawSceneTree()
 
                 if (ImGui::Button("Set active"))
                 {
-                    controller->setActiveNode(object);
+                    controller->setActiveNode(node);
                 }
 
                 ImGui::EndMenu();
@@ -191,7 +187,7 @@ void Renderer::setActiveNode(float lastClickedX, float lastClickedY)
 
 void Renderer::translateObject(float relX, float relY)    // border
 {
-    NodeGroup<Object>* node = controller->getActiveNode();
+    NodeGroup* node = controller->getActiveNode();
 
     if (controller->getMode() == WorkModes::TRANSLATE && node != nullptr)
     {
@@ -217,7 +213,7 @@ void Renderer::translateObject(float relX, float relY)    // border
 
 void Renderer::rotateObject(float relX, float relY)    // border
 {
-    NodeGroup<Object>* node = controller->getActiveNode();
+    NodeGroup* node = controller->getActiveNode();
 
     if (controller->getMode() == WorkModes::ROTATE && node != nullptr)
     {

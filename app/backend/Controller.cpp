@@ -28,17 +28,18 @@
         return lineInputData;
     }
 
-    NodeGroup<Object>* Controller::getActiveNode()
+    NodeGroup* Controller::getActiveNode()
     {
         return activeNode;
     }
 
     void Controller::setActiveNode(const float& x, const float& y, const float& width, const float& height)
     {
-        NodeGroup<Object>* current = new NodeGroup<Object>();
+        NodeGroup* current = new NodeGroup();
         for (int i = 0; i < lines.size(); i++)
         {
-            if (lines[i].node->isPointBelongs(x, y, 0, width, height, true))
+            Line* line = dynamic_cast<Line*>(lines[i].node);
+            if (line != nullptr && line->isPointBelongs(x, y, 0, width, height, true))
             {
                 current->node = lines[i].node;
                 current->name = lines[i].name;
@@ -52,7 +53,7 @@
         activeNode = current;
     }
 
-    void Controller::setActiveNode(NodeGroup<Object>* object)
+    void Controller::setActiveNode(NodeGroup* object)
     {
         activeNode = object;
     }
@@ -74,7 +75,7 @@
 
     void Controller::addLine(Line* line)
     {
-        NodeGroup<Line> lineGrp;
+        NodeGroup lineGrp;
         lineGrp.node = line;
         lineGrp.name = "line1";
 

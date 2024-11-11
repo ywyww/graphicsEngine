@@ -39,7 +39,7 @@
         Lines lines;
         std::string linesName;
 
-        NodeGroup<Object>* activeNode;
+        NodeGroup* activeNode;
 
         LineInputData* lineInputData; 
 
@@ -54,9 +54,9 @@
         Lines& getLines();
         LineInputData* getLineInput();
 
-        NodeGroup<Object>* getActiveNode();
+        NodeGroup* getActiveNode();
         void setActiveNode(const float& x, const float& y, const float& width, const float& height);
-        void setActiveNode(NodeGroup<Object>* object);
+        void setActiveNode(NodeGroup* object);
 
         void setMode(const WorkModes& mode);
         const WorkModes& getMode();
