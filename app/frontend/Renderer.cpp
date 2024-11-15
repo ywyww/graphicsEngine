@@ -19,8 +19,6 @@ void Renderer::drawStatusBar(const float& x, const float& y, const float& lastCl
         ImGui::Text("Active mode: %s", controller->modeMap[controller->getMode()]);
 
         ImGui::BeginChild("Line chosen");
-
-
             NodeGroup* activeNode = controller->getActiveNode();
             if (activeNode == nullptr)
                 ImGui::Text("No object chosen");
@@ -47,10 +45,15 @@ void Renderer::drawSceneTree()
         {
             NodeGroup* node = &lines->operator[](i);
 
-            Line* line = dynamic_cast<Line*>(node);
+            Line* line = dynamic_cast<Line*>(node->node);
+
+            if (line == nullptr)
+            {
+                // "bad cast: object->line"
+                throw std::bad_cast();
+            }
 
             // beginMenu has own name. It shouldn't change. So:
-            //const char* lineMenuName = ("Line #" + std::to_string(i + 1) + ": " + node->name.c_str()).c_str();  /
             const char* lineMenuName = ("Line #" + std::to_string(i + 1)).c_str();
 
             if (ImGui::BeginMenu(lineMenuName))
@@ -191,7 +194,7 @@ void Renderer::translateObject(float relX, float relY)    // border
 
     if (controller->getMode() == WorkModes::TRANSLATE && node != nullptr)
     {
-        float border = 100;
+        float border = 50;
         
         if (relX > border)
             relX = border;
@@ -232,7 +235,24 @@ void Renderer::rotateObject(float relX, float relY)    // border
         float glYRel = 2 * relY / wHeight;
 
         glm::mat4 transformation = node->node->getTransformation();
-        transformation = glm::rotate(transformation, glm::radians(std::atan(glXRel/glYRel)), glm::vec3(0.0f, 1.0f, 0.0f));
+        transformation = glm::rotate(transformation, glm::radians(std::atan(glXRel/glYRel)), glm::vec3(0.0f, 0.0f, 1.0f));
         node->node->setTransformation(transformation);
     }
+}
+
+void Renderer::createLine(const float& x1, const float& y1, const float& x2, const float& y2)
+{
+    if (controller->getMode() == WorkModes::DRAW_LINE)
+    {
+        Line* line = new Line(
+        controller->producePixelCoordinatesToGL(x1, wWidth),
+        controller->producePixelCoordinatesToGL(y1, wHeight),
+        0,
+        controller->producePixelCoordinatesToGL(x2, wWidth),
+        controller->producePixelCoordinatesToGL(y2, wHeight),
+        0
+        );
+        controller->addLine(line);
+    }
+    
 }

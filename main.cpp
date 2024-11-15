@@ -55,6 +55,7 @@ int main(int argc, char** args) {
 
     // END[CONTEXT_CREATION]
 
+    
 	loop(window, windowW, windowH);
 
 
@@ -74,6 +75,8 @@ int main(int argc, char** args) {
     
 void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 {
+    // упал lineInput
+    // need to translate coordinates from SDL2 to OPENGL: window and renderArea
     bool runningWindow = true;
 
     SDL_Rect glRenderArea = {20, 50, 1400, 800};
@@ -88,8 +91,9 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
     float lastMouseClickedX = 0;
     float lastMouseClickedY = 0;
 
+    float x1, y1, x2, y2;
+    x1 = y1 = x2 = y2 = 0;
     bool isCursorVirginClicked = false;
-    
     bool mouseDown = false;
     
 
@@ -130,12 +134,17 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                 mouseDown = true;
 
                 renderer.setActiveNode(lastMouseClickedX, lastMouseClickedY);
+                x1 = belongX;
+                y1 = belongY;
             }
             if (event.type == SDL_MOUSEBUTTONUP)
             {
                 mouseDown = false;
+                x2 = event.motion.x - glRenderArea.x;
+                y2 = wHeight - glRenderArea.y - event.motion.y;
+                
+                renderer.createLine(x1, y1, x2, y2);
             }
-            
         }
         
         // clear imgui buffer
@@ -149,7 +158,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         glEnable(GL_SCISSOR_TEST);
 
 
-		glClearColor(0.0f, 0.0f, 0.3f, 1.0f);
+		glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw scene

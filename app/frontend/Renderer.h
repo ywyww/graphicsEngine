@@ -32,6 +32,8 @@ public:
     void translateObject(float relX, float relY);      // now only lines, then all objects.
     void rotateObject(float relX, float relY);
 
+    void createLine(const float& x1, const float& y1, const float& x2, const float& y2);
+
 private:
     void drawLineTransformation(Line* line);
 

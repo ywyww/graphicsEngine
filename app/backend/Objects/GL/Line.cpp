@@ -4,8 +4,8 @@ Line::Line(const float x1, const float y1, const float z1, const float x2, const
         buffer = new float[6] {x1, y1, z1, 
                          x2, y2, z2};
 
-        if (x1 == x2 && y1 == y2 && z1 == z2)
-            throw std::invalid_argument("Line consist of two point. Not one.");
+        //if (x1 == x2 && y1 == y2 && z1 == z2)
+        //    throw std::invalid_argument("Line consist of two point. Not one.");
 
 
         glGenVertexArrays(1, &VAO);

@@ -41,7 +41,7 @@
 
         NodeGroup* activeNode;
 
-        LineInputData* lineInputData; 
+        LineInputData* lineInputData;   // упала
 
         WorkModes mode;
     public:
