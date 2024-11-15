@@ -1,9 +1,11 @@
 #include "Renderer.h"
 
 
-Renderer::Renderer(Controller* controller)
+Renderer::Renderer(Controller* controller, const float& width, const float& height)
 {
     this->controller = controller;
+    wWidth = width;
+    wHeight = height;
 }
 
 void Renderer::drawStatusBar(const float& x, const float& y, const float& lastClickedX, const float& lastClickedY)
@@ -11,23 +13,25 @@ void Renderer::drawStatusBar(const float& x, const float& y, const float& lastCl
     // add data here
 
     ImGui::Begin("StatusBar");
-    std::string cursor = std::to_string(x) + " " + std::to_string(y);
-    ImGui::Text(cursor.c_str());
+        std::string cursor = std::to_string(x) + " " + std::to_string(y);
+        ImGui::Text(cursor.c_str());
 
-    ImGui::BeginChild("Line chosen");
-        controller->setActiveNode(lastClickedX, lastClickedY);
-        
-        NodeGroup<Object>* activeNode = controller->getActiveNode();
-        if (activeNode == nullptr)
-            ImGui::Text("No object chosen");
-        else
-            ImGui::Text("Chosen: %s", activeNode->name.c_str());     // here
-    ImGui::EndChild();
+        NodeGroup* currentNode = controller->isObjectInSpace(x, y, wWidth, wHeight);
+        if (currentNode != nullptr)
+            ImGui::Text("Pointer is at the object: %s", currentNode->name.c_str());     // here
 
-    ImGui::BeginChild("Active mode: ");
-        ImGui::Text("Active mode: %d", controller->getMode());
+        ImGui::Text("Active mode: %s", controller->modeMap[controller->getMode()]);
 
-    ImGui::EndChild();
+        ImGui::BeginChild("Object chosen");
+            NodeGroup* activeNode = controller->getActiveNode();
+            if (activeNode == nullptr)
+                ImGui::Text("No object chosen");
+            else
+                ImGui::Text("Chosen: %s", activeNode->name.c_str());     // here
+        ImGui::EndChild();
+
+       
+
     
     ImGui::End();
 }
@@ -44,24 +48,40 @@ void Renderer::drawSceneTree()
         LineInputData* lineInput = controller->getLineInput();
         for (int i = 0; i < lines->size(); i++)
         {
-            NodeGroup<Line>* node = &lines->operator[](i);
-            Line* line = node->node;
+            NodeGroup* node = &lines->operator[](i);
+
+            Line* line = dynamic_cast<Line*>(node->node);
+
+            if (line == nullptr)
+            {
+                // "bad cast: object->line"
+                throw std::bad_cast();
+            }
 
             // beginMenu has own name. It shouldn't change. So:
-            //const char* lineMenuName = ("Line #" + std::to_string(i + 1) + ": " + node->name.c_str()).c_str();  /
             const char* lineMenuName = ("Line #" + std::to_string(i + 1)).c_str();
 
             if (ImGui::BeginMenu(lineMenuName))
             {
                 ImGui::Text("Line name: %s", node->name.c_str());
-                
-                drawLineTransformation(line);
 
                 ImGui::InputText("Line name", lineInput->lineName, lineInput->lineNameSize);
-
                 if (ImGui::Button("Change name"))
                 {
                     node->name = std::string(lineInput->lineName, lineInput->lineNameSize);
+                }
+
+                drawLineTransformation(line);
+
+                if (ImGui::Button("Set active"))
+                {
+                    controller->setActiveNode(node);
+                }
+
+                if (ImGui::Button("Delete line"))
+                {
+                    if (!controller->deleteLine(i))
+                        std::cout << "cannot delete";                    
                 }
 
                 ImGui::EndMenu();
@@ -122,7 +142,7 @@ void Renderer::drawLineTransformation(Line* line)
     }
 }
 
-void Renderer::drawLineCreation(int width, int height)
+void Renderer::drawLineCreation()
 {
     if (controller->getMode() == WorkModes::DRAW_LINE)
     {
@@ -138,18 +158,17 @@ void Renderer::drawLineCreation(int width, int height)
         if (ImGui::Button("Go"))
         {
             Line* line = new Line(
-                controller->producePixelCoordinatesToGL(coordinates[0], width),
-                controller->producePixelCoordinatesToGL(coordinates[1], height),
+                controller->producePixelCoordinatesToGL(coordinates[0], wWidth),
+                controller->producePixelCoordinatesToGL(coordinates[1], wHeight),
                 coordinates[2],
-                controller->producePixelCoordinatesToGL(coordinates[3], width),
-                controller->producePixelCoordinatesToGL(coordinates[4], height),
+                controller->producePixelCoordinatesToGL(coordinates[3], wWidth),
+                controller->producePixelCoordinatesToGL(coordinates[4], wHeight),
                 coordinates[5]
             );
             controller->addLine(line);
         }
         ImGui::End();
     }
-
 }
 
 void Renderer::drawModes()
@@ -163,7 +182,6 @@ void Renderer::drawModes()
         if (ImGui::Button(iter->second))
         {
             controller->setMode(iter->first);
-            std::cout << "Selected: " << iter->second << std::endl;
         }
     }
 
@@ -173,4 +191,40 @@ void Renderer::drawModes()
 void Renderer::draw()
 {
     controller->drawLines();
+}
+
+void Renderer::setActiveNode(float lastClickedX, float lastClickedY)
+{
+    if (controller->getMode() == WorkModes::POINTER)
+    {
+        NodeGroup* node = controller->isObjectInSpace(lastClickedX, lastClickedY, wWidth, wHeight);
+        controller->setActiveNode(node);
+    }
+}
+
+void Renderer::translateObject(float relX, float relY)    // border
+{
+    controller->translateObject(relX, relY, wWidth, wHeight);
+}
+
+void Renderer::rotateObject(float relX, float relY)    // border
+{
+    controller->rotateObject(relX, relY, wWidth, wHeight);
+}
+
+void Renderer::createLine(const float& x1, const float& y1, const float& x2, const float& y2)
+{
+    if (controller->getMode() == WorkModes::DRAW_LINE)
+    {
+        Line* line = new Line(
+        controller->producePixelCoordinatesToGL(x1, wWidth),
+        controller->producePixelCoordinatesToGL(y1, wHeight),
+        0,
+        controller->producePixelCoordinatesToGL(x2, wWidth),
+        controller->producePixelCoordinatesToGL(y2, wHeight),
+        0
+        );
+        controller->addLine(line);
+    }
+    
 }

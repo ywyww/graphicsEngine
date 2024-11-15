@@ -3,14 +3,14 @@
 
 #include <glm/glm.hpp>
 #include "../GL/Line.h"
+#include "../../Interfaces/Object.h"
 
 #ifndef LINE_GROUP_H
 #define LINE_GROUP_H
 
-template<class NodeType>
 struct NodeGroup
 {
-    NodeType* node;
+    Object* node;
     std::string name;
 
     NodeGroup()
@@ -18,7 +18,8 @@ struct NodeGroup
         node = nullptr;
         name = "";
     }
-    NodeGroup& operator=(const NodeGroup<NodeType>& other){
+    
+    NodeGroup& operator=(const NodeGroup other){
         if (this == &other)
             return *this;
 
@@ -30,15 +31,6 @@ struct NodeGroup
     virtual ~NodeGroup() = default;
 };
 
-template<class NodeType>
-struct TransformationNodeGroup: public NodeGroup<NodeType>
-{
-    glm::mat4x4 transformation;
-};
-
-typedef std::vector<NodeGroup<Line>> Lines;
-
+typedef std::vector<NodeGroup> Lines;
 
 #endif
-
-

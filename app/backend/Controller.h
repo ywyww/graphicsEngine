@@ -16,6 +16,12 @@
         TRANSLATE,
     };
 
+    enum ObjectCreation
+    {
+        POINT,
+        LINE
+    }
+
     struct LineInputData
     {
         float* coordinates; // 6 (x, y, z) * 2
@@ -39,9 +45,9 @@
         Lines lines;
         std::string linesName;
 
-        NodeGroup<Object>* activeNode;
+        NodeGroup* activeNode;
 
-        LineInputData* lineInputData; 
+        LineInputData* lineInputData;   // упала
 
         WorkModes mode;
     public:
@@ -54,17 +60,22 @@
         Lines& getLines();
         LineInputData* getLineInput();
 
-        NodeGroup<Object>* getActiveNode();
-        void setActiveNode(const float& x, const float& y);
+        NodeGroup* getActiveNode();
+        void setActiveNode(NodeGroup* object);
+    
+        NodeGroup* isObjectInSpace(const float& x, const float& y, const float& width, const float& height);    // check if object in space
+
+        void translateObject(float relX, float relY, const float& wWidth, const float& wHeight);
+        void rotateObject(float relX, float relY, const float& wWidth, const float& wHeight);
 
         void setMode(const WorkModes& mode);
         const WorkModes& getMode();
 
         void addLine(Line*);
+        bool deleteLine(int idx);
         void drawLines();
         
         float producePixelCoordinatesToGL(float coord, int dimension);
-
     };
 
 #endif
