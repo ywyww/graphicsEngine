@@ -93,9 +93,10 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
     float x1, y1, x2, y2;
     x1 = y1 = x2 = y2 = 0;
+
     bool isCursorVirginClicked = false;
     bool mouseDown = false;
-    
+    bool isCursorInRenderArea = false;
 
     while (runningWindow)
     {
@@ -116,6 +117,11 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                 belongX = x - glRenderArea.x;
                 belongY = wHeight - glRenderArea.y - y;
 
+                if (belongX <= glRenderArea.w && belongY <= glRenderArea.h)
+                    isCursorInRenderArea = true;
+                else
+                    isCursorInRenderArea = false;
+
                 if (mouseDown)
                 {
                     float xRel = event.motion.xrel;
@@ -127,7 +133,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
             }
             if (event.type == SDL_MOUSEBUTTONDOWN && 
                 event.motion.x < glRenderArea.w + glRenderArea.x && 
-                event.motion.y < glRenderArea.h + glRenderArea.y)
+                event.motion.y < glRenderArea.h + glRenderArea.y && isCursorInRenderArea)
             {
                 lastMouseClickedX = belongX;
                 lastMouseClickedY = belongY;
@@ -137,7 +143,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                 x1 = belongX;
                 y1 = belongY;
             }
-            if (event.type == SDL_MOUSEBUTTONUP)
+            if (event.type == SDL_MOUSEBUTTONUP && isCursorInRenderArea)
             {
                 mouseDown = false;
                 x2 = event.motion.x - glRenderArea.x;

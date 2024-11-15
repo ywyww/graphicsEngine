@@ -1,6 +1,7 @@
 ======================= TODO =======================
+[ ] male delete button
+[ ] checkObject function refactoring
 [ ] refactoring: long width chain: see Line->Controller->Renderer->main (width and height);
-[ ] refactoring: work with controller inside a controller, not outside in renderer class
 
 [ ] changement for current node (menu)
 
@@ -34,6 +35,7 @@
 ======================= TODO ======================= 
 
 ======================= DONE ======================= 
+[x] refactoring: work with controller inside a controller, not outside in renderer class
 [x] fix LineInputData: don`t work.  // возможно крашится из-за динамик каста.
 [x] delete nodeGroup template -> make just Node with Object pointer.
 [x] enum with modes

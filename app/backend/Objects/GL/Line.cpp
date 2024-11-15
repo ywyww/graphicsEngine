@@ -58,7 +58,7 @@ bool Line::isGLPointBelongs(const float& x, const float& y, const float z)    //
     return false;
 }
 
-bool Line::isPointBelongs(const float& x, const float& y, const float z, const float width, const float height, bool coefficientTrim)  // only 2d
+bool Line::isPointBelongs(const float& x, const float& y, const float z, const float width, const float height, bool coefficientTrim, float precision)  // only 2d
 {
     // x(t) = x1 + (x2 - x1) * t, 0 <= t <= 1
 

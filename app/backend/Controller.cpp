@@ -33,13 +33,13 @@
         return activeNode;
     }
 
-    void Controller::setActiveNode(const float& x, const float& y, const float& width, const float& height)
+    NodeGroup* Controller::checkObject(const float& x, const float& y, const float& width, const float& height)
     {
         NodeGroup* current = new NodeGroup();
         for (int i = 0; i < lines.size(); i++)
         {
             Line* line = dynamic_cast<Line*>(lines[i].node);
-            if (line != nullptr && line->isPointBelongs(x, y, 0, width, height, true))
+            if (line != nullptr && line->isPointBelongs(x, y, 0, width, height, true, 0.07))
             {
                 current->node = lines[i].node;
                 current->name = lines[i].name;
@@ -50,7 +50,12 @@
             delete current;
             current = nullptr;
         }
-        activeNode = current;
+        return current;
+    }
+
+    void Controller::setActiveNode(const float& x, const float& y, const float& width, const float& height)
+    {
+        activeNode = checkObject(x, y, width, height);
     }
 
     void Controller::setActiveNode(NodeGroup* object)
@@ -61,6 +66,54 @@
     void Controller::setMode(const WorkModes& mode)
     {
         this->mode = mode;
+    }
+
+    void Controller::translateObject(float relX, float relY, const float& wWidth, const float& wHeight)
+    {
+        if (getMode() == WorkModes::TRANSLATE && activeNode != nullptr)
+        {
+            float border = 50;
+            
+            if (relX > border)
+                relX = border;
+            else if (relX < -border)
+                relX = -border;
+            if (relY > border)
+                relY = border;
+            else if (relY < -border)
+                relY = -border;
+
+            float glXRel = 2 * relX / wWidth;
+            float glYRel = 2 * relY / wHeight;
+
+            glm::mat4 transformation = activeNode->node->getTransformation();
+            transformation = glm::translate(transformation, glm::vec3(glXRel, glYRel, 0.0f));
+            activeNode->node->setTransformation(transformation);
+        }
+    }
+
+    void Controller::rotateObject(float relX, float relY, const float& wWidth, const float& wHeight)
+    {
+        if (getMode() == WorkModes::ROTATE && activeNode != nullptr)
+        {
+            float border = 100;
+            
+            if (relX > border)
+                relX = border;
+            else if (relX < -border)
+                relX = -border;
+            if (relY > border)
+                relY = border;
+            else if (relY < -border)
+                relY = -border;
+
+            float glXRel = 2 * relX / wWidth;
+            float glYRel = 2 * relY / wHeight;
+
+            glm::mat4 transformation = activeNode->node->getTransformation();
+            transformation = glm::rotate(transformation, glm::radians(std::atan(glXRel/glYRel)), glm::vec3(0.0f, 0.0f, 1.0f));
+            activeNode->node->setTransformation(transformation);
+        }
     }
 
     const WorkModes& Controller::getMode()

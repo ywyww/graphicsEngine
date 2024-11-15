@@ -16,9 +16,13 @@ void Renderer::drawStatusBar(const float& x, const float& y, const float& lastCl
         std::string cursor = std::to_string(x) + " " + std::to_string(y);
         ImGui::Text(cursor.c_str());
 
+        NodeGroup* currentNode = controller->checkObject(x, y, wWidth, wHeight);
+        if (currentNode != nullptr)
+            ImGui::Text("Pointer is at the object: %s", currentNode->name.c_str());     // here
+
         ImGui::Text("Active mode: %s", controller->modeMap[controller->getMode()]);
 
-        ImGui::BeginChild("Line chosen");
+        ImGui::BeginChild("Object chosen");
             NodeGroup* activeNode = controller->getActiveNode();
             if (activeNode == nullptr)
                 ImGui::Text("No object chosen");
@@ -26,6 +30,7 @@ void Renderer::drawStatusBar(const float& x, const float& y, const float& lastCl
                 ImGui::Text("Chosen: %s", activeNode->name.c_str());     // here
         ImGui::EndChild();
 
+       
 
     
     ImGui::End();
@@ -190,54 +195,12 @@ void Renderer::setActiveNode(float lastClickedX, float lastClickedY)
 
 void Renderer::translateObject(float relX, float relY)    // border
 {
-    NodeGroup* node = controller->getActiveNode();
-
-    if (controller->getMode() == WorkModes::TRANSLATE && node != nullptr)
-    {
-        float border = 50;
-        
-        if (relX > border)
-            relX = border;
-        else if (relX < -border)
-            relX = -border;
-        if (relY > border)
-            relY = border;
-        else if (relY < -border)
-            relY = -border;
-
-        float glXRel = 2 * relX / wWidth;
-        float glYRel = 2 * relY / wHeight;
-
-        glm::mat4 transformation = node->node->getTransformation();
-        transformation = glm::translate(transformation, glm::vec3(glXRel, glYRel, 0.0f));
-        node->node->setTransformation(transformation);
-    }
+    controller->translateObject(relX, relY, wWidth, wHeight);
 }
 
 void Renderer::rotateObject(float relX, float relY)    // border
 {
-    NodeGroup* node = controller->getActiveNode();
-
-    if (controller->getMode() == WorkModes::ROTATE && node != nullptr)
-    {
-        float border = 100;
-        
-        if (relX > border)
-            relX = border;
-        else if (relX < -border)
-            relX = -border;
-        if (relY > border)
-            relY = border;
-        else if (relY < -border)
-            relY = -border;
-
-        float glXRel = 2 * relX / wWidth;
-        float glYRel = 2 * relY / wHeight;
-
-        glm::mat4 transformation = node->node->getTransformation();
-        transformation = glm::rotate(transformation, glm::radians(std::atan(glXRel/glYRel)), glm::vec3(0.0f, 0.0f, 1.0f));
-        node->node->setTransformation(transformation);
-    }
+    controller->rotateObject(relX, relY, wWidth, wHeight);
 }
 
 void Renderer::createLine(const float& x1, const float& y1, const float& x2, const float& y2)

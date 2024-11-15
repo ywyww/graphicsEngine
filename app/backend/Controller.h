@@ -57,6 +57,11 @@
         NodeGroup* getActiveNode();
         void setActiveNode(const float& x, const float& y, const float& width, const float& height);
         void setActiveNode(NodeGroup* object);
+    
+        NodeGroup* checkObject(const float& x, const float& y, const float& width, const float& height);    // check if object in space
+
+        void translateObject(float relX, float relY, const float& wWidth, const float& wHeight);
+        void rotateObject(float relX, float relY, const float& wWidth, const float& wHeight);
 
         void setMode(const WorkModes& mode);
         const WorkModes& getMode();
