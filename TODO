@@ -1,4 +1,5 @@
 ======================= TODO =======================
+[ ] throw event into controller, here he can handle event information (and Renderer will not consist of controller functions)
 [ ] turn drawLines from Controller into the Renderer class
 [ ] подумать над сигнальной архитектурой
 [ ] refactoring: function from renderer to controller.

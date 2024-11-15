@@ -126,8 +126,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                     float xRel = event.motion.xrel;
                     float yRel = event.motion.yrel;
 
-                    renderer.translateObject(xRel, -yRel);
-                    renderer.rotateObject(xRel, -yRel);
+                    controller->translateObject(xRel, -yRel, glRenderArea.w, glRenderArea.h);
+                    controller->rotateObject(xRel, -yRel, glRenderArea.w, glRenderArea.h);
                 }
             }
             if (event.type == SDL_MOUSEBUTTONDOWN && 
@@ -138,7 +138,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                 lastMouseClickedY = belongY;
                 mouseDown = true;
 
-                renderer.trySetActiveNode(lastMouseClickedX, lastMouseClickedY);
+                controller->trySetActiveNode(lastMouseClickedX, lastMouseClickedY, glRenderArea.w, glRenderArea.h);
                 x1 = belongX;
                 y1 = belongY;
             }
@@ -148,7 +148,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                 x2 = event.motion.x - glRenderArea.x;
                 y2 = wHeight - glRenderArea.y - event.motion.y;
                 
-                renderer.createLine(x1, y1, x2, y2);
+                controller->createObject(x1, y1, x2, y2, glRenderArea.w, glRenderArea.h);
             }
         }
         

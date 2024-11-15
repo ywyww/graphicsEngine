@@ -2,6 +2,7 @@
 #include "../../include/imgui_impl_opengl3.h"
 #include "../../include/imgui.h"
 #include "../backend/Controller.h"
+#include "../backend/Translator.h"
 
 #ifndef RENDERER_H
 #define REDNERER_H
@@ -19,21 +20,13 @@ public:
     void drawStatusBar(const float& x, const float& y, const float& lastClickedX, const float& lastClickedY);
     void drawSceneTree();
     void drawModes();
-    
     void drawObjectPallete();
-
 
     // GL
     void draw();
 
 
     // events
-    void trySetActiveNode(float lastClickedX, float lastClickedY);
-
-    void translateObject(float relX, float relY);      // now only lines, then all objects.
-    void rotateObject(float relX, float relY);
-
-    void createLine(const float& x1, const float& y1, const float& x2, const float& y2);
 
 private:
     void drawLineTransformation(Line* line);

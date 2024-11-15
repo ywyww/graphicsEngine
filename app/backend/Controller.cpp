@@ -133,13 +133,6 @@
         }
     }
 
-
-
-    float Controller::producePixelCoordinatesToGL(float coord, int dimension)
-    {
-        return coord * 2 / (dimension) - 1;
-    }
-
     void Controller::addLine(Line* line)
     {
         NodeGroup lineGrp;
@@ -174,5 +167,43 @@
             lines[i].node->draw();
         }
     }
+
+void Controller::trySetActiveNode(float lastClickedX, float lastClickedY, const float& wWidth, const float& wHeight)
+{
+    if (getMode() == WorkModes::POINTER)
+    {
+        NodeGroup* node = isObjectInSpace(lastClickedX, lastClickedY, wWidth, wHeight);
+        setActiveNode(node);
+    }
+}
+
+void Controller::createObject(const float& x1, const float& y1, const float& x2, const float& y2, const float& wWidth, const float& wHeight)
+{
+    if (getMode() == WorkModes::CREATION)
+    {
+        switch (getCreationMode())
+        {
+            case ObjectCreationModes::LINE:
+            {
+                Line* line = new Line(
+                    Translator::producePixelCoordinatesToGL(x1, wWidth),
+                    Translator::producePixelCoordinatesToGL(y1, wHeight),
+                    0,
+                    Translator::producePixelCoordinatesToGL(x2, wWidth),
+                    Translator::producePixelCoordinatesToGL(y2, wHeight),
+                    0
+                );
+                addLine(line);
+                break;
+            }
+            case ObjectCreationModes::POINT:
+            {
+                // not implemented
+                break;
+            }
+        }
+    }
+}
+
 
     
