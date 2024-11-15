@@ -18,7 +18,6 @@ public:
     // IMGUI
     void drawStatusBar(const float& x, const float& y, const float& lastClickedX, const float& lastClickedY);
     void drawSceneTree();
-    void drawLineCreation();  // glViewport width and height
     void drawModes();
     
     void drawObjectPallete();
@@ -29,7 +28,7 @@ public:
 
 
     // events
-    void setActiveNode(float lastClickedX, float lastClickedY);
+    void trySetActiveNode(float lastClickedX, float lastClickedY);
 
     void translateObject(float relX, float relY);      // now only lines, then all objects.
     void rotateObject(float relX, float relY);

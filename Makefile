@@ -7,6 +7,7 @@ SOURCES += include/imgui_impl_opengl3.cpp include/imgui_impl_sdl2.cpp
 SOURCES += app/backend/Objects/Scene/Groups.cpp
 SOURCES += app/backend/Objects/GL/Shader.cpp app/backend/Objects/GL/Line.cpp app/backend/Controller.cpp
 SOURCES += app/frontend/Renderer.cpp
+SOURCES += app/backend/Types/Data.cpp app/backend/Types/Modes.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 LIBS = -lSDL2 -lGL 

@@ -1,43 +1,11 @@
 #include "Objects/Scene/Groups.h"
 #include "Interfaces/Object.h"
+#include "Types/Modes.h"
+#include "Types/Data.h"
 #include <map>
 
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
-
-    enum WorkModes
-    {
-        POINTER,
-
-        DRAW_POINT,
-        DRAW_LINE,
-
-        ROTATE,
-        TRANSLATE,
-    };
-
-    enum ObjectCreation
-    {
-        POINT,
-        LINE
-    }
-
-    struct LineInputData
-    {
-        float* coordinates; // 6 (x, y, z) * 2
-        float* color;       // r g b
-
-        float* translation; // 3 x y z
-        float* rotation; // 3 x y z
-        float angle;
-
-        char* lineName;
-        size_t lineNameSize = 36;
-
-    public:
-        LineInputData();
-        ~LineInputData();
-    };
 
     class Controller
     {   
@@ -47,11 +15,13 @@
 
         NodeGroup* activeNode;
 
-        LineInputData* lineInputData;   // упала
+        LineInputData* lineInputData;
 
         WorkModes mode;
+        ObjectCreationModes creationMode;
     public:
-        std::map<WorkModes, const char*> modeMap; 
+        static std::map<WorkModes, const char*> modeMap; 
+        static std::map<ObjectCreationModes, const char*> modeCreationMap;
 
     public:
         Controller();
@@ -70,6 +40,9 @@
 
         void setMode(const WorkModes& mode);
         const WorkModes& getMode();
+
+        void setCreationMode(const ObjectCreationModes& mode);
+        const ObjectCreationModes& getCreationMode();
 
         void addLine(Line*);
         bool deleteLine(int idx);

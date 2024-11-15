@@ -1,16 +1,23 @@
 #include "Controller.h"
 
+    std::map<WorkModes, const char*> Controller::modeMap = {
+        std::pair(WorkModes::POINTER, "Pointer"),
+        std::pair(WorkModes::ROTATE, "Rotate"),
+        std::pair(WorkModes::TRANSLATE, "Translate"),
+        std::pair(WorkModes::CREATION, "CREATION")
+    };
+
+    std::map<ObjectCreationModes, const char*> Controller::modeCreationMap = {
+        std::pair(ObjectCreationModes::POINT, "Point"),
+        std::pair(ObjectCreationModes::LINE, "Line")
+    };
+
     Controller::Controller()
     {
         activeNode = nullptr;
         lineInputData = new LineInputData();
         mode = WorkModes::POINTER;
-
-        modeMap.insert(std::pair(WorkModes::POINTER, "Pointer"));
-        modeMap.insert(std::pair(WorkModes::DRAW_POINT, "DrawPoint"));
-        modeMap.insert(std::pair(WorkModes::DRAW_LINE, "DrawLine"));
-        modeMap.insert(std::pair(WorkModes::ROTATE, "Rotate"));
-        modeMap.insert(std::pair(WorkModes::TRANSLATE, "Translate"));
+        creationMode = ObjectCreationModes::LINE;
     }
 
     Controller::~Controller()
@@ -63,6 +70,21 @@
         this->mode = mode;
     }
 
+    const WorkModes& Controller::getMode()
+    {
+        return mode;
+    }
+
+    void Controller::setCreationMode(const ObjectCreationModes& mode)
+    {
+        this->creationMode = mode;
+    }
+
+    const ObjectCreationModes& Controller::getCreationMode()
+    {
+        return creationMode;
+    }
+
     void Controller::translateObject(float relX, float relY, const float& wWidth, const float& wHeight)
     {
         if (getMode() == WorkModes::TRANSLATE && activeNode != nullptr)
@@ -111,10 +133,7 @@
         }
     }
 
-    const WorkModes& Controller::getMode()
-    {
-        return mode;
-    }
+
 
     float Controller::producePixelCoordinatesToGL(float coord, int dimension)
     {
@@ -139,6 +158,7 @@
             position ++;
             counter++;
         }
+
         if (counter == idx)
         {
             lines.erase(position);
@@ -153,22 +173,6 @@
         {
             lines[i].node->draw();
         }
-    }
-
-    LineInputData::LineInputData()
-    {
-        lineName = new char[lineNameSize] {};
-        color = new float[3] {.5f, .5f, .5f};
-        coordinates = new float[6] {.0f, .0f, .0f, .0f, .0f, .0f};
-        translation = new float[3] {.0f, .0f, .0f};
-        rotation = new float[3] {.0f, .0f, .0f};
-        angle = 0.0f;
-    }
-    LineInputData::~LineInputData()
-    {
-        delete[] coordinates;
-        delete[] translation;
-        delete[] rotation;
     }
 
     

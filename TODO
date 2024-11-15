@@ -1,4 +1,7 @@
 ======================= TODO =======================
+[ ] turn drawLines from Controller into the Renderer class
+[ ] подумать над сигнальной архитектурой
+[ ] refactoring: function from renderer to controller.
 [ ] fix rotation function
 [ ] write info in special files, not in code 
 [ ] add keyboard input to controll the lines
@@ -39,6 +42,7 @@
 ======================= TODO ======================= 
 
 ======================= DONE ======================= 
+[x] make maps static
 [x] changement for current node (menu)
 [x] do basic interaction with lines
 [x] global coordinates into view coordinates

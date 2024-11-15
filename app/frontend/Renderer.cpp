@@ -142,40 +142,11 @@ void Renderer::drawLineTransformation(Line* line)
     }
 }
 
-void Renderer::drawLineCreation()
-{
-    if (controller->getMode() == WorkModes::DRAW_LINE)
-    {
-        float* coordinates = controller->getLineInput()->coordinates;
-        ImGui::Begin("Create line");
-            ImGui::InputFloat("x1", &coordinates[0]);
-            ImGui::InputFloat("y1", &coordinates[1]);
-            ImGui::InputFloat("z1", &coordinates[2]);
-            ImGui::InputFloat("x2", &coordinates[3]);
-            ImGui::InputFloat("y2", &coordinates[4]);
-            ImGui::InputFloat("z2", &coordinates[5]);
-
-        if (ImGui::Button("Go"))
-        {
-            Line* line = new Line(
-                controller->producePixelCoordinatesToGL(coordinates[0], wWidth),
-                controller->producePixelCoordinatesToGL(coordinates[1], wHeight),
-                coordinates[2],
-                controller->producePixelCoordinatesToGL(coordinates[3], wWidth),
-                controller->producePixelCoordinatesToGL(coordinates[4], wHeight),
-                coordinates[5]
-            );
-            controller->addLine(line);
-        }
-        ImGui::End();
-    }
-}
-
 void Renderer::drawModes()
 {
     ImGui::Begin("Modes");
 
-    std::map<WorkModes, const char*> map = controller->modeMap;
+    std::map<WorkModes, const char*> map = Controller::modeMap;
     
     for (auto iter = map.begin(); iter != map.end(); iter++)
     {
@@ -188,12 +159,28 @@ void Renderer::drawModes()
     ImGui::End();
 }
 
+void Renderer::drawObjectPallete()
+{
+    ImGui::Begin("Creation modes");
+    std::map<ObjectCreationModes, const char*> map = Controller::modeCreationMap;
+
+    for (auto iter = map.begin(); iter != map.end(); iter++)
+    {
+        if (ImGui::Button(iter->second))
+        {
+            controller->setCreationMode(iter->first);
+        }
+    }
+
+    ImGui::End();
+}
+
 void Renderer::draw()
 {
     controller->drawLines();
 }
 
-void Renderer::setActiveNode(float lastClickedX, float lastClickedY)
+void Renderer::trySetActiveNode(float lastClickedX, float lastClickedY)
 {
     if (controller->getMode() == WorkModes::POINTER)
     {
@@ -214,17 +201,30 @@ void Renderer::rotateObject(float relX, float relY)    // border
 
 void Renderer::createLine(const float& x1, const float& y1, const float& x2, const float& y2)
 {
-    if (controller->getMode() == WorkModes::DRAW_LINE)
+    if (controller->getMode() == WorkModes::CREATION)
     {
-        Line* line = new Line(
-        controller->producePixelCoordinatesToGL(x1, wWidth),
-        controller->producePixelCoordinatesToGL(y1, wHeight),
-        0,
-        controller->producePixelCoordinatesToGL(x2, wWidth),
-        controller->producePixelCoordinatesToGL(y2, wHeight),
-        0
-        );
-        controller->addLine(line);
+        switch (controller->getCreationMode())
+        {
+            case ObjectCreationModes::LINE:
+            {
+                Line* line = new Line(
+                    controller->producePixelCoordinatesToGL(x1, wWidth),
+                    controller->producePixelCoordinatesToGL(y1, wHeight),
+                    0,
+                    controller->producePixelCoordinatesToGL(x2, wWidth),
+                    controller->producePixelCoordinatesToGL(y2, wHeight),
+                    0
+                );
+                controller->addLine(line);
+                break;
+            }
+            case ObjectCreationModes::POINT:
+            {
+                // not implemented
+                break;
+            }
+        }
+        
     }
     
 }

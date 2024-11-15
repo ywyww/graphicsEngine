@@ -138,7 +138,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                 lastMouseClickedY = belongY;
                 mouseDown = true;
 
-                renderer.setActiveNode(lastMouseClickedX, lastMouseClickedY);
+                renderer.trySetActiveNode(lastMouseClickedX, lastMouseClickedY);
                 x1 = belongX;
                 y1 = belongY;
             }
@@ -176,9 +176,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
         renderer.drawSceneTree();
         renderer.drawStatusBar(belongX, belongY, lastMouseClickedX, lastMouseClickedY);
-        renderer.drawLineCreation();
         renderer.drawModes();
-
+        renderer.drawObjectPallete();
         
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
