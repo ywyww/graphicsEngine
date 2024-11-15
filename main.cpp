@@ -46,7 +46,7 @@ int main(int argc, char** args) {
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
+    io.FontGlobalScale = 1.2;
     ImGui::StyleColorsDark();
 
     ImGui_ImplSDL2_InitForOpenGL(window, glContext);
@@ -55,9 +55,9 @@ int main(int argc, char** args) {
 
     // END[CONTEXT_CREATION]
 
+
     
 	loop(window, windowW, windowH);
-
 
 
     // [CONTEXT DESTROYING]

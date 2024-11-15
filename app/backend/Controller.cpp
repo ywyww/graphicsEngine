@@ -134,6 +134,23 @@
 
         lines.push_back(lineGrp);
     }
+
+    bool Controller::deleteLine(int idx)
+    {
+        int counter = 0;
+        auto position = lines.begin();
+        while (position != lines.end() && counter < idx)
+        {
+            position ++;
+            counter++;
+        }
+        if (counter == idx)
+        {
+            lines.erase(position);
+            return true;
+        }
+        return false;
+    }
     
     void Controller::drawLines()
     {

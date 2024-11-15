@@ -78,6 +78,12 @@ void Renderer::drawSceneTree()
                     controller->setActiveNode(node);
                 }
 
+                if (ImGui::Button("Delete line"))
+                {
+                    if (!controller->deleteLine(i))
+                        std::cout << "cannot delete";                    
+                }
+
                 ImGui::EndMenu();
             }
         }

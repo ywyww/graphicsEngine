@@ -1,7 +1,16 @@
 ======================= TODO =======================
-[ ] male delete button
+[ ] make events for sending value to the status bar | now just a problem to rapid transmission of information
+[ ] make a logger
+[ ] fix bags
+[ ] add keyboard input to controll the lines
+
+[ ] polyline mode (add different objects pallete)
+[ ] upload button
+[ ] save button
+[ ] copy & past buttons
 [ ] checkObject function refactoring
 [ ] refactoring: long width chain: see Line->Controller->Renderer->main (width and height);
+[ ] refactoring: new names
 
 [ ] changement for current node (menu)
 
@@ -35,6 +44,7 @@
 ======================= TODO ======================= 
 
 ======================= DONE ======================= 
+[x] make delete button
 [x] refactoring: work with controller inside a controller, not outside in renderer class
 [x] fix LineInputData: don`t work.  // возможно крашится из-за динамик каста.
 [x] delete nodeGroup template -> make just Node with Object pointer.

@@ -67,6 +67,7 @@
         const WorkModes& getMode();
 
         void addLine(Line*);
+        bool deleteLine(int idx);
         void drawLines();
         
         float producePixelCoordinatesToGL(float coord, int dimension);

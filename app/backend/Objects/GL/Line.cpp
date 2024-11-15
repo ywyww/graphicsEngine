@@ -84,9 +84,9 @@ bool Line::isPointBelongs(const float& x, const float& y, const float z, const f
         
 
     if (xCoefficient >= yCoefficient)
-        return xCoefficient - yCoefficient < 0.03f;
+        return xCoefficient - yCoefficient < precision;
     else 
-        return yCoefficient - xCoefficient < 0.03f;
+        return yCoefficient - xCoefficient < precision;
     
     // make z coodinate
 }
