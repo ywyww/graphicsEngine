@@ -20,6 +20,8 @@ public:
     void drawSceneTree();
     void drawLineCreation();  // glViewport width and height
     void drawModes();
+    
+    void drawObjectPallete();
 
 
     // GL

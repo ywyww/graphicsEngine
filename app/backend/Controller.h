@@ -16,6 +16,12 @@
         TRANSLATE,
     };
 
+    enum ObjectCreation
+    {
+        POINT,
+        LINE
+    }
+
     struct LineInputData
     {
         float* coordinates; // 6 (x, y, z) * 2
@@ -55,10 +61,9 @@
         LineInputData* getLineInput();
 
         NodeGroup* getActiveNode();
-        void setActiveNode(const float& x, const float& y, const float& width, const float& height);
         void setActiveNode(NodeGroup* object);
     
-        NodeGroup* checkObject(const float& x, const float& y, const float& width, const float& height);    // check if object in space
+        NodeGroup* isObjectInSpace(const float& x, const float& y, const float& width, const float& height);    // check if object in space
 
         void translateObject(float relX, float relY, const float& wWidth, const float& wHeight);
         void rotateObject(float relX, float relY, const float& wWidth, const float& wHeight);
@@ -71,7 +76,6 @@
         void drawLines();
         
         float producePixelCoordinatesToGL(float coord, int dimension);
-
     };
 
 #endif

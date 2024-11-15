@@ -55,7 +55,6 @@ int main(int argc, char** args) {
 
     // END[CONTEXT_CREATION]
 
-
     
 	loop(window, windowW, windowH);
 
@@ -83,15 +82,15 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
     Controller* controller = new Controller();
     Renderer renderer(controller, glRenderArea.w, glRenderArea.h);
 
-    float x, y;
-    float glX, glY;
-    float belongX = 0; 
+    float x, y;             // absoluteCoordinates
+    float glX, glY;         // coordinates inside a viewPort (GL-like: eg -1 < x < 1)
+    float belongX = 0;      // coordinates inside a viewPort (modified)
     float belongY = 0;
     
     float lastMouseClickedX = 0;
     float lastMouseClickedY = 0;
 
-    float x1, y1, x2, y2;
+    float x1, y1, x2, y2;       // coordinates to draw a line.
     x1 = y1 = x2 = y2 = 0;
 
     bool isCursorVirginClicked = false;

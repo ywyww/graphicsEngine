@@ -33,7 +33,7 @@
         return activeNode;
     }
 
-    NodeGroup* Controller::checkObject(const float& x, const float& y, const float& width, const float& height)
+    NodeGroup* Controller::isObjectInSpace(const float& x, const float& y, const float& width, const float& height)
     {
         NodeGroup* current = new NodeGroup();
         for (int i = 0; i < lines.size(); i++)
@@ -51,11 +51,6 @@
             current = nullptr;
         }
         return current;
-    }
-
-    void Controller::setActiveNode(const float& x, const float& y, const float& width, const float& height)
-    {
-        activeNode = checkObject(x, y, width, height);
     }
 
     void Controller::setActiveNode(NodeGroup* object)
@@ -175,3 +170,5 @@
         delete[] translation;
         delete[] rotation;
     }
+
+    

@@ -16,7 +16,7 @@ void Renderer::drawStatusBar(const float& x, const float& y, const float& lastCl
         std::string cursor = std::to_string(x) + " " + std::to_string(y);
         ImGui::Text(cursor.c_str());
 
-        NodeGroup* currentNode = controller->checkObject(x, y, wWidth, wHeight);
+        NodeGroup* currentNode = controller->isObjectInSpace(x, y, wWidth, wHeight);
         if (currentNode != nullptr)
             ImGui::Text("Pointer is at the object: %s", currentNode->name.c_str());     // here
 
@@ -196,7 +196,10 @@ void Renderer::draw()
 void Renderer::setActiveNode(float lastClickedX, float lastClickedY)
 {
     if (controller->getMode() == WorkModes::POINTER)
-        controller->setActiveNode(lastClickedX, lastClickedY, wWidth, wHeight);
+    {
+        NodeGroup* node = controller->isObjectInSpace(lastClickedX, lastClickedY, wWidth, wHeight);
+        controller->setActiveNode(node);
+    }
 }
 
 void Renderer::translateObject(float relX, float relY)    // border
