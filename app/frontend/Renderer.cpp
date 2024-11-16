@@ -40,7 +40,7 @@ void Renderer::drawSceneTree()
 {
     ImGui::Begin("Scene Tree");
 
-    Lines* lines = &controller->getLines();
+    Nodes* lines = &controller->getLines();
     
 
     if (ImGui::BeginMenu("Lines"))
@@ -178,5 +178,6 @@ void Renderer::drawObjectPallete()
 void Renderer::draw()
 {
     controller->drawLines();
+    controller->drawPolyLines();
 }
 

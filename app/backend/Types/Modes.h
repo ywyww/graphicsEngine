@@ -13,7 +13,8 @@ enum WorkModes
 enum ObjectCreationModes
 {
     POINT,
-    LINE
+    LINE,
+    POLYLINE
 };
 
 #endif

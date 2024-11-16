@@ -25,9 +25,6 @@ public:
     // GL
     void draw();
 
-
-    // events
-
 private:
     void drawLineTransformation(Line* line);
 

@@ -31,6 +31,6 @@ struct NodeGroup
     virtual ~NodeGroup() = default;
 };
 
-typedef std::vector<NodeGroup> Lines;
+typedef std::vector<NodeGroup> Nodes;
 
 #endif

@@ -4,20 +4,25 @@
         std::pair(WorkModes::POINTER, "Pointer"),
         std::pair(WorkModes::ROTATE, "Rotate"),
         std::pair(WorkModes::TRANSLATE, "Translate"),
-        std::pair(WorkModes::CREATION, "CREATION")
+        std::pair(WorkModes::CREATION, "Creation")
     };
 
     std::map<ObjectCreationModes, const char*> Controller::modeCreationMap = {
         std::pair(ObjectCreationModes::POINT, "Point"),
-        std::pair(ObjectCreationModes::LINE, "Line")
+        std::pair(ObjectCreationModes::LINE, "Line"),
+        std::pair(ObjectCreationModes::POLYLINE, "Polyline")
     };
 
     Controller::Controller()
     {
-        activeNode = nullptr;
-        lineInputData = new LineInputData();
+        lines = Nodes();
+        polyLines = Nodes();
+        
         mode = WorkModes::POINTER;
         creationMode = ObjectCreationModes::LINE;
+
+        lineInputData = new LineInputData();
+        activeNode = nullptr;
     }
 
     Controller::~Controller()
@@ -25,9 +30,14 @@
         delete lineInputData;
     }
 
-    Lines& Controller::getLines()
+    Nodes& Controller::getLines()
     {
         return lines;
+    }
+
+    Nodes& Controller::getPolylines()
+    {
+        return polyLines;
     }
 
     LineInputData* Controller::getLineInput()
@@ -159,6 +169,34 @@
         }
         return false;
     }
+
+    void Controller::addPolyLine(Polyline* polyline)
+    {
+        NodeGroup grp;
+        grp.name = "polyline1";
+        grp.node = polyline;
+
+        polyLines.push_back(grp);
+    }
+
+    bool Controller::deletePolyLine(int idx)
+    {
+        int counter = 0;
+        auto position = polyLines.begin();
+        while (position != polyLines.end() && counter < idx)
+        {
+            position ++;
+            counter++;
+        }
+
+        if (counter == idx)
+        {
+            polyLines.erase(position);
+            return true;
+        }
+        return false;
+    }
+
     
     void Controller::drawLines()
     {
@@ -168,42 +206,71 @@
         }
     }
 
-void Controller::trySetActiveNode(float lastClickedX, float lastClickedY, const float& wWidth, const float& wHeight)
-{
-    if (getMode() == WorkModes::POINTER)
+    void Controller::drawPolyLines()
     {
-        NodeGroup* node = isObjectInSpace(lastClickedX, lastClickedY, wWidth, wHeight);
-        setActiveNode(node);
-    }
-}
-
-void Controller::createObject(const float& x1, const float& y1, const float& x2, const float& y2, const float& wWidth, const float& wHeight)
-{
-    if (getMode() == WorkModes::CREATION)
-    {
-        switch (getCreationMode())
+        for (int i = 0; i < polyLines.size(); i++)
         {
-            case ObjectCreationModes::LINE:
+            polyLines[i].node->draw();
+        }
+    }
+
+    void Controller::trySetActiveNode(float lastClickedX, float lastClickedY, const float& wWidth, const float& wHeight)
+    {
+        if (getMode() == WorkModes::POINTER)
+        {
+            NodeGroup* node = isObjectInSpace(lastClickedX, lastClickedY, wWidth, wHeight);
+            setActiveNode(node);
+        }
+    }
+
+    void Controller::createLine(const float& x1, const float& y1, const float& x2, const float& y2, const float& wWidth, const float& wHeight)
+    {
+        Line* line = new Line(
+                        Translator::producePixelCoordinatesToGL(x1, wWidth),
+                        Translator::producePixelCoordinatesToGL(y1, wHeight),
+                        0,
+                        Translator::producePixelCoordinatesToGL(x2, wWidth),
+                        Translator::producePixelCoordinatesToGL(y2, wHeight),
+                        0
+                    );
+        addLine(line);
+    }
+
+    Polyline* Controller::createPolyline()
+    {
+        Polyline* polyline = new Polyline();
+        addPolyLine(polyline); 
+        return polyline;       
+    }
+
+    void Controller::addLineInPolyline(Polyline* polyline, const float& x1, const float& y1)
+    {
+        polyline->addDot(x1, y1);
+    }
+
+    void Controller::createObject(const float& x1, const float& y1, const float& x2, const float& y2, const float& wWidth, const float& wHeight)
+    {
+        if (getMode() == WorkModes::CREATION)
+        {
+            switch (getCreationMode())
             {
-                Line* line = new Line(
-                    Translator::producePixelCoordinatesToGL(x1, wWidth),
-                    Translator::producePixelCoordinatesToGL(y1, wHeight),
-                    0,
-                    Translator::producePixelCoordinatesToGL(x2, wWidth),
-                    Translator::producePixelCoordinatesToGL(y2, wHeight),
-                    0
-                );
-                addLine(line);
-                break;
-            }
-            case ObjectCreationModes::POINT:
-            {
-                // not implemented
-                break;
+                case ObjectCreationModes::POLYLINE:
+                {
+                    break;
+                }
+                case ObjectCreationModes::LINE:
+                {
+                    createLine(x1, y1, x2, y2, wWidth, wHeight);
+                    break;
+                }
+                case ObjectCreationModes::POINT:
+                {
+                    // not implemented
+                    break;
+                }
             }
         }
     }
-}
 
 
     

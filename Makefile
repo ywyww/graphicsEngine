@@ -4,10 +4,12 @@ CC = g++
 SOURCES = main.cpp 
 SOURCES += include/imgui.cpp include/imgui_widgets.cpp include/imgui_draw.cpp include/imgui_tables.cpp include/imgui_demo.cpp
 SOURCES += include/imgui_impl_opengl3.cpp include/imgui_impl_sdl2.cpp
+
 SOURCES += app/backend/Objects/Scene/Groups.cpp
-SOURCES += app/backend/Objects/GL/Shader.cpp app/backend/Objects/GL/Line.cpp app/backend/Controller.cpp
-SOURCES += app/frontend/Renderer.cpp
+SOURCES += app/backend/Objects/GL/Shader.cpp app/backend/Objects/GL/Line.cpp app/backend/Controller.cpp app/backend/Objects/Polyline.cpp
 SOURCES += app/backend/Types/Data.cpp app/backend/Types/Modes.cpp
+
+SOURCES += app/frontend/Renderer.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 LIBS = -lSDL2 -lGL 

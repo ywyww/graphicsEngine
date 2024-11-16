@@ -74,7 +74,6 @@ int main(int argc, char** args) {
     
 void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 {
-    // упал lineInput
     // need to translate coordinates from SDL2 to OPENGL: window and renderArea
     bool runningWindow = true;
 
@@ -97,6 +96,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
     bool mouseDown = false;
     bool isCursorInRenderArea = false;
 
+    Polyline* line = controller->createPolyline();
     while (runningWindow)
     {
         SDL_Event event;
@@ -141,6 +141,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                 controller->trySetActiveNode(lastMouseClickedX, lastMouseClickedY, glRenderArea.w, glRenderArea.h);
                 x1 = belongX;
                 y1 = belongY;
+
+                controller->addLineInPolyline(line, belongX, belongY);
             }
             if (event.type == SDL_MOUSEBUTTONUP && isCursorInRenderArea)
             {

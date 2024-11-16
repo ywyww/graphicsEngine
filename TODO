@@ -1,4 +1,8 @@
 ======================= TODO =======================
+[ ] Какой тип данных сувать в стд вектор? Посмотреть код, исправить многое.
+
+[ ] make super-controller: controller contains all data, super-controller calls functions
+[ ] make architecture: objects, nodes, etc.
 [ ] throw event into controller, here he can handle event information (and Renderer will not consist of controller functions)
 [ ] turn drawLines from Controller into the Renderer class
 [ ] подумать над сигнальной архитектурой
