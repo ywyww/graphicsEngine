@@ -6,7 +6,7 @@ SOURCES += include/imgui.cpp include/imgui_widgets.cpp include/imgui_draw.cpp in
 SOURCES += include/imgui_impl_opengl3.cpp include/imgui_impl_sdl2.cpp
 
 SOURCES += app/backend/Objects/Scene/Groups.cpp
-SOURCES += app/backend/Objects/GL/Shader.cpp app/backend/Objects/GL/Line.cpp app/backend/Controller.cpp app/backend/Objects/Polyline.cpp
+SOURCES += app/backend/Objects/GL/Shader.cpp app/backend/Objects/GL/Line.cpp app/backend/Objects/Polyline.cpp app/backend/Controller.cpp 
 SOURCES += app/backend/Types/Data.cpp app/backend/Types/Modes.cpp
 
 SOURCES += app/frontend/Renderer.cpp
@@ -32,7 +32,9 @@ clean:
 	#rm -rf ./include/*.o
 	rm -rf app/backend/Interfaces/*.o
 	rm -rf app/backend/Types/*.o
+	rm -rf app/backend/Objects/*.o
 	rm -rf app/backend/Objects/Scene/*.o
+	rm -rf app/backend/*.o
 	rm -rf app/backend/Objects/GL/*.o
 	rm -rf app/frontend/*.o
 	

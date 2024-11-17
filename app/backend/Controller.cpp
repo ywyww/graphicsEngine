@@ -210,7 +210,12 @@
     {
         for (int i = 0; i < polyLines.size(); i++)
         {
-            polyLines[i].node->draw();
+            Polyline* line = dynamic_cast<Polyline*>(polyLines[i].node);
+            
+            if (line != nullptr)
+                line->draw();
+            else
+                std::cout << "ERROR IN DRAW POLYLINE.";
         }
     }
 
@@ -246,6 +251,7 @@
     void Controller::addLineInPolyline(Polyline* polyline, const float& x1, const float& y1)
     {
         polyline->addDot(x1, y1);
+        std::cout << "added dot: " << x1 << " " << y1 << std::endl;
     }
 
     void Controller::createObject(const float& x1, const float& y1, const float& x2, const float& y2, const float& wWidth, const float& wHeight)
