@@ -30,7 +30,7 @@ public:
     void setColor(const glm::vec3& color);
     
     bool isGLPointBelongs(const float& x, const float& y, const float z = 0);  // only 2d  // point in gl coordinates
-    bool isPointBelongs(const float& x, const float& y, const float z, const float wWidth, const float wHeight, bool coefficientTrim = true);   // only 2d  // point in human coordinates
+    bool isPointBelongs(const float& x, const float& y, const float z, const float wWidth, const float wHeight, bool coefficientTrim = true, float precision=0.03f);   // only 2d  // point in human coordinates
 
     float* getBuffer();
 

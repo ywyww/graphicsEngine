@@ -16,18 +16,21 @@ void Renderer::drawStatusBar(const float& x, const float& y, const float& lastCl
         std::string cursor = std::to_string(x) + " " + std::to_string(y);
         ImGui::Text(cursor.c_str());
 
+        NodeGroup* currentNode = controller->isObjectInSpace(x, y, wWidth, wHeight);
+        if (currentNode != nullptr)
+            ImGui::Text("Pointer is at the object: %s", currentNode->name.c_str());     // here
+
         ImGui::Text("Active mode: %s", controller->modeMap[controller->getMode()]);
 
-        ImGui::BeginChild("Line chosen");
-
-
-            NodeGroup<Object>* activeNode = controller->getActiveNode();
+        ImGui::BeginChild("Object chosen");
+            NodeGroup* activeNode = controller->getActiveNode();
             if (activeNode == nullptr)
                 ImGui::Text("No object chosen");
             else
                 ImGui::Text("Chosen: %s", activeNode->name.c_str());     // here
         ImGui::EndChild();
 
+       
 
     
     ImGui::End();
@@ -37,7 +40,7 @@ void Renderer::drawSceneTree()
 {
     ImGui::Begin("Scene Tree");
 
-    Lines* lines = &controller->getLines();
+    Nodes* lines = &controller->getLines();
     
 
     if (ImGui::BeginMenu("Lines"))
@@ -45,16 +48,17 @@ void Renderer::drawSceneTree()
         LineInputData* lineInput = controller->getLineInput();
         for (int i = 0; i < lines->size(); i++)
         {
-            NodeGroup<Line>* node = &lines->operator[](i);
-            //NodeGroup<Object>* object = node;
-            
-            //object->name = node->name;
-            //object->node = node->node;
+            NodeGroup* node = &lines->operator[](i);
 
-            Line* line = node->node;
+            Line* line = dynamic_cast<Line*>(node->node);
+
+            if (line == nullptr)
+            {
+                // "bad cast: object->line"
+                throw std::bad_cast();
+            }
 
             // beginMenu has own name. It shouldn't change. So:
-            //const char* lineMenuName = ("Line #" + std::to_string(i + 1) + ": " + node->name.c_str()).c_str();  /
             const char* lineMenuName = ("Line #" + std::to_string(i + 1)).c_str();
 
             if (ImGui::BeginMenu(lineMenuName))
@@ -71,7 +75,13 @@ void Renderer::drawSceneTree()
 
                 if (ImGui::Button("Set active"))
                 {
-                    controller->setActiveNode(object);
+                    controller->setActiveNode(node);
+                }
+
+                if (ImGui::Button("Delete line"))
+                {
+                    if (!controller->deleteLine(i))
+                        std::cout << "cannot delete";                    
                 }
 
                 ImGui::EndMenu();
@@ -132,40 +142,11 @@ void Renderer::drawLineTransformation(Line* line)
     }
 }
 
-void Renderer::drawLineCreation()
-{
-    if (controller->getMode() == WorkModes::DRAW_LINE)
-    {
-        float* coordinates = controller->getLineInput()->coordinates;
-        ImGui::Begin("Create line");
-            ImGui::InputFloat("x1", &coordinates[0]);
-            ImGui::InputFloat("y1", &coordinates[1]);
-            ImGui::InputFloat("z1", &coordinates[2]);
-            ImGui::InputFloat("x2", &coordinates[3]);
-            ImGui::InputFloat("y2", &coordinates[4]);
-            ImGui::InputFloat("z2", &coordinates[5]);
-
-        if (ImGui::Button("Go"))
-        {
-            Line* line = new Line(
-                controller->producePixelCoordinatesToGL(coordinates[0], wWidth),
-                controller->producePixelCoordinatesToGL(coordinates[1], wHeight),
-                coordinates[2],
-                controller->producePixelCoordinatesToGL(coordinates[3], wWidth),
-                controller->producePixelCoordinatesToGL(coordinates[4], wHeight),
-                coordinates[5]
-            );
-            controller->addLine(line);
-        }
-        ImGui::End();
-    }
-}
-
 void Renderer::drawModes()
 {
     ImGui::Begin("Modes");
 
-    std::map<WorkModes, const char*> map = controller->modeMap;
+    std::map<WorkModes, const char*> map = Controller::modeMap;
     
     for (auto iter = map.begin(); iter != map.end(); iter++)
     {
@@ -178,65 +159,25 @@ void Renderer::drawModes()
     ImGui::End();
 }
 
+void Renderer::drawObjectPallete()
+{
+    ImGui::Begin("Creation modes");
+    std::map<ObjectCreationModes, const char*> map = Controller::modeCreationMap;
+
+    for (auto iter = map.begin(); iter != map.end(); iter++)
+    {
+        if (ImGui::Button(iter->second))
+        {
+            controller->setCreationMode(iter->first);
+        }
+    }
+
+    ImGui::End();
+}
+
 void Renderer::draw()
 {
     controller->drawLines();
+    controller->drawPolyLines();
 }
 
-void Renderer::setActiveNode(float lastClickedX, float lastClickedY)
-{
-    if (controller->getMode() == WorkModes::POINTER)
-        controller->setActiveNode(lastClickedX, lastClickedY, wWidth, wHeight);
-}
-
-void Renderer::translateObject(float relX, float relY)    // border
-{
-    NodeGroup<Object>* node = controller->getActiveNode();
-
-    if (controller->getMode() == WorkModes::TRANSLATE && node != nullptr)
-    {
-        float border = 100;
-        
-        if (relX > border)
-            relX = border;
-        else if (relX < -border)
-            relX = -border;
-        if (relY > border)
-            relY = border;
-        else if (relY < -border)
-            relY = -border;
-
-        float glXRel = 2 * relX / wWidth;
-        float glYRel = 2 * relY / wHeight;
-
-        glm::mat4 transformation = node->node->getTransformation();
-        transformation = glm::translate(transformation, glm::vec3(glXRel, glYRel, 0.0f));
-        node->node->setTransformation(transformation);
-    }
-}
-
-void Renderer::rotateObject(float relX, float relY)    // border
-{
-    NodeGroup<Object>* node = controller->getActiveNode();
-
-    if (controller->getMode() == WorkModes::ROTATE && node != nullptr)
-    {
-        float border = 100;
-        
-        if (relX > border)
-            relX = border;
-        else if (relX < -border)
-            relX = -border;
-        if (relY > border)
-            relY = border;
-        else if (relY < -border)
-            relY = -border;
-
-        float glXRel = 2 * relX / wWidth;
-        float glYRel = 2 * relY / wHeight;
-
-        glm::mat4 transformation = node->node->getTransformation();
-        transformation = glm::rotate(transformation, glm::radians(std::atan(glXRel/glYRel)), glm::vec3(0.0f, 1.0f, 0.0f));
-        node->node->setTransformation(transformation);
-    }
-}

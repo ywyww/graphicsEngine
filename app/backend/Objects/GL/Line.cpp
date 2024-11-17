@@ -4,8 +4,8 @@ Line::Line(const float x1, const float y1, const float z1, const float x2, const
         buffer = new float[6] {x1, y1, z1, 
                          x2, y2, z2};
 
-        if (x1 == x2 && y1 == y2 && z1 == z2)
-            throw std::invalid_argument("Line consist of two point. Not one.");
+        //if (x1 == x2 && y1 == y2 && z1 == z2)
+        //    throw std::invalid_argument("Line consist of two point. Not one.");
 
 
         glGenVertexArrays(1, &VAO);
@@ -58,7 +58,7 @@ bool Line::isGLPointBelongs(const float& x, const float& y, const float z)    //
     return false;
 }
 
-bool Line::isPointBelongs(const float& x, const float& y, const float z, const float width, const float height, bool coefficientTrim)  // only 2d
+bool Line::isPointBelongs(const float& x, const float& y, const float z, const float width, const float height, bool coefficientTrim, float precision)  // only 2d
 {
     // x(t) = x1 + (x2 - x1) * t, 0 <= t <= 1
 
@@ -84,9 +84,9 @@ bool Line::isPointBelongs(const float& x, const float& y, const float z, const f
         
 
     if (xCoefficient >= yCoefficient)
-        return xCoefficient - yCoefficient < 0.03f;
+        return xCoefficient - yCoefficient < precision;
     else 
-        return yCoefficient - xCoefficient < 0.03f;
+        return yCoefficient - xCoefficient < precision;
     
     // make z coodinate
 }

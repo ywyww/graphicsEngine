@@ -1,12 +1,23 @@
 ======================= TODO =======================
-[ ] refactoring: long width chain: see Line->Controller->Renderer->main (width and height);
+[ ] Унифицировать ввод координат. (чтобы не было в одном месте ГЛ в другом не гл. Проебался по времени с полилайном.)
+[ ] Какой тип данных сувать в стд вектор? Посмотреть код, исправить многое.
 
-[ ] changement for current node (menu)
+[ ] make super-controller: controller contains all data, super-controller calls functions
+[ ] make architecture: objects, nodes, etc.
+[ ] throw event into controller, here he can handle event information (and Renderer will not consist of controller functions)
+[ ] turn drawLines from Controller into the Renderer class
+[ ] подумать над сигнальной архитектурой
+[ ] refactoring: function from renderer to controller.
+[ ] fix rotation function
+[ ] write info in special files, not in code 
+[ ] add keyboard input to controll the lines
 
-[ ] do something with incapsulation: controller and renderer class are callable from main loop. (but controller lying in renderer) 
-[ ] refactoring hard code: main.cpp: belongX while belongWindow
-[ ] refactoring hard code: Line.cpp: renderWindowWidth and renderWindowHeight
- 
+[ ] polyline mode (add different objects pallete)
+
+[ ] upload button
+[ ] save button
+[ ] copy & past buttons
+
 [ ] make own class for each type x - glRenderArea.xof objects
 [ ] make structure for Controller`s objects 
 
@@ -15,24 +26,38 @@
 [ ] if x1 == x2 or y1 == y2 in LineBelongFunction, it isn`t work
 [ ] make unified transformation coordinates
 
+[ ] make different threads for computing and rendering
+[ ] make events for sending value to the status bar | now just a problem to rapid transmission of information / log bar
+[ ] make a logger
 
 [ ] camera class
-[ ] do basic interaction with lines
 [ ] do dynamic coordinates (dynamic VBO)
-[ ] global coordinates into view coordinates
-[ ] make unique coefficients for each object to infinity transformations flag (in scene tree)
 
 [ ] make polyline as std::vector of Lines class
-[ ] make 3d capable for isPointBelong function: Line class
 
-
-[ ] add tip feature: when cursor on the object, it`s show it`s name
+[ ] refactoring: divide controller class on sub-classes. It has too many functions
+[ ] refactoring: turn line coordinates (x_n, y_n) to the controller class
+[ ] refactoring: long width chain: see Line->Controller->Renderer->main (width and height);
+[ ] refactoring: new names
+[ ] refactoring hard code: main.cpp: belongX while belongWindow
+[ ] refactoring hard code: Line.cpp: renderWindowWidth and renderWindowHeight
+ 
 [ ] refactoring: xml other enum with stringss
 [ ] optimize code: make areas without render
 [ ] drawSceneTree: fix Object->Line inheritance
 ======================= TODO ======================= 
 
 ======================= DONE ======================= 
+[x] make maps static
+[x] changement for current node (menu)
+[x] do basic interaction with lines
+[x] global coordinates into view coordinates
+[x] add tip feature: when cursor on the object, it`s show it`s name
+[x] do something with incapsulation: controller and renderer class are callable from main loop. (but controller lying in renderer) 
+[x] make delete button
+[x] refactoring: work with controller inside a controller, not outside in renderer class
+[x] fix LineInputData: don`t work.  // возможно крашится из-за динамик каста.
+[x] delete nodeGroup template -> make just Node with Object pointer.
 [x] enum with modes
 [x] add color change in line settings
 [x] button for enum to change modes
@@ -60,6 +85,8 @@
 
 ======================= NONE ======================= 
 [-] radiobutton for enum to change modes
+[-] make 3d capable for isPointBelong function: Line class
+[-] make unique coefficients for each object to infinity transformations flag (in scene tree)
 [-] make sceneRenderer class for render gl data: division GUI renderer and GL renderer
 [-] coordinateFormatter to create objects in absolute coordinates (not above window size and height)
 ======================= NONE ======================= 

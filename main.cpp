@@ -46,7 +46,7 @@ int main(int argc, char** args) {
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
+    io.FontGlobalScale = 1.2;
     ImGui::StyleColorsDark();
 
     ImGui_ImplSDL2_InitForOpenGL(window, glContext);
@@ -55,8 +55,8 @@ int main(int argc, char** args) {
 
     // END[CONTEXT_CREATION]
 
+    
 	loop(window, windowW, windowH);
-
 
 
     // [CONTEXT DESTROYING]
@@ -74,25 +74,29 @@ int main(int argc, char** args) {
     
 void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 {
+    // need to translate coordinates from SDL2 to OPENGL: window and renderArea
     bool runningWindow = true;
 
     SDL_Rect glRenderArea = {20, 50, 1400, 800};
     Controller* controller = new Controller();
     Renderer renderer(controller, glRenderArea.w, glRenderArea.h);
 
-    float x, y;
-    float glX, glY;
-    float belongX = 0; 
+    float x, y;             // absoluteCoordinates
+    float glX, glY;         // coordinates inside a viewPort (GL-like: eg -1 < x < 1)
+    float belongX = 0;      // coordinates inside a viewPort (modified)
     float belongY = 0;
     
     float lastMouseClickedX = 0;
     float lastMouseClickedY = 0;
 
-    bool isCursorVirginClicked = false;
-    
-    bool mouseDown = false;
-    
+    float x1, y1, x2, y2;       // coordinates to draw a line.
+    x1 = y1 = x2 = y2 = 0;
 
+    bool isCursorVirginClicked = false;
+    bool mouseDown = false;
+    bool isCursorInRenderArea = false;
+
+    Polyline* line = controller->createPolyline();
     while (runningWindow)
     {
         SDL_Event event;
@@ -112,30 +116,42 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                 belongX = x - glRenderArea.x;
                 belongY = wHeight - glRenderArea.y - y;
 
+                if (belongX <= glRenderArea.w && belongY <= glRenderArea.h)
+                    isCursorInRenderArea = true;
+                else
+                    isCursorInRenderArea = false;
+
                 if (mouseDown)
                 {
                     float xRel = event.motion.xrel;
                     float yRel = event.motion.yrel;
 
-                    renderer.translateObject(xRel, -yRel);
-                    renderer.rotateObject(xRel, -yRel);
+                    controller->translateObject(xRel, -yRel, glRenderArea.w, glRenderArea.h);
+                    controller->rotateObject(xRel, -yRel, glRenderArea.w, glRenderArea.h);
                 }
             }
             if (event.type == SDL_MOUSEBUTTONDOWN && 
                 event.motion.x < glRenderArea.w + glRenderArea.x && 
-                event.motion.y < glRenderArea.h + glRenderArea.y)
+                event.motion.y < glRenderArea.h + glRenderArea.y && isCursorInRenderArea)
             {
                 lastMouseClickedX = belongX;
                 lastMouseClickedY = belongY;
                 mouseDown = true;
 
-                renderer.setActiveNode(lastMouseClickedX, lastMouseClickedY);
+                controller->trySetActiveNode(lastMouseClickedX, lastMouseClickedY, glRenderArea.w, glRenderArea.h);
+                x1 = belongX;
+                y1 = belongY;
+
+                controller->addLineInPolyline(line, belongX, belongY);
             }
-            if (event.type == SDL_MOUSEBUTTONUP)
+            if (event.type == SDL_MOUSEBUTTONUP && isCursorInRenderArea)
             {
                 mouseDown = false;
+                x2 = event.motion.x - glRenderArea.x;
+                y2 = wHeight - glRenderArea.y - event.motion.y;
+                
+                controller->createObject(x1, y1, x2, y2, glRenderArea.w, glRenderArea.h);
             }
-            
         }
         
         // clear imgui buffer
@@ -149,7 +165,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         glEnable(GL_SCISSOR_TEST);
 
 
-		glClearColor(0.0f, 0.0f, 0.3f, 1.0f);
+		glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw scene
@@ -162,9 +178,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
         renderer.drawSceneTree();
         renderer.drawStatusBar(belongX, belongY, lastMouseClickedX, lastMouseClickedY);
-        renderer.drawLineCreation();
         renderer.drawModes();
-
+        renderer.drawObjectPallete();
         
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
