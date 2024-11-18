@@ -1,14 +1,14 @@
 #include "Renderer.h"
 
 
-Renderer::Renderer(Controller* controller, const float& width, const float& height)
+Renderer::Renderer(Model* model, Controller* controller)
 {
+    this->model = model;
     this->controller = controller;
-    wWidth = width;
-    wHeight = height;
+    lineInput = new LineInputData();
 }
 
-void Renderer::drawStatusBar(const float& x, const float& y, const float& lastClickedX, const float& lastClickedY)
+void Renderer::drawStatusBar(const float& x, const float& y)
 {
     // add data here
 
@@ -20,10 +20,10 @@ void Renderer::drawStatusBar(const float& x, const float& y, const float& lastCl
         if (currentNode != nullptr)
             ImGui::Text("Pointer is at the object: %s", currentNode->name.c_str());     // here
 
-        ImGui::Text("Active mode: %s", controller->modeMap[controller->getMode()]);
+        ImGui::Text("Active mode: %s", model->modeMap[controller->getMode()]);
 
         ImGui::BeginChild("Object chosen");
-            NodeGroup* activeNode = controller->getActiveNode();
+            NodeGroup* activeNode = model->getActiveNode();
             if (activeNode == nullptr)
                 ImGui::Text("No object chosen");
             else
@@ -40,12 +40,11 @@ void Renderer::drawSceneTree()
 {
     ImGui::Begin("Scene Tree");
 
-    Nodes* lines = &controller->getLines();
+    Nodes* lines = &model->getLines();
     
 
     if (ImGui::BeginMenu("Lines"))
     {   
-        LineInputData* lineInput = controller->getLineInput();
         for (int i = 0; i < lines->size(); i++)
         {
             NodeGroup* node = &lines->operator[](i);
@@ -75,12 +74,12 @@ void Renderer::drawSceneTree()
 
                 if (ImGui::Button("Set active"))
                 {
-                    controller->setActiveNode(node);
+                    model->setActiveNode(node);
                 }
 
                 if (ImGui::Button("Delete line"))
                 {
-                    if (!controller->deleteLine(i))
+                    if (!model->deleteLine(i))
                         std::cout << "cannot delete";                    
                 }
 
@@ -98,7 +97,7 @@ void Renderer::drawLineTransformation(Line* line)
 {
     if (ImGui::BeginMenu("Rotation"))
     {
-        float* angle = &controller->getLineInput()->angle;
+        float* angle = lineInput->angle;
 
         if (ImGui::InputFloat("Rotation coeff", angle))
         {
@@ -146,7 +145,7 @@ void Renderer::drawModes()
 {
     ImGui::Begin("Modes");
 
-    std::map<WorkModes, const char*> map = Controller::modeMap;
+    std::map<WorkModes, const char*> map = Model::modeMap;
     
     for (auto iter = map.begin(); iter != map.end(); iter++)
     {
@@ -162,7 +161,7 @@ void Renderer::drawModes()
 void Renderer::drawObjectPallete()
 {
     ImGui::Begin("Creation modes");
-    std::map<ObjectCreationModes, const char*> map = Controller::modeCreationMap;
+    std::map<ObjectCreationModes, const char*> map = Model::modeCreationMap;
 
     for (auto iter = map.begin(); iter != map.end(); iter++)
     {
@@ -181,3 +180,25 @@ void Renderer::draw()
     controller->drawPolyLines();
 }
 
+void Renderer::drawLines()
+{
+    Nodes* lines = model->getLines();
+    for (int i = 0; i < lines.size(); i++)
+    {
+        lines[i].node->draw();
+    }
+}
+
+void Renderer::drawPolylines()
+{
+    Nodes* lines = model->getPolylines(); 
+    for (int i = 0; i < lines.size(); i++)
+    {
+        Polyline* line = dynamic_cast<Polyline*>(lines[i].node);
+            
+        if (line != nullptr)
+            line->draw();
+        else
+            std::cout << "ERROR IN DRAW POLYLINE.";
+    }
+}

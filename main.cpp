@@ -10,6 +10,8 @@
 
 #include "app/backend/Objects/GL/Line.h"
 #include "app/backend/Objects/GL/Shader.h"
+
+#include "app/backend/Model.h"
 #include "app/backend/Controller.h"
 #include "app/frontend/Renderer.h"
 
@@ -78,8 +80,10 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
     bool runningWindow = true;
 
     SDL_Rect glRenderArea = {20, 50, 1400, 800};
-    Controller* controller = new Controller();
-    Renderer renderer(controller, glRenderArea.w, glRenderArea.h);
+
+    Model* model = new Model(glRenderArea.w, glRenderArea.h);
+    Controller* controller = new Controller(model);
+    Renderer renderer(model, controller);
 
     float x, y;             // absoluteCoordinates
     float glX, glY;         // coordinates inside a viewPort (GL-like: eg -1 < x < 1)
@@ -96,7 +100,6 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
     bool mouseDown = false;
     bool isCursorInRenderArea = false;
 
-    Polyline* line = controller->createPolyline();
     while (runningWindow)
     {
         SDL_Event event;
@@ -126,8 +129,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                     float xRel = event.motion.xrel;
                     float yRel = event.motion.yrel;
 
-                    controller->translateObject(xRel, -yRel, glRenderArea.w, glRenderArea.h);
-                    controller->rotateObject(xRel, -yRel, glRenderArea.w, glRenderArea.h);
+                    controller->translateObject(xRel, -yRel);
+                    controller->rotateObject(xRel, -yRel);
                 }
             }
             if (event.type == SDL_MOUSEBUTTONDOWN && 
@@ -138,19 +141,17 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                 lastMouseClickedY = belongY;
                 mouseDown = true;
 
-                controller->trySetActiveNode(lastMouseClickedX, lastMouseClickedY, glRenderArea.w, glRenderArea.h);
+                controller->trySetActiveNode(lastMouseClickedX, lastMouseClickedY);
                 x1 = belongX;
                 y1 = belongY;
-
-                controller->addLineInPolyline(line, belongX, belongY);
             }
             if (event.type == SDL_MOUSEBUTTONUP && isCursorInRenderArea)
             {
                 mouseDown = false;
                 x2 = event.motion.x - glRenderArea.x;
                 y2 = wHeight - glRenderArea.y - event.motion.y;
-                
-                controller->createObject(x1, y1, x2, y2, glRenderArea.w, glRenderArea.h);
+
+                // create object function
             }
         }
         
@@ -177,7 +178,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         ImGui::NewFrame();
 
         renderer.drawSceneTree();
-        renderer.drawStatusBar(belongX, belongY, lastMouseClickedX, lastMouseClickedY);
+        renderer.drawStatusBar(belongX, belongY);
         renderer.drawModes();
         renderer.drawObjectPallete();
         

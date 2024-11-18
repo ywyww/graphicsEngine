@@ -2,7 +2,7 @@
 
 #include "GL/Line.h"
 #include "../Interfaces/Object.h"
-#include "../Translator.h"
+#include "../Helpers/Translator.h"
 
 #ifndef POLYLINE_H
 #define POLYLINE_H
