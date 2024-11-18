@@ -32,12 +32,13 @@ Controller::~Controller()
 {
 }
 
-NodeGroup* Controller::isObjectInSpace(const float& x, const float& y)
+NodeGroup* Controller::isObjectInSpace(const float& x, const float& y)      // can be problems here.
 {
     NodeGroup* current = new NodeGroup();
+    Nodes lines = model->getLines();
     for (int i = 0; i < lines.size(); i++)
     {
-        Line* line = dynamic_cast<Line*>(lines[i].node);
+        Line* line = dynamic_cast<Line*>(lines.operator[](i).node);
         if (line != nullptr && line->isPointBelongs(x, y, 0, model->getWidth(), model->getHeight(), true, 0.07))
         {
             current->node = lines[i].node;
@@ -54,7 +55,8 @@ NodeGroup* Controller::isObjectInSpace(const float& x, const float& y)
 
 void Controller::translateObject(float relX, float relY)
 {
-    if (getMode() == WorkModes::TRANSLATE && activeNode != nullptr)
+    NodeGroup* activeNode = model->getActiveNode();
+    if (model->getMode() == WorkModes::TRANSLATE &&  activeNode != nullptr)
     {
         float border = 50;
             
@@ -78,7 +80,8 @@ void Controller::translateObject(float relX, float relY)
 
 void Controller::rotateObject(float relX, float relY)
 {
-    if (getMode() == WorkModes::ROTATE && activeNode != nullptr)
+    NodeGroup* activeNode = model->getActiveNode();
+    if (model->getMode() == WorkModes::ROTATE && activeNode != nullptr)
     {
         float border = 100;
             

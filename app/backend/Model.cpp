@@ -12,11 +12,8 @@ std::map<ObjectCreationModes, const char*> Model::modeCreationMap = {
     std::pair(ObjectCreationModes::POLYLINE, "Polyline")
 };
 
-Model::Model(const float& windowHeight, const float& windowWidth)
+Model::Model(const float& windowHeight, const float& windowWidth): windowHeight(windowHeight), windowWidth(windowWidth)
 {
-    windowHeight = windowHeight;
-    windowWidth = windowWidth;
-    
     lines = Nodes();
     polyLines = Nodes();
         

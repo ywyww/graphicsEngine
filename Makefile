@@ -6,9 +6,11 @@ SOURCES += include/imgui.cpp include/imgui_widgets.cpp include/imgui_draw.cpp in
 SOURCES += include/imgui_impl_opengl3.cpp include/imgui_impl_sdl2.cpp
 
 SOURCES += app/backend/Objects/Scene/Groups.cpp
-SOURCES += app/backend/Objects/GL/Shader.cpp app/backend/Objects/GL/Line.cpp app/backend/Objects/Polyline.cpp app/backend/Controller.cpp 
+SOURCES += app/backend/Objects/GL/Shader.cpp app/backend/Objects/GL/Line.cpp app/backend/Objects/Polyline.cpp 
 SOURCES += app/backend/Types/Data.cpp app/backend/Types/Modes.cpp
 
+SOURCES += app/backend/Controller.cpp 
+SOURCES += app/backend/Model.cpp
 SOURCES += app/frontend/Renderer.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)

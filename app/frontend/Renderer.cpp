@@ -16,11 +16,11 @@ void Renderer::drawStatusBar(const float& x, const float& y)
         std::string cursor = std::to_string(x) + " " + std::to_string(y);
         ImGui::Text(cursor.c_str());
 
-        NodeGroup* currentNode = controller->isObjectInSpace(x, y, wWidth, wHeight);
+        NodeGroup* currentNode = controller->isObjectInSpace(x, y);
         if (currentNode != nullptr)
             ImGui::Text("Pointer is at the object: %s", currentNode->name.c_str());     // here
 
-        ImGui::Text("Active mode: %s", model->modeMap[controller->getMode()]);
+        ImGui::Text("Active mode: %s", model->modeMap[model->getMode()]);
 
         ImGui::BeginChild("Object chosen");
             NodeGroup* activeNode = model->getActiveNode();
@@ -97,7 +97,7 @@ void Renderer::drawLineTransformation(Line* line)
 {
     if (ImGui::BeginMenu("Rotation"))
     {
-        float* angle = lineInput->angle;
+        float* angle = &lineInput->angle;
 
         if (ImGui::InputFloat("Rotation coeff", angle))
         {
@@ -110,7 +110,7 @@ void Renderer::drawLineTransformation(Line* line)
 
     if (ImGui::BeginMenu("Translation"))
     {
-        float* translation = controller->getLineInput()->translation;
+        float* translation = lineInput->translation;
         ImGui::InputFloat3("Translations: x, y, z", translation);
 
         if (ImGui::Button("Click me for the translation"))
@@ -124,7 +124,7 @@ void Renderer::drawLineTransformation(Line* line)
     }
     if (ImGui::BeginMenu("ColorPicker"))
     {
-        float* color = controller->getLineInput()->color;
+        float* color = lineInput->color;
         ImGui::InputFloat3("Colors: rgb", color);
 
         if (ImGui::Button("Click me for change color"))
@@ -151,7 +151,7 @@ void Renderer::drawModes()
     {
         if (ImGui::Button(iter->second))
         {
-            controller->setMode(iter->first);
+            model->setMode(iter->first);
         }
     }
 
@@ -167,7 +167,7 @@ void Renderer::drawObjectPallete()
     {
         if (ImGui::Button(iter->second))
         {
-            controller->setCreationMode(iter->first);
+            model->setCreationMode(iter->first);
         }
     }
 
@@ -176,13 +176,13 @@ void Renderer::drawObjectPallete()
 
 void Renderer::draw()
 {
-    controller->drawLines();
-    controller->drawPolyLines();
+    drawLines();
+    drawPolylines();
 }
 
 void Renderer::drawLines()
 {
-    Nodes* lines = model->getLines();
+    Nodes lines = model->getLines();
     for (int i = 0; i < lines.size(); i++)
     {
         lines[i].node->draw();
@@ -191,7 +191,7 @@ void Renderer::drawLines()
 
 void Renderer::drawPolylines()
 {
-    Nodes* lines = model->getPolylines(); 
+    Nodes lines = model->getPolylines(); 
     for (int i = 0; i < lines.size(); i++)
     {
         Polyline* line = dynamic_cast<Polyline*>(lines[i].node);
