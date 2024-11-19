@@ -15,19 +15,16 @@ class Controller    // unique coordinates.
 {
     Model* model;
 
-    float x, y;             // absoluteCoordinates
-    float glX, glY;         // coordinates inside a viewPort (GL-like: eg -1 < x < 1)
-    float belongX;      // coordinates inside a viewPort (modified)
-    float belongY;
+    float cursorAbsX, cursorAbsY;   // cursor coordinates in window (absolute)
+    float cursorX, cursorY;         // cursor coordinates in viewPort
+    float cursorGlX, cursorGlY;     // coordinates inside a viewPort (GL-like: eg -1 < x < 1)
     
-    float lastMouseClickedX;
-    float lastMouseClickedY;
+    float lastMouseDownX, lastMouseDownY;   // cursor coordinates in viewPort
+    float lastMouseUpX, lastMouseUpY;       // cursor coordinates in viewPort
 
-    float x1, y1, x2, y2;       // coordinates to draw a line.
-
-    bool isCursorVirginClicked = false;
-    bool mouseDown = false;
-    bool isCursorInRenderArea = false;
+    bool isCursorVirginClicked;
+    bool isMouseDown;
+    bool isCursorInRenderArea;
 
 
 private:
@@ -54,7 +51,6 @@ public:
     void createObject(const float& x1, const float& y1, const float& x2, const float& y2);
 
     void processEvent(SDL_Event& event, const float& wWidth, const float& wHeight);
-
 };
 
 #endif

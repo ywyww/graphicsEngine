@@ -26,8 +26,15 @@ Polyline* Controller::createPolyline()
 Controller::Controller(Model* model)
 {
     this->model = model;
-    x1 = y1 = x2 = y2 = 0;
 
+    cursorAbsX = cursorAbsY = 0;
+    cursorX = cursorY = 0;
+    cursorGlX = cursorGlY = 0;  
+
+    lastMouseDownX = lastMouseDownY = 0;
+    lastMouseUpX = lastMouseUpY = 0;
+
+    isCursorVirginClicked = isMouseDown = isCursorInRenderArea = false;
 }
 
 Controller::~Controller()
@@ -107,7 +114,6 @@ void Controller::rotateObject(float relX, float relY)
 
 void Controller::trySetActiveNode(float lastClickedX, float lastClickedY)
 {
-    if (model->getMode() == WorkModes::POINTER)
     {
         NodeGroup* node = isObjectInSpace(lastClickedX, lastClickedY);
         model->setActiveNode(node);
@@ -154,51 +160,55 @@ void Controller::createObject(const float& x1, const float& y1, const float& x2,
 void Controller::processEvent(SDL_Event& event, const float& wWidth, const float& wHeight)
 {
     SDL_Rect glRenderArea = model->getRenderRect();
+    WorkModes mode = model->getMode();
 
     if (event.type == SDL_MOUSEMOTION)
     {
-        x = event.motion.x;
-        y = event.motion.y;
+        cursorAbsX = event.motion.x;
+        cursorAbsY = event.motion.y;
 
-        belongX = x - glRenderArea.x;
-        belongY = wHeight - glRenderArea.y - y;
+        cursorX = cursorAbsX - glRenderArea.x;
+        cursorY = wHeight - glRenderArea.y - cursorAbsY;
 
-        model->setCursorX(belongX);
-        model->setCursorY(belongY);        
+        model->setCursorX(cursorX);
+        model->setCursorY(cursorY);        
 
-        if (belongX <= glRenderArea.w && belongY <= glRenderArea.h)
+        if (cursorX <= glRenderArea.w && cursorY <= glRenderArea.h)
             isCursorInRenderArea = true;
         else
             isCursorInRenderArea = false;
 
-        if (mouseDown)
+        if (isMouseDown)
         {
             float xRel = event.motion.xrel;
             float yRel = event.motion.yrel;
-
-            translateObject(xRel, -yRel);
-            rotateObject(xRel, -yRel);
+            
+            if (mode == WorkModes::TRANSLATE)
+                translateObject(xRel, -yRel);       // ubrat', postavit' flagi
+            else if (mode == WorkModes::ROTATE)
+                rotateObject(xRel, -yRel);
         }
     }
     if (event.type == SDL_MOUSEBUTTONDOWN && 
         event.motion.x < glRenderArea.w + glRenderArea.x && 
         event.motion.y < glRenderArea.h + glRenderArea.y && isCursorInRenderArea)
     {
-        lastMouseClickedX = belongX;
-        lastMouseClickedY = belongY;
-        mouseDown = true;
+        lastMouseDownX = cursorX;
+        lastMouseDownY = cursorY;
+        isMouseDown = true;
 
-        trySetActiveNode(lastMouseClickedX, lastMouseClickedY);
-        x1 = belongX;
-        y1 = belongY;
+        if (mode == WorkModes::POINTER)
+            trySetActiveNode(lastMouseClickedX, lastMouseClickedY); // ubrat', postavit' flagi
     }
     if (event.type == SDL_MOUSEBUTTONUP && isCursorInRenderArea)
     {
-        mouseDown = false;
-        x2 = belongX;
-        y2 = belongY;
+        isMouseDown = false;
+        lastMouseUpX = cursorX;
+        lastMouseUpY = cursorY;
 
-        createObject(x1, y1, x2, y2);
+        createObject(lastMouseDownX, lastMouseDownY,
+                     lastMouseUpX, lastMouseUpY
+                    );
     }
 }
 
