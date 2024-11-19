@@ -81,24 +81,9 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
     SDL_Rect glRenderArea = {20, 50, 1400, 800};
 
-    Model* model = new Model(glRenderArea.w, glRenderArea.h);
+    Model* model = new Model(glRenderArea);
     Controller* controller = new Controller(model);
     Renderer renderer(model, controller);
-
-    float x, y;             // absoluteCoordinates
-    float glX, glY;         // coordinates inside a viewPort (GL-like: eg -1 < x < 1)
-    float belongX = 0;      // coordinates inside a viewPort (modified)
-    float belongY = 0;
-    
-    float lastMouseClickedX = 0;
-    float lastMouseClickedY = 0;
-
-    float x1, y1, x2, y2;       // coordinates to draw a line.
-    x1 = y1 = x2 = y2 = 0;
-
-    bool isCursorVirginClicked = false;
-    bool mouseDown = false;
-    bool isCursorInRenderArea = false;
 
     while (runningWindow)
     {
@@ -111,48 +96,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
             {
                 runningWindow = false;
             }
-            if (event.type == SDL_MOUSEMOTION)
-            {
-                x = event.motion.x;
-                y = event.motion.y;
 
-                belongX = x - glRenderArea.x;
-                belongY = wHeight - glRenderArea.y - y;
-
-                if (belongX <= glRenderArea.w && belongY <= glRenderArea.h)
-                    isCursorInRenderArea = true;
-                else
-                    isCursorInRenderArea = false;
-
-                if (mouseDown)
-                {
-                    float xRel = event.motion.xrel;
-                    float yRel = event.motion.yrel;
-
-                    controller->translateObject(xRel, -yRel);
-                    controller->rotateObject(xRel, -yRel);
-                }
-            }
-            if (event.type == SDL_MOUSEBUTTONDOWN && 
-                event.motion.x < glRenderArea.w + glRenderArea.x && 
-                event.motion.y < glRenderArea.h + glRenderArea.y && isCursorInRenderArea)
-            {
-                lastMouseClickedX = belongX;
-                lastMouseClickedY = belongY;
-                mouseDown = true;
-
-                controller->trySetActiveNode(lastMouseClickedX, lastMouseClickedY);
-                x1 = belongX;
-                y1 = belongY;
-            }
-            if (event.type == SDL_MOUSEBUTTONUP && isCursorInRenderArea)
-            {
-                mouseDown = false;
-                x2 = event.motion.x - glRenderArea.x;
-                y2 = wHeight - glRenderArea.y - event.motion.y;
-
-                // create object function
-            }
+            controller->processEvent(event, wWidth, wHeight);
         }
         
         // clear imgui buffer
@@ -178,7 +123,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         ImGui::NewFrame();
 
         renderer.drawSceneTree();
-        renderer.drawStatusBar(belongX, belongY);
+        renderer.drawStatusBar();
         renderer.drawModes();
         renderer.drawObjectPallete();
         

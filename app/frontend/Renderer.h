@@ -17,7 +17,7 @@ public:
     Renderer(Model* model, Controller* controller);
 
     // IMGUI
-    void drawStatusBar(const float& x, const float& y);
+    void drawStatusBar();
     void drawSceneTree();
     void drawModes();
     void drawObjectPallete();

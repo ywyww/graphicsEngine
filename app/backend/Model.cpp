@@ -12,7 +12,7 @@ std::map<ObjectCreationModes, const char*> Model::modeCreationMap = {
     std::pair(ObjectCreationModes::POLYLINE, "Polyline")
 };
 
-Model::Model(const float& windowHeight, const float& windowWidth): windowHeight(windowHeight), windowWidth(windowWidth)
+Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(renderArea.h), windowWidth(renderArea.w), shiftX(renderArea.x), shiftY(renderArea.y)
 {
     lines = Nodes();
     polyLines = Nodes();
@@ -27,6 +27,31 @@ Model::~Model()
 {
     if (activeNode != nullptr)
         delete activeNode;
+}
+
+const SDL_Rect& Model::getRenderRect()
+{
+    return renderRect;
+}
+
+const float& Model::getCursorX()
+{
+    return cursorX;
+}
+
+void Model::setCursorX(const float& cursorX)
+{
+    this->cursorX = cursorX;
+}
+
+const float& Model::getCursorY()
+{
+    return cursorY;
+}
+
+void Model::setCursorY(const float& cursorY)
+{
+    this->cursorY = cursorY;
 }
 
 const float& Model::getWidth()

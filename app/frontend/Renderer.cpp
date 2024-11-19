@@ -8,9 +8,10 @@ Renderer::Renderer(Model* model, Controller* controller)
     lineInput = new LineInputData();
 }
 
-void Renderer::drawStatusBar(const float& x, const float& y)
+void Renderer::drawStatusBar()
 {
-    // add data here
+    float x = model->getCursorX();
+    float y = model->getCursorY();
 
     ImGui::Begin("StatusBar");
         std::string cursor = std::to_string(x) + " " + std::to_string(y);

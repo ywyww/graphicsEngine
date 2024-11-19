@@ -2,6 +2,7 @@
 #include "Types/Data.h"
 #include "Objects/Scene/Groups.h"
 #include "Objects/Polyline.h"
+#include "SDL2/SDL_rect.h"
 #include <map>
 
 #ifndef MODEL_H
@@ -10,7 +11,10 @@
 
 class Model
 {
-    
+    // doubling data.
+    const SDL_Rect renderRect;
+    const float shiftX;
+    const float shiftY;
     const float windowWidth;    // viewport dimensions.
     const float windowHeight;   // viewport dimensions.
 
@@ -37,8 +41,16 @@ class Model
         static std::map<ObjectCreationModes, const char*> modeCreationMap;
 
     public:
-        Model(const float& windowHeight, const float& windowWidth);
+        Model(const SDL_Rect& renderArea);
         ~Model();
+
+        const SDL_Rect& getRenderRect();
+
+        const float& getCursorX();
+        void setCursorX(const float& cursorX);
+
+        const float& getCursorY();
+        void setCursorY(const float& cursorY);
 
         const float& getWidth();
         const float& getHeight();
