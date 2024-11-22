@@ -9,6 +9,8 @@ LineInputData должен посылать view контроллеру.
 ======================= NOTE ======================= 
 
 ======================= TODO =======================
+[ ] NodeGroup формируется через new. Он хранит указатель на объект. При удалении NodeGroup удаляется и сам объект. 
+    Итого утечка памяти (невозможно удалить NodeGroup)
 [ ] addActiveNodeType for no dynamic casts
 [ ] after adding set object to active node
 

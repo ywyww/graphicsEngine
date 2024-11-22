@@ -84,7 +84,6 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
     Model* model = new Model(glRenderArea);
     Controller* controller = new Controller(model);
-    std::cout << "HELLO WORLD!" << std::endl;
     Renderer renderer = Renderer(model, controller);
 
 
