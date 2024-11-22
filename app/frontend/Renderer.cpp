@@ -6,6 +6,7 @@ Renderer::Renderer(Model* model, Controller* controller)
     this->model = model;
     this->controller = controller;
     lineInput = new LineInputData();
+    std::cout << "HELLO WORLD!" << std::endl;
 }
 
 void Renderer::drawStatusBar()

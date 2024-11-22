@@ -3,7 +3,8 @@ std::map<WorkModes, const char*> Model::modeMap = {
         std::pair(WorkModes::POINTER, "Pointer"),
         std::pair(WorkModes::ROTATE, "Rotate"),
         std::pair(WorkModes::TRANSLATE, "Translate"),
-        std::pair(WorkModes::CREATION, "Creation")
+        std::pair(WorkModes::CREATION, "Creation"),
+        std::pair(WorkModes::MODIFICATION, "Modification")
     };
 
 std::map<ObjectCreationModes, const char*> Model::modeCreationMap = {

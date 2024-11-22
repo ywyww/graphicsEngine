@@ -26,7 +26,6 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight);
 
 int main(int argc, char** args) {
 
-    std::cout << "HELLO WORLD!";
     // [CONTEXT_CREATION]
 	SDL_Window* window = NULL;
 
@@ -85,7 +84,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
     Model* model = new Model(glRenderArea);
     Controller* controller = new Controller(model);
-    Renderer renderer(model, controller);
+    std::cout << "HELLO WORLD!" << std::endl;
+    Renderer renderer = Renderer(model, controller);
 
 
     while (runningWindow)  

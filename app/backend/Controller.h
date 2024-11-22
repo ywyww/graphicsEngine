@@ -30,7 +30,7 @@ class Controller    // unique coordinates.
 private:
             
     Line* createLine(const float& x1, const float& y1, const float& x2, const float& y2);
-    Polyline* createPolyline();
+    Polyline* createPolyline(const float& x0, const float& y0);
 
 public:
     // after adding set object to active node
@@ -46,7 +46,7 @@ public:
     void rotateObject(float relX, float relY);
 
     void addLine(const float& x1, const float& y1, const float& x2, const float& y2);
-    void addPolyline();
+    void addPolyline(const float& x0, const float& y0);
     
     void addDotInActivePolyline(const float& x1, const float& y1);
 

@@ -16,9 +16,10 @@ Line* Controller::createLine(const float& x1, const float& y1, const float& x2, 
     return line;
 }
 
-Polyline* Controller::createPolyline()
+Polyline* Controller::createPolyline(const float& x0, const float& y0)
 {
     Polyline* polyline = new Polyline();
+    polyline->addDot(x0, y0);
     return polyline;       
 }
 
@@ -113,11 +114,8 @@ void Controller::rotateObject(float relX, float relY)
 
 void Controller::trySetActiveNode(float lastClickedX, float lastClickedY)
 {
-    {
-        NodeGroup* node = isObjectInSpace(lastClickedX, lastClickedY);
-        model->setActiveNode(node);
-    }
-    
+    NodeGroup* node = isObjectInSpace(lastClickedX, lastClickedY);
+    model->setActiveNode(node);
 }
 
 void Controller::addLine(const float& x1, const float& y1, const float& x2, const float& y2)
@@ -126,9 +124,9 @@ void Controller::addLine(const float& x1, const float& y1, const float& x2, cons
     model->addLine(line);
 }
 
-void Controller::addPolyline()
+void Controller::addPolyline(const float& x0, const float& y0)
 {
-    Polyline* line = createPolyline();
+    Polyline* line = createPolyline(x0, y0);
     model->addPolyLine(line); 
 }
 
@@ -189,9 +187,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
                 rotateObject(xRel, -yRel);
         }
     }
-    if (event.type == SDL_MOUSEBUTTONDOWN && 
-        event.motion.x < glRenderArea.w + glRenderArea.x && 
-        event.motion.y < glRenderArea.h + glRenderArea.y && isCursorInRenderArea)
+    if (event.type == SDL_MOUSEBUTTONDOWN && isCursorInRenderArea)
     {
         lastMouseDownX = cursorX;
         lastMouseDownY = cursorY;
@@ -202,11 +198,15 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
 
         if (mode == WorkModes::CREATION && creationMode == ObjectCreationModes::POLYLINE)
         {
-            createPolyline();
+            addPolyline(lastMouseDownX, lastMouseDownY);
             Nodes massive = model->getPolylines();
             if (massive.size() > 1)
             {
-                model->setActiveNode(&massive[massive.size() - 1]);
+                NodeGroup* newActiveNode = new NodeGroup();
+                newActiveNode->node = massive[massive.size() - 1].node;
+                newActiveNode->name = massive[massive.size() - 1].name;
+
+                model->setActiveNode(newActiveNode);
                 model->setMode(WorkModes::MODIFICATION);
             }
             else
