@@ -26,6 +26,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight);
 
 int main(int argc, char** args) {
 
+    std::cout << "HELLO WORLD!";
     // [CONTEXT_CREATION]
 	SDL_Window* window = NULL;
 
@@ -58,6 +59,7 @@ int main(int argc, char** args) {
     // END[CONTEXT_CREATION]
 
     
+
 	loop(window, windowW, windowH);
 
 
@@ -85,7 +87,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
     Controller* controller = new Controller(model);
     Renderer renderer(model, controller);
 
-    while (runningWindow)
+
+    while (runningWindow)  
     {
         SDL_Event event;
         while (SDL_PollEvent(&event))

@@ -7,7 +7,8 @@ enum WorkModes
     POINTER,
     ROTATE,
     TRANSLATE,
-    CREATION
+    CREATION,
+    MODIFICATION
 };
 
 enum ObjectCreationModes

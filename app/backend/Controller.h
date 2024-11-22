@@ -33,6 +33,7 @@ private:
     Polyline* createPolyline();
 
 public:
+    // after adding set object to active node
     Controller(Model* model);
     ~Controller();
 
@@ -45,10 +46,9 @@ public:
     void rotateObject(float relX, float relY);
 
     void addLine(const float& x1, const float& y1, const float& x2, const float& y2);
+    void addPolyline();
     
-    void addLineInPolyline(Polyline* polyline, const float& x1, const float& y1);
-
-    void createObject(const float& x1, const float& y1, const float& x2, const float& y2);
+    void addDotInActivePolyline(const float& x1, const float& y1);
 
     void processEvent(SDL_Event& event, const float& wWidth, const float& wHeight);
 };

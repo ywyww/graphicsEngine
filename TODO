@@ -1,4 +1,7 @@
 ======================= NOTE ======================= 
+Почитать про указатели при разработке систем c++ (указатель на элемент std::vector нужно ли или хватит обычного элемента)
+Как выделяется память под объект в std::vector? 
+
 Подумать над взаимодействием в стиле json.
 Модель хранить преобразованные координаты. Только курсор x и y.
 Контроллер преобразует координаты из вьюшки и посылает их модели.
@@ -6,31 +9,21 @@ LineInputData должен посылать view контроллеру.
 ======================= NOTE ======================= 
 
 ======================= TODO =======================
+[ ] addActiveNodeType for no dynamic casts
+[ ] after adding set object to active node
+
+[ ] implement events system
+[ ] add mode for current object e.g. modify on or off
+[#] polyline mode (add different objects pallete)
 [ ] сделать свои ивенты, чтобы контроллер мог их обрабатывать. ивенты посылает класс рендера, формируя экземпляр ивента (из imgui)
-[ ] теперь не работают функции добавления/ удаления
-[ ] рефакторинг класса контроллер.
-[ ] кинуть ивент сразу же в контроллер и там над ним поработать
 [ ] сделать штуку, которая формирует запрос из рендера к контроллеру, 
     а контроллер затем разбивает данные из рендера и выполняет инструкции
     !!! НАПИСАТЬ CONTROLLER`s HANDLER!!!
-[ ] рефакторинг: drawLines && drawPolylines -> должны посылать данные контроллеру, а он преобразует модель 
-[ ] рефакторинг: подумать над хранением Model в рендерере: 
-    можно убрать модель в контроллере и передавать модель экземпляром в функции контроллера из рендерера
-[ ] сделать геттеры константными чтобы из нее можно было только брать данные и изменять через контроллер
-[ ] Унифицировать ввод координат. (чтобы не было в одном месте ГЛ в другом не гл. Проебался по времени с полилайном.)
-[ ] Какой тип данных сувать в стд вектор? Посмотреть код, исправить многое.
-
-[ ] make super-controller: controller contains all data, super-controller calls functions
-[ ] make architecture: objects, nodes, etc.
 [ ] throw event into controller, here he can handle event information (and Renderer will not consist of controller functions)
-[ ] turn drawLines from Controller into the Renderer class
-[ ] подумать над сигнальной архитектурой
-[ ] refactoring: function from renderer to controller.
 [ ] fix rotation function
 [ ] write info in special files, not in code 
 [ ] add keyboard input to controll the lines
 
-[ ] polyline mode (add different objects pallete)
 
 [ ] upload button
 [ ] save button
@@ -42,7 +35,6 @@ LineInputData должен посылать view контроллеру.
 [ ] fix point belong function: one line overlaps another
 [ ] fix point belong function: add transformation data into coordinates
 [ ] if x1 == x2 or y1 == y2 in LineBelongFunction, it isn`t work
-[ ] make unified transformation coordinates
 
 [ ] make different threads for computing and rendering
 [ ] make events for sending value to the status bar | now just a problem to rapid transmission of information / log bar
@@ -53,19 +45,31 @@ LineInputData должен посылать view контроллеру.
 
 [ ] make polyline as std::vector of Lines class
 
-[ ] refactoring: divide controller class on sub-classes. It has too many functions
-[ ] refactoring: turn line coordinates (x_n, y_n) to the controller class
-[ ] refactoring: long width chain: see Line->Controller->Renderer->main (width and height);
-[ ] refactoring: new names
-[ ] refactoring hard code: main.cpp: belongX while belongWindow
-[ ] refactoring hard code: Line.cpp: renderWindowWidth and renderWindowHeight
- 
 [ ] refactoring: xml other enum with stringss
 [ ] optimize code: make areas without render
 [ ] drawSceneTree: fix Object->Line inheritance
 ======================= TODO ======================= 
 
 ======================= DONE ======================= 
+[x] теперь не работают функции добавления/ удаления
+[x] рефакторинг класса контроллер.
+[x] кинуть ивент сразу же в контроллер и там над ним поработать
+[x] рефакторинг: drawLines && drawPolylines -> должны посылать данные контроллеру, а он преобразует модель 
+[x] рефакторинг: подумать над хранением Model в рендерере: 
+    можно убрать модель в контроллере и передавать модель экземпляром в функции контроллера из рендерера
+[x] сделать геттеры константными чтобы из нее можно было только брать данные и изменять через контроллер
+[x] Унифицировать ввод координат. (чтобы не было в одном месте ГЛ в другом не гл. Проебался по времени с полилайном.)
+[x] Какой тип данных сувать в стд вектор? Посмотреть код, исправить многое.
+[x] make super-controller: controller contains all data, super-controller calls functions
+[x] make architecture: objects, nodes, etc.
+[x] turn drawLines from Controller into the Renderer class
+[x] refactoring: function from renderer to controller.
+[x] refactoring: divide controller class on sub-classes. It has too many functions
+[x] refactoring: turn line coordinates (x_n, y_n) to the controller class
+[x] refactoring: long width chain: see Line->Controller->Renderer->main (width and height);
+[x] refactoring: new names
+[x] refactoring hard code: main.cpp: belongX while belongWindow
+[x] refactoring hard code: Line.cpp: renderWindowWidth and renderWindowHeight
 [x] make maps static
 [x] changement for current node (menu)
 [x] do basic interaction with lines

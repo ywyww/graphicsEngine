@@ -19,7 +19,6 @@ Line* Controller::createLine(const float& x1, const float& y1, const float& x2, 
 Polyline* Controller::createPolyline()
 {
     Polyline* polyline = new Polyline();
-    model->addPolyLine(polyline); 
     return polyline;       
 }
 
@@ -127,40 +126,41 @@ void Controller::addLine(const float& x1, const float& y1, const float& x2, cons
     model->addLine(line);
 }
 
-void Controller::addLineInPolyline(Polyline* polyline, const float& x1, const float& y1)
+void Controller::addPolyline()
 {
-    polyline->addDot(x1, y1);
-    std::cout << "added dot: " << x1 << " " << y1 << std::endl;
+    Polyline* line = createPolyline();
+    model->addPolyLine(line); 
 }
 
-void Controller::createObject(const float& x1, const float& y1, const float& x2, const float& y2)
+void Controller::addDotInActivePolyline(const float& x1, const float& y1)
 {
-    if (model->getMode() == WorkModes::CREATION)
+    NodeGroup* activeNode = model->getActiveNode();
+    if (activeNode != nullptr)
     {
-        switch (model->getCreationMode())
+        Polyline* polyline = dynamic_cast<Polyline*>(activeNode->node); 
+        if (polyline != nullptr)
         {
-            case ObjectCreationModes::POLYLINE:
-            {
-                break;
-            }
-            case ObjectCreationModes::LINE:
-            {
-                addLine(x1, y1, x2, y2);
-                break;
-            }
-            case ObjectCreationModes::POINT:
-            {
-                // not implemented
-                break;
-            }
+            polyline->addDot(x1, y1);
+            std::cout << "added dot: " << x1 << " " << y1 << std::endl;
         }
+        else
+        {
+            std::cout << "Failed to add dot in polyline";
+        }
+        
     }
+    else
+    {
+        std::cout << "ActiveNode is nullptr";
+    }
+    
 }
 
 void Controller::processEvent(SDL_Event& event, const float& wWidth, const float& wHeight)
 {
     SDL_Rect glRenderArea = model->getRenderRect();
     WorkModes mode = model->getMode();
+    ObjectCreationModes creationMode = model->getCreationMode();
 
     if (event.type == SDL_MOUSEMOTION)
     {
@@ -198,7 +198,25 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         isMouseDown = true;
 
         if (mode == WorkModes::POINTER)
-            trySetActiveNode(lastMouseClickedX, lastMouseClickedY); // ubrat', postavit' flagi
+            trySetActiveNode(lastMouseDownX, lastMouseDownY); // ubrat', postavit' flagi
+
+        if (mode == WorkModes::CREATION && creationMode == ObjectCreationModes::POLYLINE)
+        {
+            createPolyline();
+            Nodes massive = model->getPolylines();
+            if (massive.size() > 1)
+            {
+                model->setActiveNode(&massive[massive.size() - 1]);
+                model->setMode(WorkModes::MODIFICATION);
+            }
+            else
+                std::cout << "TROUBLE";
+                
+        }
+        if (mode == WorkModes::MODIFICATION)
+        {
+            addDotInActivePolyline(lastMouseDownX, lastMouseDownY);
+        }
     }
     if (event.type == SDL_MOUSEBUTTONUP && isCursorInRenderArea)
     {
@@ -206,10 +224,23 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         lastMouseUpX = cursorX;
         lastMouseUpY = cursorY;
 
-        createObject(lastMouseDownX, lastMouseDownY,
-                     lastMouseUpX, lastMouseUpY
-                    );
+        
+        if (mode == WorkModes::CREATION)
+        {
+            if (creationMode == ObjectCreationModes::LINE)
+                addLine(lastMouseDownX, lastMouseDownY, lastMouseUpX, lastMouseUpY);
+        }
+        
     }
+
+    if (event.type == SDL_KEYDOWN)
+    {
+        if (mode == WorkModes::MODIFICATION)
+        {
+            model->setMode(WorkModes::CREATION);
+        }
+    }
+    // process Controller's events.
 }
 
     
