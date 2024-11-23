@@ -37,10 +37,8 @@ void Renderer::drawStatusBar()
     ImGui::End();
 }
 
-void Renderer::drawSceneTree()
+void Renderer::drawSceneTreeLines()
 {
-    ImGui::Begin("Scene Tree");
-
     Nodes* lines = &model->getLines();
     
 
@@ -90,6 +88,67 @@ void Renderer::drawSceneTree()
 
         ImGui::EndMenu();
     }
+}
+
+void Renderer::drawSceneTreePolylines()
+{
+    Nodes* polylines = &model->getPolylines();
+    
+
+    if (ImGui::BeginMenu("Polylines"))
+    {   
+        for (int i = 0; i < polylines->size(); i++)
+        {
+            NodeGroup* node = &polylines->operator[](i);
+
+            Polyline* line = dynamic_cast<Polyline*>(node->node);
+
+            if (line == nullptr)
+            {
+                // "bad cast: object->line"
+                throw std::bad_cast();
+            }
+
+            // beginMenu has own name. It shouldn't change. So:
+            const char* lineMenuName = ("Line #" + std::to_string(i + 1)).c_str();
+
+            if (ImGui::BeginMenu(lineMenuName))
+            {
+                ImGui::Text("Line name: %s", node->name.c_str());
+
+                ImGui::InputText("Line name", lineInput->lineName, lineInput->lineNameSize);
+                if (ImGui::Button("Change name"))
+                {
+                    node->name = std::string(lineInput->lineName, lineInput->lineNameSize);
+                }
+
+                //drawLineTransformation(line);
+
+                if (ImGui::Button("Set active"))
+                {
+                    model->setActiveNode(node);
+                }
+
+                if (ImGui::Button("Delete line"))
+                {
+                    if (!model->deletePolyLine(i))
+                        std::cout << "cannot delete";                    
+                }
+
+                ImGui::EndMenu();
+            }
+        }
+
+        ImGui::EndMenu();
+    }
+}
+
+void Renderer::drawSceneTree()
+{
+    ImGui::Begin("Scene Tree");
+
+    drawSceneTreeLines();
+    drawSceneTreePolylines();
 
     ImGui::End();
 }

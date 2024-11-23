@@ -35,6 +35,9 @@ Controller::Controller(Model* model)
     lastMouseUpX = lastMouseUpY = 0;
 
     isCursorVirginClicked = isMouseDown = isCursorInRenderArea = false;
+    
+    isLineModifable = false;
+    xModifable = yModifable = 0;
 }
 
 Controller::~Controller()
@@ -154,12 +157,15 @@ void Controller::addDotInActivePolyline(const float& x1, const float& y1)
     
 }
 
-void Controller::processEvent(SDL_Event& event, const float& wWidth, const float& wHeight)
+void Controller::processEvent(SDL_Event& event, const float& wWidth, const float& wHeight)      // get full model data in 1 structure
 {
     SDL_Rect glRenderArea = model->getRenderRect();
     WorkModes mode = model->getMode();
     ObjectCreationModes creationMode = model->getCreationMode();
 
+    
+
+    
     if (event.type == SDL_MOUSEMOTION)
     {
         cursorAbsX = event.motion.x;
@@ -200,7 +206,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         {
             addPolyline(lastMouseDownX, lastMouseDownY);
             Nodes massive = model->getPolylines();
-            if (massive.size() > 1)
+            if (massive.size() >= 1)
             {
                 NodeGroup* newActiveNode = new NodeGroup();
                 newActiveNode->node = massive[massive.size() - 1].node;
@@ -213,10 +219,63 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
                 std::cout << "TROUBLE";
                 
         }
-        if (mode == WorkModes::MODIFICATION)
+        if (mode == WorkModes::MODIFICATION && creationMode == ObjectCreationModes::POLYLINE)
         {
             addDotInActivePolyline(lastMouseDownX, lastMouseDownY);
         }
+
+
+        if (mode == MODIFICATION && creationMode == ObjectCreationModes::LINE)
+        {   // buffer
+
+        // modify line: add translation and other. Line have 3 points: mid, left, right
+        // repair line class
+
+            NodeGroup* active = model->getActiveNode();
+            if (active != nullptr)
+            {
+
+                Line* line = dynamic_cast<Line*>(active->node);
+                if (line != nullptr)
+                {
+                    float* buffer = line->getBuffer();
+
+                    float height = model->getHeight();
+                    float width = model->getWidth();
+
+                    float x1 = Translator::produceGLCoordinatesToPixel(buffer[0], width);
+                    float y1 = Translator::produceGLCoordinatesToPixel(buffer[1], height);
+                    float x2 = Translator::produceGLCoordinatesToPixel(buffer[3], width);
+                    float y2 = Translator::produceGLCoordinatesToPixel(buffer[4], height);
+
+                    float precision = 5.f;
+                    if (std::fabs(lastMouseDownX - x1) <= precision && 
+                        std::fabs(lastMouseDownY - y1) <= precision)
+                    {
+                        isLineModifable = true;
+                        xModifable = 0;         // position of modifable
+                        yModifable = 1;
+                    }
+
+                    if (std::fabs(lastMouseDownX - x2) <= precision && 
+                        std::fabs(lastMouseDownY - y2) <= precision)
+                    {
+                        isLineModifable = true;
+                        xModifable = 3;         // position of modifable
+                        yModifable = 4;
+                    }
+
+                    std::cout << lastMouseDownX << " " << lastMouseDownY << std::endl;
+                    std::cout << x1 << " " << y1 << " " << x2 << " " << y2 << std::endl;
+
+    
+                }
+            }
+
+        
+
+        }
+
     }
     if (event.type == SDL_MOUSEBUTTONUP && isCursorInRenderArea)
     {
@@ -230,16 +289,52 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             if (creationMode == ObjectCreationModes::LINE)
                 addLine(lastMouseDownX, lastMouseDownY, lastMouseUpX, lastMouseUpY);
         }
+
+        if (mode == WorkModes::MODIFICATION)
+        {
+            if (creationMode == ObjectCreationModes::LINE && isLineModifable)
+            {
+                NodeGroup* active = model->getActiveNode();
+                if (active != nullptr)
+                {
+                    Line* line = dynamic_cast<Line*>(active->node);
+                    if (line != nullptr)
+                    {
+                        float* buffer = line->getBuffer();
+                        float* to = new float[6]{ 0, 0, 0, 0, 0, 0};
+
+
+                        // just use memcpy
+
+                        int otherIdx = (xModifable + 3) % 6;
+                        int otherIdx2 = (yModifable + 3) % 6;
+                        to[otherIdx] =  buffer[otherIdx];
+                        to[otherIdx2] =  buffer[otherIdx2];
+
+                        to[xModifable] = Translator::producePixelCoordinatesToGL(lastMouseUpX, model->getWidth());
+                        to[yModifable] = Translator::producePixelCoordinatesToGL(lastMouseUpY, model->getHeight());
+
+                        std::cout << to[0] << " " << to[1] << " " << to[2] << std::endl;
+                        std::cout << to[3] << " " << to[4] << " " << to[5] << std::endl;
+                        line->updateBuffer(to);
+                    }
+                }
+                isLineModifable = false;
+            }
+        }
+
         
     }
 
     if (event.type == SDL_KEYDOWN)
     {
-        if (mode == WorkModes::MODIFICATION)
+        if (mode == WorkModes::MODIFICATION && creationMode == ObjectCreationModes::POLYLINE)
         {
             model->setMode(WorkModes::CREATION);
         }
     }
+
+   
     // process Controller's events.
 }
 

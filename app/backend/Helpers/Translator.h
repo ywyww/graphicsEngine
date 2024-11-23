@@ -9,6 +9,11 @@ public:
     {
         return coord * 2 / (dimension) - 1;
     }
+
+    static float produceGLCoordinatesToPixel(float coord, int dimension)
+    {
+        return dimension * (coord + 1) / 2;   
+    }
 };
 
 

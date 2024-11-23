@@ -26,6 +26,10 @@ class Controller    // unique coordinates.
     bool isMouseDown;
     bool isCursorInRenderArea;
 
+    bool isLineModifable;
+    
+    int xModifable, yModifable;
+
 
 private:
             

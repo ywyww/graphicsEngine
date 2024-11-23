@@ -9,6 +9,9 @@ LineInputData должен посылать view контроллеру.
 ======================= NOTE ======================= 
 
 ======================= TODO =======================
+[ ] refactoring interface (нормальная палитра объектов, взаимодействие с объектом в отдельном окне: список возможных взаимодействий)
+[ ] add points to lines 
+[ ] points.
 [ ] NodeGroup формируется через new. Он хранит указатель на объект. При удалении NodeGroup удаляется и сам объект. 
     Итого утечка памяти (невозможно удалить NodeGroup)
 [ ] addActiveNodeType for no dynamic casts
@@ -16,7 +19,6 @@ LineInputData должен посылать view контроллеру.
 
 [ ] implement events system
 [ ] add mode for current object e.g. modify on or off
-[#] polyline mode (add different objects pallete)
 [ ] сделать свои ивенты, чтобы контроллер мог их обрабатывать. ивенты посылает класс рендера, формируя экземпляр ивента (из imgui)
 [ ] сделать штуку, которая формирует запрос из рендера к контроллеру, 
     а контроллер затем разбивает данные из рендера и выполняет инструкции
@@ -25,7 +27,6 @@ LineInputData должен посылать view контроллеру.
 [ ] fix rotation function
 [ ] write info in special files, not in code 
 [ ] add keyboard input to controll the lines
-
 
 [ ] upload button
 [ ] save button
@@ -43,16 +44,17 @@ LineInputData должен посылать view контроллеру.
 [ ] make a logger
 
 [ ] camera class
-[ ] do dynamic coordinates (dynamic VBO)
 
-[ ] make polyline as std::vector of Lines class
 
-[ ] refactoring: xml other enum with stringss
-[ ] optimize code: make areas without render
-[ ] drawSceneTree: fix Object->Line inheritance
 ======================= TODO ======================= 
 
 ======================= DONE ======================= 
+[x] polyline mode (add different objects pallete)
+[x] make polyline as std::vector of Lines class
+[x] drawSceneTree: fix Object->Line inheritance
+[x] optimize code: make areas without render
+[x] do dynamic coordinates (dynamic VBO)
+[x] modification
 [x] теперь не работают функции добавления/ удаления
 [x] рефакторинг класса контроллер.
 [x] кинуть ивент сразу же в контроллер и там над ним поработать
@@ -108,6 +110,7 @@ LineInputData должен посылать view контроллеру.
 
 
 ======================= NONE ======================= 
+[-] refactoring: xml other enum with stringss
 [-] radiobutton for enum to change modes
 [-] make 3d capable for isPointBelong function: Line class
 [-] make unique coefficients for each object to infinity transformations flag (in scene tree)

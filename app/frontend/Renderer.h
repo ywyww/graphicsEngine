@@ -13,11 +13,17 @@ class Renderer {
 
     LineInputData* lineInput;
 
+
+private:
+    void drawSceneTreeLines();
+    void drawSceneTreePolylines();
+    
 public:
     Renderer(Model* model, Controller* controller);
 
     // IMGUI
     void drawStatusBar();
+
     void drawSceneTree();
     void drawModes();
     void drawObjectPallete();

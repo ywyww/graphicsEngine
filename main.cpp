@@ -86,7 +86,6 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
     Controller* controller = new Controller(model);
     Renderer renderer = Renderer(model, controller);
 
-
     while (runningWindow)  
     {
         SDL_Event event;
@@ -101,7 +100,6 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
             controller->processEvent(event, wWidth, wHeight);
         }
-        
         // clear imgui buffer
         glViewport(0, 0, wWidth, wHeight);
         glDisable(GL_SCISSOR_TEST);

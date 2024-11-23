@@ -13,7 +13,7 @@ Line::Line(const float x1, const float y1, const float z1, const float x2, const
         glBindVertexArray(VAO);
 
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, buffer, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, buffer, GL_DYNAMIC_DRAW);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
             glEnableVertexAttribArray(0);
 
@@ -52,6 +52,22 @@ void Line::setColor(const glm::vec3& color)
 {
     this->color = color;
 }
+
+void Line::updateBuffer(float* data)    // 6 floats
+{
+    if (data != nullptr)
+    {
+        delete buffer;
+        buffer = data;
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, data, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 
 bool Line::isGLPointBelongs(const float& x, const float& y, const float z)    // only 2d
 {
