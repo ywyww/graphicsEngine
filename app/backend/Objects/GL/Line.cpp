@@ -1,5 +1,32 @@
 #include "Line.h"
 
+
+Line::Line(): Object()
+{
+    buffer = new float[6] {0.0, 0.0, 0.0,
+                           0.0, 0.0, 0.0};
+
+        //if (x1 == x2 && y1 == y2 && z1 == z2)
+        //    throw std::invalid_argument("Line consist of two point. Not one.");
+
+
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+        glBindVertexArray(VAO);
+
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, buffer, GL_DYNAMIC_DRAW);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(0);
+
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+
+        shader = Shader("data/line.vertexshader", "data/line.fragmentshader");
+        transformation = glm::identity<glm::mat4x4>();
+        color = glm::vec3(1.0f, 0.5f, 0.2f);
+}
+
 Line::Line(const float x1, const float y1, const float z1, const float x2, const float y2, const float z2) : Object() {
         buffer = new float[6] {x1, y1, z1, 
                          x2, y2, z2};
@@ -59,13 +86,16 @@ void Line::updateBuffer(float* data)    // 6 floats
     {
         delete buffer;
         buffer = data;
-    }
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, data, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, data, GL_DYNAMIC_DRAW);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+
+    }
 }
 
 
@@ -116,7 +146,6 @@ void Line::draw()
 
     GLuint colorName = glGetUniformLocation(getShaderID(), "color");
     glUniform3fv(colorName, 1, glm::value_ptr(color));
-
 
     glBindVertexArray(VAO);
 	glDrawArrays(GL_LINES, 0, 2);

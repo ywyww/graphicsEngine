@@ -30,6 +30,10 @@ class Controller    // unique coordinates.
     
     int xModifable, yModifable;
 
+public:
+    Line* rubberThread;
+    bool rubberDrawable;
+
 
 private:
             

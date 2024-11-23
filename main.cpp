@@ -115,7 +115,14 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw scene
+
+        if (controller->rubberDrawable)
+        {
+            controller->rubberThread->draw();
+        }
+
         renderer.draw();
+
 
         // draw imgui
         ImGui_ImplOpenGL3_NewFrame();

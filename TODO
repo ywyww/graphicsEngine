@@ -9,13 +9,16 @@ LineInputData должен посылать view контроллеру.
 ======================= NOTE ======================= 
 
 ======================= TODO =======================
+
+[ ] form events in the classes.
+[ ] add Point class and then code refactoring: Line -> 2 points, Polyline: multiply points.
+[ ] add polylines editing mode
 [ ] refactoring interface (нормальная палитра объектов, взаимодействие с объектом в отдельном окне: список возможных взаимодействий)
 [ ] add points to lines 
 [ ] points.
 [ ] NodeGroup формируется через new. Он хранит указатель на объект. При удалении NodeGroup удаляется и сам объект. 
     Итого утечка памяти (невозможно удалить NodeGroup)
 [ ] addActiveNodeType for no dynamic casts
-[ ] after adding set object to active node
 
 [ ] implement events system
 [ ] add mode for current object e.g. modify on or off
@@ -49,6 +52,9 @@ LineInputData должен посылать view контроллеру.
 ======================= TODO ======================= 
 
 ======================= DONE ======================= 
+[x] after change one line`s buffer, i change other line`s buffer.
+[x] problem: when i use updateBuffer, my lines are decept.
+[x] add rubberThread line. + code refactoring
 [x] polyline mode (add different objects pallete)
 [x] make polyline as std::vector of Lines class
 [x] drawSceneTree: fix Object->Line inheritance
@@ -110,6 +116,7 @@ LineInputData должен посылать view контроллеру.
 
 
 ======================= NONE ======================= 
+[-] after adding set object to active node
 [-] refactoring: xml other enum with stringss
 [-] radiobutton for enum to change modes
 [-] make 3d capable for isPointBelong function: Line class

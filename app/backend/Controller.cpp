@@ -38,6 +38,10 @@ Controller::Controller(Model* model)
     
     isLineModifable = false;
     xModifable = yModifable = 0;
+
+    rubberThread = new Line();
+    rubberThread->setColor(glm::vec3(1.f));
+    rubberDrawable = false;
 }
 
 Controller::~Controller()
@@ -162,9 +166,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
     SDL_Rect glRenderArea = model->getRenderRect();
     WorkModes mode = model->getMode();
     ObjectCreationModes creationMode = model->getCreationMode();
-
-    
-
+   
     
     if (event.type == SDL_MOUSEMOTION)
     {
@@ -198,6 +200,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         lastMouseDownX = cursorX;
         lastMouseDownY = cursorY;
         isMouseDown = true;
+
 
         if (mode == WorkModes::POINTER)
             trySetActiveNode(lastMouseDownX, lastMouseDownY); // ubrat', postavit' flagi
@@ -234,7 +237,6 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             NodeGroup* active = model->getActiveNode();
             if (active != nullptr)
             {
-
                 Line* line = dynamic_cast<Line*>(active->node);
                 if (line != nullptr)
                 {
@@ -265,10 +267,6 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
                         yModifable = 4;
                     }
 
-                    std::cout << lastMouseDownX << " " << lastMouseDownY << std::endl;
-                    std::cout << x1 << " " << y1 << " " << x2 << " " << y2 << std::endl;
-
-    
                 }
             }
 
@@ -334,7 +332,26 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         }
     }
 
-   
+    if (isMouseDown && mode != WorkModes::TRANSLATE)
+    {
+        float* newBuff = new float[6] {
+            0, 0, 0,
+            0, 0, 0
+        };
+
+        newBuff[0] = Translator::producePixelCoordinatesToGL(lastMouseDownX, model->getWidth());
+        newBuff[1] = Translator::producePixelCoordinatesToGL(lastMouseDownY, model->getHeight());
+        newBuff[3] = Translator::producePixelCoordinatesToGL(cursorX, model->getWidth());
+        newBuff[4] = Translator::producePixelCoordinatesToGL(cursorY, model->getHeight());
+
+        rubberThread->updateBuffer(newBuff);
+        rubberDrawable = true;
+    }
+    else
+    {
+        rubberDrawable = false;
+    }
+    
     // process Controller's events.
 }
 
