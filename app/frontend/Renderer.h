@@ -26,7 +26,6 @@ public:
 
     void drawSceneTree();
     void drawModes();
-    void drawObjectPallete();
 
     // GL
     void draw();

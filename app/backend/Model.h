@@ -34,11 +34,9 @@ class Model
 
 
     WorkModes mode;
-    ObjectCreationModes creationMode;
     
     public:
         static std::map<WorkModes, const char*> modeMap; 
-        static std::map<ObjectCreationModes, const char*> modeCreationMap;
 
     public:
         Model(const SDL_Rect& renderArea);
@@ -63,9 +61,6 @@ class Model
     
         void setMode(const WorkModes& mode);
         const WorkModes& getMode();
-
-        void setCreationMode(const ObjectCreationModes& mode);
-        const ObjectCreationModes& getCreationMode();
 
         bool deleteLine(int idx);
         bool deletePolyLine(int idx);

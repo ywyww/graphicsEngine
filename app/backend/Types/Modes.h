@@ -2,20 +2,17 @@
 #ifndef MODES_H
 #define MODES_H
 
-enum WorkModes
-{
+enum WorkModes {
     POINTER,
-    ROTATE,
-    TRANSLATE,
-    CREATION,
-    MODIFICATION
-};
+    
+    CREATE_POINT,
+    CREATE_LINE,
+    CREATE_POLYLINE,
 
-enum ObjectCreationModes
-{
-    POINT,
-    LINE,
-    POLYLINE
+    TRANSLATE,
+    ROTATE,
+    MODIFY,
+    COLORIZE,
 };
 
 #endif

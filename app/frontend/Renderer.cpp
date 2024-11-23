@@ -218,22 +218,6 @@ void Renderer::drawModes()
     ImGui::End();
 }
 
-void Renderer::drawObjectPallete()
-{
-    ImGui::Begin("Creation modes");
-    std::map<ObjectCreationModes, const char*> map = Model::modeCreationMap;
-
-    for (auto iter = map.begin(); iter != map.end(); iter++)
-    {
-        if (ImGui::Button(iter->second))
-        {
-            model->setCreationMode(iter->first);
-        }
-    }
-
-    ImGui::End();
-}
-
 void Renderer::draw()
 {
     drawLines();

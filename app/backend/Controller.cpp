@@ -165,7 +165,6 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
 {
     SDL_Rect glRenderArea = model->getRenderRect();
     WorkModes mode = model->getMode();
-    ObjectCreationModes creationMode = model->getCreationMode();
    
     
     if (event.type == SDL_MOUSEMOTION)
@@ -202,10 +201,12 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         isMouseDown = true;
 
 
-        if (mode == WorkModes::POINTER)
+        if (mode == WorkModes::POINTER)     // also other nodes
+        {
             trySetActiveNode(lastMouseDownX, lastMouseDownY); // ubrat', postavit' flagi
+        }
 
-        if (mode == WorkModes::CREATION && creationMode == ObjectCreationModes::POLYLINE)
+        if (mode == WorkModes::CREATE_POLYLINE)
         {
             addPolyline(lastMouseDownX, lastMouseDownY);
             Nodes massive = model->getPolylines();
@@ -216,19 +217,19 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
                 newActiveNode->name = massive[massive.size() - 1].name;
 
                 model->setActiveNode(newActiveNode);
-                model->setMode(WorkModes::MODIFICATION);
+                model->setMode(WorkModes::MODIFY);
             }
             else
                 std::cout << "TROUBLE";
                 
         }
-        if (mode == WorkModes::MODIFICATION && creationMode == ObjectCreationModes::POLYLINE)
+        if (mode == WorkModes::MODIFY)       // modification
         {
             addDotInActivePolyline(lastMouseDownX, lastMouseDownY);
         }
 
 
-        if (mode == MODIFICATION && creationMode == ObjectCreationModes::LINE)
+        if (mode == MODIFY)
         {   // buffer
 
         // modify line: add translation and other. Line have 3 points: mid, left, right
@@ -269,9 +270,6 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
 
                 }
             }
-
-        
-
         }
 
     }
@@ -282,16 +280,11 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         lastMouseUpY = cursorY;
 
         
-        if (mode == WorkModes::CREATION)
-        {
-            if (creationMode == ObjectCreationModes::LINE)
-                addLine(lastMouseDownX, lastMouseDownY, lastMouseUpX, lastMouseUpY);
-        }
+        if (mode == WorkModes::CREATE_LINE)
+            addLine(lastMouseDownX, lastMouseDownY, lastMouseUpX, lastMouseUpY);
 
-        if (mode == WorkModes::MODIFICATION)
+        if (mode == WorkModes::MODIFY && isLineModifable)
         {
-            if (creationMode == ObjectCreationModes::LINE && isLineModifable)
-            {
                 NodeGroup* active = model->getActiveNode();
                 if (active != nullptr)
                 {
@@ -318,7 +311,6 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
                     }
                 }
                 isLineModifable = false;
-            }
         }
 
         
@@ -326,9 +318,10 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
 
     if (event.type == SDL_KEYDOWN)
     {
-        if (mode == WorkModes::MODIFICATION && creationMode == ObjectCreationModes::POLYLINE)
-        {
-            model->setMode(WorkModes::CREATION);
+        if (mode == WorkModes::MODIFY)
+        {   
+            // if active node is polyline
+            model->setMode(WorkModes::CREATE_POLYLINE);
         }
     }
 

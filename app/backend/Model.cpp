@@ -1,17 +1,15 @@
 #include "Model.h"
 std::map<WorkModes, const char*> Model::modeMap = {
         std::pair(WorkModes::POINTER, "Pointer"),
-        std::pair(WorkModes::ROTATE, "Rotate"),
+        std::pair(WorkModes::CREATE_POINT, "Point"),
+        std::pair(WorkModes::CREATE_LINE, "Line"),
+        std::pair(WorkModes::CREATE_POLYLINE, "Polyline"),
+
         std::pair(WorkModes::TRANSLATE, "Translate"),
-        std::pair(WorkModes::CREATION, "Creation"),
-        std::pair(WorkModes::MODIFICATION, "Modification")
+        std::pair(WorkModes::ROTATE, "Rotate"),
+        std::pair(WorkModes::MODIFY, "Modify active"),
     };
 
-std::map<ObjectCreationModes, const char*> Model::modeCreationMap = {
-    std::pair(ObjectCreationModes::POINT, "Point"),
-    std::pair(ObjectCreationModes::LINE, "Line"),
-    std::pair(ObjectCreationModes::POLYLINE, "Polyline")
-};
 
 Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(renderArea.h), windowWidth(renderArea.w), shiftX(renderArea.x), shiftY(renderArea.y)
 {
@@ -19,7 +17,6 @@ Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(r
     polyLines = Nodes();
         
     mode = WorkModes::POINTER;
-    creationMode = ObjectCreationModes::LINE;
 
     activeNode = nullptr;
 }
@@ -93,16 +90,6 @@ void Model::setMode(const WorkModes& mode)
 const WorkModes& Model::getMode()
 {
     return mode;
-}
-
-void Model::setCreationMode(const ObjectCreationModes& mode)
-{
-    this->creationMode = mode;
-}
-
-const ObjectCreationModes& Model::getCreationMode()
-{
-    return creationMode;
 }
 
 void Model::addLine(Line* line)

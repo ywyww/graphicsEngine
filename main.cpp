@@ -132,7 +132,6 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         renderer.drawSceneTree();
         renderer.drawStatusBar();
         renderer.drawModes();
-        renderer.drawObjectPallete();
         
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
