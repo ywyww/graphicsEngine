@@ -19,6 +19,7 @@ Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(r
     mode = WorkModes::POINTER;
 
     activeNode = nullptr;
+    activeNodeType = ObjectType::NULLTYPE;
 }
 
 Model::~Model()
@@ -80,6 +81,16 @@ NodeGroup* Model::getActiveNode()
 void Model::setActiveNode(NodeGroup* object)
 {
     activeNode = object;
+
+    if (activeNode == nullptr)
+        activeNodeType = ObjectType::NULLTYPE;
+    else
+        activeNodeType = activeNode->type;
+}
+
+const ObjectType& Model::getActiveNodeType()
+{
+    return activeNodeType;
 }
 
 void Model::setMode(const WorkModes& mode)
@@ -97,6 +108,7 @@ void Model::addLine(Line* line)
     NodeGroup lineGrp;
     lineGrp.node = line;
     lineGrp.name = "line1";
+    lineGrp.type = ObjectType::LINE;
 
     lines.push_back(lineGrp);
 }
@@ -124,6 +136,7 @@ void Model::addPolyLine(Polyline* polyline)
     NodeGroup grp;
     grp.name = "polyline1";
     grp.node = polyline;
+    grp.type = ObjectType::POLYLINE;
 
     polyLines.push_back(grp);
 }

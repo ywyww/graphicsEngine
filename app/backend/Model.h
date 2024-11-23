@@ -31,6 +31,7 @@ class Model
     // [END]
 
     NodeGroup* activeNode;  // make a massive
+    ObjectType activeNodeType;
 
 
     WorkModes mode;
@@ -58,6 +59,8 @@ class Model
 
         NodeGroup* getActiveNode();
         void setActiveNode(NodeGroup* object);
+        
+        const ObjectType& getActiveNodeType();
     
         void setMode(const WorkModes& mode);
         const WorkModes& getMode();

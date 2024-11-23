@@ -9,7 +9,8 @@ LineInputData должен посылать view контроллеру.
 ======================= NOTE ======================= 
 
 ======================= TODO =======================
-
+[ ] изменить функцию определения точек: включить повороты и перемещения точки в формулы
+[ ] допилить изменение объектов
 [ ] form events in the classes.
 [ ] add Point class and then code refactoring: Line -> 2 points, Polyline: multiply points.
 [ ] add polylines editing mode
@@ -52,6 +53,7 @@ LineInputData должен посылать view контроллеру.
 ======================= TODO ======================= 
 
 ======================= DONE ======================= 
+[x] добавить тип узлов в класс NodeGroup: таким образом можно будет легче различать тип экземпляра
 [x] after change one line`s buffer, i change other line`s buffer.
 [x] problem: when i use updateBuffer, my lines are decept.
 [x] add rubberThread line. + code refactoring

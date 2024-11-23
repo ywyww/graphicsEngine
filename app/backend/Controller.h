@@ -28,7 +28,7 @@ class Controller    // unique coordinates.
 
     bool isLineModifable;
     
-    int xModifable, yModifable;
+    int xModifableIdx, yModifableIdx;
 
 public:
     Line* rubberThread;
@@ -55,6 +55,8 @@ public:
 
     void addLine(const float& x1, const float& y1, const float& x2, const float& y2);
     void addPolyline(const float& x0, const float& y0);
+
+    void modifyLine(const float& precision);
     
     void addDotInActivePolyline(const float& x1, const float& y1);
 
