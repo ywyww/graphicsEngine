@@ -21,6 +21,7 @@ public:
 
     void addDot(float dotX, float dotY);
 
+    void setTransformation(const glm::mat4x4& transformation) override;
     // set transformation for current lines and for all 
 
     void draw() override;

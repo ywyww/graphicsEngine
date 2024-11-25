@@ -22,9 +22,9 @@ Line::Line(): Object()
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        shader = Shader("data/line.vertexshader", "data/line.fragmentshader");
-        transformation = glm::identity<glm::mat4x4>();
-        color = glm::vec3(1.0f, 0.5f, 0.2f);
+    shader = Shader("data/line.vertexshader", "data/line.fragmentshader");
+    transformation = glm::identity<glm::mat4x4>();
+    color = glm::vec3(1.0f, 0.5f, 0.2f);
 }
 
 Line::Line(const float x1, const float y1, const float z1, const float x2, const float y2, const float z2) : Object() {

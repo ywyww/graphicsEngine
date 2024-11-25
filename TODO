@@ -9,7 +9,9 @@ LineInputData должен посылать view контроллеру.
 ======================= NOTE ======================= 
 
 ======================= TODO =======================
-
+[ ] add throw exception and control it.
+[ ] add grouping rectangle (vmesto rezinovoy nity vo vremya grupirovki)
+[ ] dopisat operations
 [ ] renderer`s grid + onn / off
 
 [ ] setIfLineModifable function refactoring: naming, geodata.   

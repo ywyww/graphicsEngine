@@ -7,7 +7,13 @@ std::map<WorkModes, const char*> Model::modeMap = {
 
         std::pair(WorkModes::TRANSLATE, "Translate"),
         std::pair(WorkModes::ROTATE, "Rotate"),
+        std::pair(WorkModes::SCALE, "Scale"),
+        std::pair(WorkModes::MIRROR, "Mirror"),
+        std::pair(WorkModes::PROJECTION, "Projection"),
+
+
         std::pair(WorkModes::MODIFY, "Modify active"),
+        std::pair(WorkModes::COLORIZE, "Colorize"),
     };
 
 
@@ -86,6 +92,7 @@ void Model::setActiveNode(NodeGroup* object)
         activeNodeType = ObjectType::NULLTYPE;
     else
         activeNodeType = activeNode->type;
+
 }
 
 const ObjectType& Model::getActiveNodeType()

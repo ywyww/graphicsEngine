@@ -27,6 +27,7 @@ class Controller    // unique coordinates.
     bool isCursorInRenderArea;
 
     bool isLineModifable;
+    bool isPolylineCreationMode;
     
     int xModifableIdx, yModifableIdx;
 

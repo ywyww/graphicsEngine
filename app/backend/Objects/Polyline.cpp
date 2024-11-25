@@ -23,6 +23,7 @@ Polyline::Polyline(): Object()
     dots = std::vector<std::pair<float, float>>();
     lines = std::vector<Line*>();
     previousDot = std::pair(.0f, .0f);
+    transformation = glm::identity<glm::mat4x4>();
 }
 
 void Polyline::addDot(float dotX, float dotY)      // plus add Line
@@ -34,7 +35,14 @@ void Polyline::addDot(float dotX, float dotY)      // plus add Line
     previousDot = std::pair(dotX, dotY);
 }
 
-// set transformation for current lines and for all 
+void Polyline::setTransformation(const glm::mat4x4& transformation)
+{
+    this->transformation = transformation;
+    for (int i = 0; i < lines.size(); i++)
+    {
+        lines[i]->setTransformation(transformation);
+    }
+}
 
 void Polyline::draw()
 {

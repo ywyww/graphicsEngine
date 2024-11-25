@@ -42,6 +42,8 @@ Controller::Controller(Model* model)
     rubberThread = new Line();
     rubberThread->setColor(glm::vec3(1.f));
     rubberDrawable = false;
+
+    isPolylineCreationMode = false;
 }
 
 Controller::~Controller()
@@ -73,7 +75,7 @@ NodeGroup* Controller::isObjectInSpace(const float& x, const float& y)      // c
 void Controller::translateObject(float relX, float relY)
 {
     NodeGroup* activeNode = model->getActiveNode();
-    if (model->getMode() == WorkModes::TRANSLATE &&  activeNode != nullptr)
+    if (model->getMode() == WorkModes::TRANSLATE && activeNode != nullptr)
     {
         float border = 50;
             
@@ -294,26 +296,28 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
 
         if (mode == WorkModes::CREATE_POLYLINE)
         {
-            addPolyline(lastMouseDownX, lastMouseDownY);
-            Nodes massive = model->getPolylines();
-            int size = massive.size() - 1;
-            if (size >= 1)
+            if (isPolylineCreationMode == true)
             {
-                NodeGroup* newActiveNode = new NodeGroup();
-                newActiveNode->node = massive[size - 1].node;
-                newActiveNode->name = massive[size - 1].name;
-                newActiveNode->type = massive[size - 1].type;
+                addDotInActivePolyline(lastMouseDownX, lastMouseDownY);
+            }
+            else
+            {
+                addPolyline(lastMouseDownX, lastMouseDownY);
+                Nodes massive = model->getPolylines();
+                int size = massive.size();
+                if (size >= 1)
+                {
+                    NodeGroup* newActiveNode = new NodeGroup();
+                    newActiveNode->node = massive[size - 1].node;
+                    newActiveNode->name = massive[size - 1].name;
+                    newActiveNode->type = massive[size - 1].type;
 
-                model->setActiveNode(newActiveNode);
-                model->setMode(WorkModes::MODIFY);
+                    model->setActiveNode(newActiveNode);
+                    isPolylineCreationMode = true;
+                }
+
             }
         }
-        if (model->getActiveNodeType() == ObjectType::POLYLINE && 
-            mode == WorkModes::MODIFY)       // modification
-        {
-            addDotInActivePolyline(lastMouseDownX, lastMouseDownY);
-        }
-
 
         if (model->getActiveNodeType() == ObjectType::LINE && 
             mode == MODIFY)
@@ -347,12 +351,9 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
 
     if (event.type == SDL_KEYDOWN)
     {
-        if (model->getActiveNodeType() == ObjectType::POLYLINE && 
-            mode == WorkModes::MODIFY)
-        {   
-            model->setMode(WorkModes::CREATE_POLYLINE);
-        }
+        isPolylineCreationMode = false;
     }
+   
 
 
     processRubberThread();

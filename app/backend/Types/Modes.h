@@ -11,6 +11,10 @@ enum WorkModes {
 
     TRANSLATE,
     ROTATE,
+    SCALE,
+    MIRROR,
+    PROJECTION,
+
     MODIFY,
     COLORIZE,
 };
