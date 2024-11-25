@@ -9,6 +9,13 @@ LineInputData должен посылать view контроллеру.
 ======================= NOTE ======================= 
 
 ======================= TODO =======================
+
+[ ] renderer`s grid + onn / off
+
+[ ] setIfLineModifable function refactoring: naming, geodata.   
+    // перенести все в класс линии. добавить точки для точной сверки.
+
+[ ] turn rubber thread into renderer class.
 [ ] изменить функцию определения точек: включить повороты и перемещения точки в формулы
 [ ] допилить изменение объектов
 [ ] form events in the classes.

@@ -56,9 +56,12 @@ public:
     void addLine(const float& x1, const float& y1, const float& x2, const float& y2);
     void addPolyline(const float& x0, const float& y0);
 
-    void modifyLine(const float& precision);
+    bool setIfLineModifable(const float& precision);
+    void modifyLine();
     
     void addDotInActivePolyline(const float& x1, const float& y1);
+
+    void processRubberThread();
 
     void processEvent(SDL_Event& event, const float& wWidth, const float& wHeight);
 };
