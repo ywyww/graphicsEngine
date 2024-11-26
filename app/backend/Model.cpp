@@ -19,6 +19,7 @@ std::map<WorkModes, const char*> Model::modeMap = {
 
 Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(renderArea.h), windowWidth(renderArea.w), shiftX(renderArea.x), shiftY(renderArea.y)
 {
+    points = Nodes();
     lines = Nodes();
     polyLines = Nodes();
         
@@ -69,6 +70,11 @@ const float& Model::getHeight()
     return windowHeight;
 }
 
+Nodes& Model::getPoints()
+{
+    return points;
+}
+
 Nodes& Model::getLines()
 {
     return lines;
@@ -109,6 +115,35 @@ const WorkModes& Model::getMode()
 {
     return mode;
 }
+
+void Model::addPoint(Point* point)
+{
+    NodeGroup pnt;
+    pnt.node = point;
+    pnt.name = "point1";
+    pnt.type = ObjectType::POINT;
+
+    points.push_back(pnt);
+}
+
+bool Model::deletePoint(int idx)
+{
+    int counter = 0;
+    auto position = lines.begin();
+    while (position != lines.end() && counter < idx)
+    {
+        position ++;
+        counter++;
+    }
+
+    if (counter == idx)
+    {
+        lines.erase(position);
+        return true;
+    }
+    return false;
+}
+
 
 void Model::addLine(Line* line)
 {

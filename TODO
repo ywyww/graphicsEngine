@@ -9,9 +9,19 @@ LineInputData должен посылать view контроллеру.
 ======================= NOTE ======================= 
 
 ======================= TODO =======================
+[ ] debug: problem with point class
+[ ] add color and point size into points class.
+[ ] fix objects creation: do it on controller or on the objects.
+[#] dopisat operations
+[ ] dopisat` class Point`a: fragment shader and vertex shader
+
+[ ] add "zero" point - beginning for the transformation
+    [ ] also fix scale function: it works with absolute values.
+
+
+[ ] divide controller into different controllers: operations, ...
 [ ] add throw exception and control it.
 [ ] add grouping rectangle (vmesto rezinovoy nity vo vremya grupirovki)
-[ ] dopisat operations
 [ ] renderer`s grid + onn / off
 
 [ ] setIfLineModifable function refactoring: naming, geodata.   
@@ -19,7 +29,6 @@ LineInputData должен посылать view контроллеру.
 
 [ ] turn rubber thread into renderer class.
 [ ] изменить функцию определения точек: включить повороты и перемещения точки в формулы
-[ ] допилить изменение объектов
 [ ] form events in the classes.
 [ ] add Point class and then code refactoring: Line -> 2 points, Polyline: multiply points.
 [ ] add polylines editing mode
@@ -62,6 +71,7 @@ LineInputData должен посылать view контроллеру.
 ======================= TODO ======================= 
 
 ======================= DONE ======================= 
+[x] допилить изменение объектов
 [x] добавить тип узлов в класс NodeGroup: таким образом можно будет легче различать тип экземпляра
 [x] after change one line`s buffer, i change other line`s buffer.
 [x] problem: when i use updateBuffer, my lines are decept.

@@ -1,9 +1,14 @@
+#include <SDL2/SDL_rect.h>
+#include <map>
+
 #include "Types/Modes.h"
 #include "Types/Data.h"
+
 #include "Objects/Scene/Groups.h"
+#include "Objects/GL/Point.h"
+#include "Objects/GL/Line.h"
 #include "Objects/Polyline.h"
-#include "SDL2/SDL_rect.h"
-#include <map>
+
 
 #ifndef MODEL_H
 #define MODEL_H
@@ -25,6 +30,7 @@ class Model
     // [START]
     // take it into a scene.
 
+    Nodes points;
     Nodes lines;
     Nodes polyLines;
 
@@ -54,6 +60,10 @@ class Model
         const float& getWidth();
         const float& getHeight();
 
+        void setMode(const WorkModes& mode);
+        const WorkModes& getMode();
+
+        Nodes& getPoints();
         Nodes& getLines();
         Nodes& getPolylines();
 
@@ -62,14 +72,14 @@ class Model
         
         const ObjectType& getActiveNodeType();
     
-        void setMode(const WorkModes& mode);
-        const WorkModes& getMode();
-
-        bool deleteLine(int idx);
-        bool deletePolyLine(int idx);
+        void addPoint(Point* point);
+        bool deletePoint(int idx);
         
         void addLine(Line*);
+        bool deleteLine(int idx);
+        
         void addPolyLine(Polyline*);
+        bool deletePolyLine(int idx);
 };
 
 

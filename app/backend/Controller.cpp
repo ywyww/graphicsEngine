@@ -1,5 +1,15 @@
 #include "Controller.h"
 
+Point* Controller::createPoint(const float& x, const float& y)
+{
+    float width = model->getWidth();
+    float height = model->getHeight();
+    Point* point = new Point(
+        Translator::producePixelCoordinatesToGL(x, width),
+        Translator::producePixelCoordinatesToGL(y, height),
+        0
+    );
+}
 
 Line* Controller::createLine(const float& x1, const float& y1, const float& x2, const float& y2)
 {
@@ -44,6 +54,7 @@ Controller::Controller(Model* model)
     rubberDrawable = false;
 
     isPolylineCreationMode = false;
+    scaleX = scaleY = 0.0f;
 }
 
 Controller::~Controller()
@@ -75,7 +86,7 @@ NodeGroup* Controller::isObjectInSpace(const float& x, const float& y)      // c
 void Controller::translateObject(float relX, float relY)
 {
     NodeGroup* activeNode = model->getActiveNode();
-    if (model->getMode() == WorkModes::TRANSLATE && activeNode != nullptr)
+    if (activeNode != nullptr)
     {
         float border = 50;
             
@@ -100,7 +111,7 @@ void Controller::translateObject(float relX, float relY)
 void Controller::rotateObject(float relX, float relY)
 {
     NodeGroup* activeNode = model->getActiveNode();
-    if (model->getMode() == WorkModes::ROTATE && activeNode != nullptr)
+    if (activeNode != nullptr)
     {
         float border = 100;
             
@@ -122,10 +133,39 @@ void Controller::rotateObject(float relX, float relY)
     }
 }
 
+void Controller::scaleObject(float relX, float relY)   // maximum x5
+{
+    NodeGroup* activeNode = model->getActiveNode();
+    if (activeNode != nullptr)
+    {
+        float glXRel = 2 * relX / model->getWidth();
+        float glYRel = 2 * relY / model->getHeight();
+
+        float scale = 5;
+        //glXRel *= scale;
+        //glYRel *= scale;
+        
+        float value = sqrt(pow(glXRel, 2) + pow(glXRel, 2));
+
+        glXRel = scale * value;
+        glYRel = scale * value;
+
+        glm::mat4 transformation = activeNode->node->getTransformation();
+        transformation = glm::scale(transformation, glm::vec3(glXRel, glYRel, 1.0f));
+        activeNode->node->setTransformation(transformation);
+    }
+}
+
 void Controller::trySetActiveNode(float lastClickedX, float lastClickedY)
 {
     NodeGroup* node = isObjectInSpace(lastClickedX, lastClickedY);
     model->setActiveNode(node);
+}
+
+void Controller::addPoint(const float& x, const float& y)
+{
+    Point* point = createPoint(x, y);
+    model->addPoint(point);
 }
 
 void Controller::addLine(const float& x1, const float& y1, const float& x2, const float& y2)
@@ -280,6 +320,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
                 translateObject(xRel, -yRel);       // ubrat', postavit' flagi
             else if (mode == WorkModes::ROTATE)
                 rotateObject(xRel, -yRel);
+            
         }
     }
     if (event.type == SDL_MOUSEBUTTONDOWN && isCursorInRenderArea)
@@ -292,6 +333,11 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         if (mode == WorkModes::POINTER)     // also other nodes
         {
             trySetActiveNode(lastMouseDownX, lastMouseDownY); // ubrat', postavit' flagi
+        }
+
+        if (mode == WorkModes::CREATE_POINT)
+        {
+            addPoint(lastMouseDownX, lastMouseDownY);
         }
 
         if (mode == WorkModes::CREATE_POLYLINE)
@@ -346,6 +392,12 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             isLineModifable = false;
         }
 
+        if (mode == WorkModes::SCALE)
+        {
+            float aX = fabs(lastMouseDownX - lastMouseUpX);
+            float aY = fabs(-(lastMouseDownY - lastMouseUpY));
+            scaleObject(aX, aY);
+        }
         
     }
 

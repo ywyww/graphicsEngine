@@ -8,6 +8,7 @@
 #include <glm/mat3x3.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "app/backend/Objects/GL/Point.h"
 #include "app/backend/Objects/GL/Line.h"
 #include "app/backend/Objects/GL/Shader.h"
 
@@ -57,7 +58,7 @@ int main(int argc, char** args) {
 
     // END[CONTEXT_CREATION]
 
-    
+    glEnable(GL_PROGRAM_POINT_SIZE);
 
 	loop(window, windowW, windowH);
 
@@ -85,6 +86,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
     Model* model = new Model(glRenderArea);
     Controller* controller = new Controller(model);
     Renderer renderer = Renderer(model, controller);
+
+    Point point = Point(0, 0, 0);
 
     while (runningWindow)  
     {
@@ -114,6 +117,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 		glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        point.draw();
+        
 		// draw scene
 
         if (controller->rubberDrawable)
@@ -122,7 +127,6 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         }
 
         renderer.draw();
-
 
         // draw imgui
         ImGui_ImplOpenGL3_NewFrame();
