@@ -129,8 +129,8 @@ void Model::addPoint(Point* point)
 bool Model::deletePoint(int idx)
 {
     int counter = 0;
-    auto position = lines.begin();
-    while (position != lines.end() && counter < idx)
+    auto position = points.begin();
+    while (position != points.end() && counter < idx)
     {
         position ++;
         counter++;
@@ -138,7 +138,7 @@ bool Model::deletePoint(int idx)
 
     if (counter == idx)
     {
-        lines.erase(position);
+        points.erase(position);
         return true;
     }
     return false;

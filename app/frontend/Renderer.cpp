@@ -284,7 +284,9 @@ void Renderer::drawPoints()
         Point* point = dynamic_cast<Point*>(points[i].node);
 
         if (point != nullptr)
+        {
             point->draw();
+        }
         else
             std::cout << "ERROR IN DRAW POINT" << std::endl;
     }

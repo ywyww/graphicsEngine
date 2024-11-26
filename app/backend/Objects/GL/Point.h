@@ -15,7 +15,7 @@ class Point: public Object {
     GLuint VBO;
     Shader shader;
 
-    glm::vec3 coords;
+    float* coords;      // 3 float.
     glm::vec3 color;
 
     float pointSize;
@@ -26,7 +26,6 @@ private:
 public:
     Point();
     Point(const float& x, const float& y, const float& z);
-    Point(const glm::vec3& coords);
 
     void setPointSize(const float& size);
     const float& getPointSize();

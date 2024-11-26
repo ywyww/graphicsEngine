@@ -87,8 +87,6 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
     Controller* controller = new Controller(model);
     Renderer renderer = Renderer(model, controller);
 
-    Point point = Point(0, 0, 0);
-
     while (runningWindow)  
     {
         SDL_Event event;
@@ -117,8 +115,6 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 		glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        point.draw();
-        
 		// draw scene
 
         if (controller->rubberDrawable)
