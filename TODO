@@ -9,11 +9,10 @@ LineInputData должен посылать view контроллеру.
 ======================= NOTE ======================= 
 
 ======================= TODO =======================
-[ ] debug: problem with point class
+[ ] fix point work.
 [ ] add color and point size into points class.
 [ ] fix objects creation: do it on controller or on the objects.
 [#] dopisat operations
-[ ] dopisat` class Point`a: fragment shader and vertex shader
 
 [ ] add "zero" point - beginning for the transformation
     [ ] also fix scale function: it works with absolute values.
@@ -30,11 +29,9 @@ LineInputData должен посылать view контроллеру.
 [ ] turn rubber thread into renderer class.
 [ ] изменить функцию определения точек: включить повороты и перемещения точки в формулы
 [ ] form events in the classes.
-[ ] add Point class and then code refactoring: Line -> 2 points, Polyline: multiply points.
+[ ] code refactoring: Line -> 2 points, Polyline: multiply points.
 [ ] add polylines editing mode
 [ ] refactoring interface (нормальная палитра объектов, взаимодействие с объектом в отдельном окне: список возможных взаимодействий)
-[ ] add points to lines 
-[ ] points.
 [ ] NodeGroup формируется через new. Он хранит указатель на объект. При удалении NodeGroup удаляется и сам объект. 
     Итого утечка памяти (невозможно удалить NodeGroup)
 [ ] addActiveNodeType for no dynamic casts
@@ -71,6 +68,10 @@ LineInputData должен посылать view контроллеру.
 ======================= TODO ======================= 
 
 ======================= DONE ======================= 
+[x] dopisat` class Point`a: fragment shader and vertex shader
+[x] points.
+[x] add Point class 
+[x] debug: problem with point class
 [x] допилить изменение объектов
 [x] добавить тип узлов в класс NodeGroup: таким образом можно будет легче различать тип экземпляра
 [x] after change one line`s buffer, i change other line`s buffer.

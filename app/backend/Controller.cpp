@@ -9,6 +9,7 @@ Point* Controller::createPoint(const float& x, const float& y)
         Translator::producePixelCoordinatesToGL(y, height),
         0
     );
+    return point;
 }
 
 Line* Controller::createLine(const float& x1, const float& y1, const float& x2, const float& y2)

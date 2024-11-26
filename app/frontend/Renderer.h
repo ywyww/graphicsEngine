@@ -15,6 +15,7 @@ class Renderer {
 
 
 private:
+    void drawSceneTreePoints();
     void drawSceneTreeLines();
     void drawSceneTreePolylines();
     
@@ -29,6 +30,7 @@ public:
 
     // GL
     void draw();
+    void drawPoints();
     void drawLines();
     void drawPolylines();
 

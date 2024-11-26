@@ -37,6 +37,56 @@ void Renderer::drawStatusBar()
     ImGui::End();
 }
 
+void Renderer::drawSceneTreePoints()
+{
+    Nodes* points = &model->getPoints();
+    
+
+    if (ImGui::BeginMenu("Points"))
+    {   
+        for (int i = 0; i < points->size(); i++)
+        {
+            NodeGroup* node = &points->operator[](i);
+
+            Point* point = dynamic_cast<Point*>(node->node);
+
+            if (point == nullptr)
+            {
+                // "bad cast: object->point"
+                throw std::bad_cast();
+            }
+
+            // beginMenu has own name. It shouldn't change. So:
+            const char* lineMenuName = ("Point #" + std::to_string(i + 1)).c_str();
+
+            if (ImGui::BeginMenu(lineMenuName))
+            {
+                ImGui::Text("Point name: %s", node->name.c_str());
+
+                ImGui::InputText("Line name", lineInput->lineName, lineInput->lineNameSize);
+                if (ImGui::Button("Change name"))
+                {
+                    node->name = std::string(lineInput->lineName, lineInput->lineNameSize);
+                }
+
+                if (ImGui::Button("Set active"))
+                {
+                    model->setActiveNode(node);
+                }
+
+                if (ImGui::Button("Delete point"))
+                {
+                    if (!model->deletePoint(i))
+                        std::cout << "cannot delete";                    
+                }
+
+                ImGui::EndMenu();
+            }
+        }
+
+        ImGui::EndMenu();
+    }
+}
 void Renderer::drawSceneTreeLines()
 {
     Nodes* lines = &model->getLines();
@@ -147,6 +197,7 @@ void Renderer::drawSceneTree()
 {
     ImGui::Begin("Scene Tree");
 
+    drawSceneTreePoints();
     drawSceneTreeLines();
     drawSceneTreePolylines();
 
@@ -220,8 +271,23 @@ void Renderer::drawModes()
 
 void Renderer::draw()
 {
+    drawPoints();
     drawLines();
     drawPolylines();
+}
+
+void Renderer::drawPoints()
+{
+    Nodes points = model->getPoints();
+    for (int i = 0; i < points.size(); i++)
+    {
+        Point* point = dynamic_cast<Point*>(points[i].node);
+
+        if (point != nullptr)
+            point->draw();
+        else
+            std::cout << "ERROR IN DRAW POINT" << std::endl;
+    }
 }
 
 void Renderer::drawLines()
