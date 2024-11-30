@@ -17,11 +17,11 @@
 class Model
 {
     // doubling data.
-    const SDL_Rect renderRect;
-    const float shiftX;
-    const float shiftY;
-    const float windowWidth;    // viewport dimensions.
-    const float windowHeight;   // viewport dimensions.
+    SDL_Rect renderRect;
+    float shiftX;
+    float shiftY;
+    float windowWidth;    // viewport dimensions.
+    float windowHeight;   // viewport dimensions.
 
     float cursorX;
     float cursorY;
@@ -89,6 +89,9 @@ class Model
         
         void addPolyLine(Polyline*);
         bool deletePolyLine(int idx);
+
+        //friend std::ostream& operator<<(std::ostream& os, const Model& model);
+        //friend std::istream& operator>>(std::istream& is, Model& model);
 };
 
 

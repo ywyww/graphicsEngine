@@ -224,3 +224,33 @@ bool Model::deletePolyLine(int idx)
     }
     return false;
 }
+
+// std::ostream& operator<<(std::ostream& os, const Model& model)
+// {
+//     os << model.renderRect.h << " " << model.renderRect.w << " " << model.renderRect.x << " " << model.renderRect.y << "\n"
+//     << model.shiftX << " " << model.shiftY << "\n"
+//     << model.windowWidth << " " << model.windowHeight << "\n"
+//     << model.cursorX << " " << model.cursorY << "\n"
+//     << model.centerX << " " << model.centerY << "\n"
+//     << ObjectType::NULLTYPE << "\n"
+//     << WorkModes::POINTER << "\n";
+
+//     // how to nodes data?
+
+//     return os;
+// }
+
+// std::istream& operator>>(std::istream& is, Model& model)
+// {
+//     is >> model.renderRect.h >> model.renderRect.w >> model.renderRect.x >> model.renderRect.y;
+//     is >> model.shiftX >> model.shiftY;
+//     is >> model.windowWidth >> model.windowHeight;
+//     is >> model.cursorX >> model.cursorY;
+//     is >> model.centerX >> model.centerY;
+//     is >> model.activeNodeType;
+//     is >> model.mode;
+
+//     model.activeNode = nullptr;
+    
+//     return is;
+// }

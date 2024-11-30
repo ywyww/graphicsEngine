@@ -10,6 +10,7 @@ LineInputData должен посылать view контроллеру.
 
 
 ======================= TODO =======================
+[ ] check Model class: glRenderArea width and window width.
 [ ] upload button
 [ ] save button
 
