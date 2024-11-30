@@ -65,6 +65,9 @@ public:
     void translateObject(float relX, float relY);      // now only lines, then all objects.
     void rotateObject(float relX, float relY);
     void scaleObject(float relX, float relY);
+    void mirrorObject(float lastUpX, float lastUpY);
+
+    void projectionObject(float lastUpX, float lastUpY);        // implement
     
     void addPoint(const float& x, const float& y);
     void addLine(const float& x1, const float& y1, const float& x2, const float& y2);

@@ -277,17 +277,20 @@ void Renderer::drawSettings()
     float centerY = model->getCenterY();
     
     if (ImGui::InputFloat("CenterX", &centerX))
+    {
         model->setCenterX(centerX);
+    }
 
     if (ImGui::InputFloat("CenterY", &centerY))
+    {
         model->setCenterY(centerY);
+    }
 
     ImGui::End();
 }
 
 void Renderer::draw()
 {
-    
     drawPoints();
     drawLines();
     drawPolylines();

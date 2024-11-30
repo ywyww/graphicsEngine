@@ -208,6 +208,31 @@ void Controller::scaleObject(float relX, float relY)   // maximum x5
     }
 }
 
+void Controller::mirrorObject(float lastUpX, float lastUpY)
+{
+    NodeGroup* activeNode = model->getActiveNode();
+    if (activeNode != nullptr)
+    {
+        glm::vec2 vecToMirror = glm::vec2(lastUpX - model->getCenterX(), lastUpY - model->getCenterY());
+        
+        float glXRel = 2 * vecToMirror.x / model->getWidth();
+        float glYRel = 2 * vecToMirror.y / model->getHeight();
+
+        float scaleValX;
+        float scaleValY;
+        scaleValX = scaleValY = 1;
+
+        if (glXRel < 0)
+            scaleValX = -1;
+        if (glYRel < 0)
+            scaleValY = -1;
+
+        glm::mat4 transformation = activeNode->node->getTransformation();
+        transformation = glm::scale(transformation, glm::vec3(scaleValX, scaleValY, 1.0f));
+        activeNode->node->setTransformation(transformation);
+    } 
+}
+
 void Controller::trySetActiveNode(float lastClickedX, float lastClickedY)
 {
     NodeGroup* node = isObjectInSpace(lastClickedX, lastClickedY);
@@ -348,7 +373,11 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
    
     // get active node 
 
-    float* centerPointBuff = new float[3] {model->getCenterX(), model->getCenterY(), 0.0f};
+    float* centerPointBuff = new float[3] {
+        Translator::producePixelCoordinatesToGL(model->getCenterX(), glRenderArea.w), 
+        Translator::producePixelCoordinatesToGL(model->getCenterY(), glRenderArea.h), 
+        0.0f};
+
     centerPoint.updateBuffer(centerPointBuff);
 
     if (event.type == SDL_MOUSEMOTION)
@@ -375,8 +404,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             if (mode == WorkModes::TRANSLATE)
                 translateObject(xRel, -yRel);       // ubrat', postavit' flagi
             else if (mode == WorkModes::ROTATE)
-                rotateObject(xRel, -yRel);
-            
+                rotateObject(xRel, -yRel);            
         }
     }
     if (event.type == SDL_MOUSEBUTTONDOWN && isCursorInRenderArea)
@@ -453,6 +481,11 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             float aX = lastMouseDownX - lastMouseUpX;
             float aY = lastMouseDownY - lastMouseUpY;
             scaleObject(-aX, aY);
+        }
+
+        if (mode == WorkModes::MIRROR)
+        {
+            mirrorObject(lastMouseUpX, lastMouseUpY);
         }
         
     }

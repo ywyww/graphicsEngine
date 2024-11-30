@@ -10,17 +10,15 @@ LineInputData должен посылать view контроллеру.
 
 
 ======================= TODO =======================
-[ ] refactor: centerPoint
-[ ] add start point. (for operations)
-[ ] fix line modification
-[ ] after changin operation: set transformation matrix identity and apply transformation matrix on buffer.
 [ ] upload button
 [ ] save button
 
+[ ] add object grouping 
 ======================= TODO =======================
 
 ======================= TODO (OLD) =======================
-
+[ ] after changin operation: set transformation matrix identity and apply transformation matrix on buffer.
+[ ] fix renderInputData
 [ ] add color and point size into points class.
 [ ] fix objects creation: do it on controller or on the objects.
 
@@ -74,6 +72,9 @@ LineInputData должен посылать view контроллеру.
 ======================= TODO (OLD) ======================= 
 
 ======================= DONE ======================= 
+[x] add mirroring
+[x] refactor: centerPoint   (make in normal coordinates)
+[x] add start point. (for operations)
 [x] fix scale function
 [#] dopisat operations
 [x] fix point belong function: add transformation data into coordinates
@@ -150,6 +151,7 @@ LineInputData должен посылать view контроллеру.
 
 
 ======================= NONE ======================= 
+[-] add projection operation
 [-] after adding set object to active node
 [-] refactoring: xml other enum with stringss
 [-] radiobutton for enum to change modes

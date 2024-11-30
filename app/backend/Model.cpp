@@ -28,8 +28,8 @@ Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(r
     activeNode = nullptr;
     activeNodeType = ObjectType::NULLTYPE;
 
-    centerX = 0;
-    centerY = 0;
+    centerX = windowWidth / 2;
+    centerY = windowHeight / 2;
 }
 
 Model::~Model()
