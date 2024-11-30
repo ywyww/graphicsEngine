@@ -27,6 +27,9 @@ Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(r
 
     activeNode = nullptr;
     activeNodeType = ObjectType::NULLTYPE;
+
+    centerX = 0;
+    centerY = 0;
 }
 
 Model::~Model()
@@ -59,6 +62,27 @@ void Model::setCursorY(const float& cursorY)
 {
     this->cursorY = cursorY;
 }
+
+const float& Model::getCenterX()
+{
+    return centerX;
+}
+
+void Model::setCenterX(const float& x)
+{
+    centerX = x;
+}
+
+const float& Model::getCenterY()
+{
+    return centerY;
+}
+
+void Model::setCenterY(const float& y)
+{
+    centerY = y;
+}
+
 
 const float& Model::getWidth()
 {

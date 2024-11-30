@@ -22,7 +22,8 @@ public:
     void addDot(float dotX, float dotY);
 
     void setTransformation(const glm::mat4x4& transformation) override;
-    // set transformation for current lines and for all 
+
+    bool isPointBelongs(const float& x, const float& y, const float z, const float& wWidth, const float& wHeight, bool coefficientTrim = true, float precision=0.03f);   // only 2d  // point in human coordinates
 
     void draw() override;
 };

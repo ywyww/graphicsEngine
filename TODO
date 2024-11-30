@@ -8,11 +8,21 @@
 LineInputData должен посылать view контроллеру.
 ======================= NOTE ======================= 
 
+
 ======================= TODO =======================
-[ ] fix point work.
+[ ] refactor: centerPoint
+[ ] add start point. (for operations)
+[ ] fix line modification
+[ ] after changin operation: set transformation matrix identity and apply transformation matrix on buffer.
+[ ] upload button
+[ ] save button
+
+======================= TODO =======================
+
+======================= TODO (OLD) =======================
+
 [ ] add color and point size into points class.
 [ ] fix objects creation: do it on controller or on the objects.
-[#] dopisat operations
 
 [ ] add "zero" point - beginning for the transformation
     [ ] also fix scale function: it works with absolute values.
@@ -47,15 +57,12 @@ LineInputData должен посылать view контроллеру.
 [ ] write info in special files, not in code 
 [ ] add keyboard input to controll the lines
 
-[ ] upload button
-[ ] save button
 [ ] copy & past buttons
 
 [ ] make own class for each type x - glRenderArea.xof objects
 [ ] make structure for Controller`s objects 
 
 [ ] fix point belong function: one line overlaps another
-[ ] fix point belong function: add transformation data into coordinates
 [ ] if x1 == x2 or y1 == y2 in LineBelongFunction, it isn`t work
 
 [ ] make different threads for computing and rendering
@@ -63,11 +70,16 @@ LineInputData должен посылать view контроллеру.
 [ ] make a logger
 
 [ ] camera class
-
-
-======================= TODO ======================= 
+[ ] scaling polzunok
+======================= TODO (OLD) ======================= 
 
 ======================= DONE ======================= 
+[x] fix scale function
+[#] dopisat operations
+[x] fix point belong function: add transformation data into coordinates
+[x] add belong to the polyline
+[x] fix pointBelong (rotation etc)
+[x] fix point work.
 [x] dopisat` class Point`a: fragment shader and vertex shader
 [x] points.
 [x] add Point class 

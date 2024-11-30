@@ -44,6 +44,16 @@ void Polyline::setTransformation(const glm::mat4x4& transformation)
     }
 }
 
+bool Polyline::isPointBelongs(const float& x, const float& y, const float z, const float& width, const float& height, bool coefficientTrim, float precision)  // only 2d
+{
+    for (int i = 0; i < lines.size(); i++)
+    {
+        if (lines[i]->isPointBelongs(x, y, z, width, height, coefficientTrim, precision))
+            return true;
+    }
+    return false;
+}
+
 void Polyline::draw()
 {
     for (int i = 0; i < lines.size(); i++)

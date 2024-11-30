@@ -124,6 +124,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
         renderer.draw();
 
+        controller->centerPoint.draw();
+        
         // draw imgui
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame();
@@ -132,6 +134,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         renderer.drawSceneTree();
         renderer.drawStatusBar();
         renderer.drawModes();
+        renderer.drawSettings();
         
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

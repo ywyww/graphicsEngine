@@ -104,21 +104,20 @@ bool Line::isGLPointBelongs(const float& x, const float& y, const float z)    //
     return false;
 }
 
-bool Line::isPointBelongs(const float& x, const float& y, const float z, const float width, const float height, bool coefficientTrim, float precision)  // only 2d
+bool Line::isPointBelongs(const float& x, const float& y, const float z, const float& width, const float& height, bool coefficientTrim, float precision)  // only 2d
 {
     // x(t) = x1 + (x2 - x1) * t, 0 <= t <= 1
 
-    float x1Normal = width * (buffer[0] + 1) / 2;
-    float x2Normal = width * (buffer[3] + 1) / 2;
+    glm::vec4 transformedP1 = transformation * glm::vec4(buffer[0], buffer[1], 1, 1);
+    glm::vec4 transformedP2 = transformation * glm::vec4(buffer[3], buffer[4], 1, 1);
+
+    float x1Normal = width * (transformedP1[0] + 1) / 2;
+    float y1Normal = height * (transformedP1[1] + 1) / 2;
      
-    float y1Normal = height * (buffer[1] + 1) / 2;
-    float y2Normal = height * (buffer[4] + 1) / 2;
+    float x2Normal = width * (transformedP2[0] + 1) / 2;
+    float y2Normal = height * (transformedP2[1] + 1) / 2;
         
-    // if (x2Normal == x1Normal == x)
-    //     throw std::invalid_argument("add later (x)");
-    // else if (y2Normal == y1Normal == x)
-    //     throw std::invalid_argument("add later (y)");
-    
+
     float xCoefficient = (x - x1Normal) / (x2Normal - x1Normal);
     float yCoefficient = (y - y1Normal) / (y2Normal - y1Normal);
     
@@ -127,7 +126,7 @@ bool Line::isPointBelongs(const float& x, const float& y, const float z, const f
         if (xCoefficient > 1 || xCoefficient < -1 || yCoefficient > 1 || yCoefficient < -1)
             return false;
     }
-        
+
 
     if (xCoefficient >= yCoefficient)
         return xCoefficient - yCoefficient < precision;

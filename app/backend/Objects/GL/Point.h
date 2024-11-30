@@ -37,6 +37,8 @@ public:
     GLuint getVBO();
     GLuint getShaderID();
 
+    void updateBuffer(float* buff);     // 3 floats
+
     void draw() override;
 };
 

@@ -26,6 +26,9 @@ class Model
     float cursorX;
     float cursorY;
 
+    float centerX;
+    float centerY;
+
 
     // [START]
     // take it into a scene.
@@ -56,6 +59,12 @@ class Model
 
         const float& getCursorY();
         void setCursorY(const float& cursorY);
+
+        const float& getCenterX();
+        void setCenterX(const float& x);
+
+        const float& getCenterY();
+        void setCenterY(const float& y);
 
         const float& getWidth();
         const float& getHeight();

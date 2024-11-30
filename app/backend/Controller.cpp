@@ -1,5 +1,57 @@
 #include "Controller.h"
 
+NodeGroup* Controller::isPointInSpace(const float& x, const float& y)
+{
+    // implement
+    return nullptr;
+}
+
+NodeGroup* Controller::isLineInSpace(const float& x, const float& y)
+{
+    NodeGroup* current = new NodeGroup();
+    Nodes lines = model->getLines();
+    for (int i = 0; i < lines.size(); i++)
+    {
+        Line* line = dynamic_cast<Line*>(lines.operator[](i).node);
+        if (line != nullptr && line->isPointBelongs(x, y, 0, model->getWidth(), model->getHeight(), true, 0.07))
+        {
+            current->node = lines[i].node;
+            current->name = lines[i].name;
+            current->type = lines[i].type;
+        }
+    }
+    if (current->node == nullptr)
+    {
+        delete current;
+        current = nullptr;
+    }
+    return current;
+}
+
+NodeGroup* Controller::isPolylineInSpace(const float& x, const float& y)
+{
+    NodeGroup* current = new NodeGroup();
+    Nodes polylines = model->getPolylines();
+    for (int i = 0; i < polylines.size(); i++)
+    {
+        Polyline* polyline = dynamic_cast<Polyline*>(polylines.operator[](i).node);
+        if (polyline != nullptr && polyline->isPointBelongs(x, y, 0, model->getWidth(), model->getHeight(), true, 0.07))
+        {
+            current->node = polylines[i].node;
+            current->name = polylines[i].name;
+            current->type = polylines[i].type;
+        }
+    }
+    if (current->node == nullptr)
+    {
+        delete current;
+        current = nullptr;
+    }
+    return current;
+}
+
+
+
 Point* Controller::createPoint(const float& x, const float& y)
 {
     float width = model->getWidth();
@@ -56,6 +108,8 @@ Controller::Controller(Model* model)
 
     isPolylineCreationMode = false;
     scaleX = scaleY = 0.0f;
+
+    centerPoint = Point(0, 0, 0);
 }
 
 Controller::~Controller()
@@ -64,24 +118,19 @@ Controller::~Controller()
 
 NodeGroup* Controller::isObjectInSpace(const float& x, const float& y)      // can be problems here.
 {
-    NodeGroup* current = new NodeGroup();
-    Nodes lines = model->getLines();
-    for (int i = 0; i < lines.size(); i++)
-    {
-        Line* line = dynamic_cast<Line*>(lines.operator[](i).node);
-        if (line != nullptr && line->isPointBelongs(x, y, 0, model->getWidth(), model->getHeight(), true, 0.07))
-        {
-            current->node = lines[i].node;
-            current->name = lines[i].name;
-            current->type = lines[i].type;
-        }
-    }
-    if (current->node == nullptr)
-    {
-        delete current;
-        current = nullptr;
-    }
-    return current;
+    NodeGroup* obj = isPointInSpace(x, y);
+    if (obj != nullptr)
+       return obj;
+    
+    obj = isLineInSpace(x, y);
+    if (obj != nullptr)
+        return obj;
+
+    obj = isPolylineInSpace(x, y);
+    if (obj != nullptr)
+        return obj;
+    
+    return nullptr;
 }
 
 void Controller::translateObject(float relX, float relY)
@@ -142,17 +191,19 @@ void Controller::scaleObject(float relX, float relY)   // maximum x5
         float glXRel = 2 * relX / model->getWidth();
         float glYRel = 2 * relY / model->getHeight();
 
-        float scale = 5;
-        //glXRel *= scale;
-        //glYRel *= scale;
+        float scale = 1.0f;                                 // make polzunok for scaling
         
-        float value = sqrt(pow(glXRel, 2) + pow(glXRel, 2));
+        float value = 1 + sqrt(pow(glXRel, 2) + pow(glXRel, 2));
+        value *= scale;
+        std::cout << glXRel << std::endl;
 
-        glXRel = scale * value;
-        glYRel = scale * value;
+        if (glXRel < 0)
+        {
+            value = 1 / value;
+        }
 
         glm::mat4 transformation = activeNode->node->getTransformation();
-        transformation = glm::scale(transformation, glm::vec3(glXRel, glYRel, 1.0f));
+        transformation = glm::scale(transformation, glm::vec3(value, value, 1.0f));
         activeNode->node->setTransformation(transformation);
     }
 }
@@ -245,17 +296,18 @@ bool Controller::setIfLineModifable(const float& precision) // if we on
 void Controller::modifyLine()
 {
     NodeGroup* active = model->getActiveNode();
-    if (active != nullptr)
+    if (active != nullptr && active->type == ObjectType::LINE)
     {
         Line* line = dynamic_cast<Line*>(active->node);
+        glm::mat4 transformation = line->getTransformation();
         if (line != nullptr)
         {
             float* buffer = line->getBuffer();
             float* to = new float[6]{ 0, 0, 0, 0, 0, 0};
 
-
             int otherIdx = (xModifableIdx + 3) % 6;
             int otherIdx2 = (yModifableIdx + 3) % 6;
+
             to[otherIdx] =  buffer[otherIdx];
             to[otherIdx2] =  buffer[otherIdx2];
 
@@ -295,6 +347,9 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
     WorkModes mode = model->getMode();
    
     // get active node 
+
+    float* centerPointBuff = new float[3] {model->getCenterX(), model->getCenterY(), 0.0f};
+    centerPoint.updateBuffer(centerPointBuff);
 
     if (event.type == SDL_MOUSEMOTION)
     {
@@ -395,9 +450,9 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
 
         if (mode == WorkModes::SCALE)
         {
-            float aX = fabs(lastMouseDownX - lastMouseUpX);
-            float aY = fabs(-(lastMouseDownY - lastMouseUpY));
-            scaleObject(aX, aY);
+            float aX = lastMouseDownX - lastMouseUpX;
+            float aY = lastMouseDownY - lastMouseUpY;
+            scaleObject(-aX, aY);
         }
         
     }
@@ -407,7 +462,6 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         isPolylineCreationMode = false;
     }
    
-
 
     processRubberThread();
     // process Controller's events.

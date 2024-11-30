@@ -37,13 +37,18 @@ class Controller    // unique coordinates.
 
     float scaleX, scaleY;
 
+
 public:
     Line* rubberThread;
     bool rubberDrawable;
-
+    Point centerPoint;
 
 private:
     
+    NodeGroup* isPointInSpace(const float& x, const float& y);  // implement
+    NodeGroup* isLineInSpace(const float& x, const float& y);
+    NodeGroup* isPolylineInSpace(const float& x, const float& y);
+
     Point* createPoint(const float& x, const float& y);
     Line* createLine(const float& x1, const float& y1, const float& x2, const float& y2);
     Polyline* createPolyline(const float& x0, const float& y0);
