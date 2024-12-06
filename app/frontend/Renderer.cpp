@@ -271,10 +271,27 @@ void Renderer::drawModes()
 
 void Renderer::drawSettings()
 {
-    ImGui::Begin("Settings");
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("Save project", "Ctrl+S", false, true))
+            {
+                std::cout << "SAVED" << std::endl;                      // послать сигнал контроллеру
+            }
+            if (ImGui::MenuItem("Read project", "Ctrl+O", false, true))
+            {
+                std::cout << "Readed" << std::endl;                     // послать сигнал контроллеру
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
 
     float centerX = model->getCenterX();
     float centerY = model->getCenterY();
+    
+    ImGui::Begin("Settings");
     
     if (ImGui::InputFloat("CenterX", &centerX))
     {

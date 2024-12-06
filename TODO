@@ -10,20 +10,15 @@ LineInputData должен посылать view контроллеру.
 
 
 ======================= TODO =======================
-[ ] нужно выделить место под объекты предварительно.
-[ ] split serialization process into save/load
-[ ] fix operations: учитывать данные из матрицы трансформации при проведении операций.
-[ ] operator << and operator >> for all classes.
+[ ] add object grouping 
 
+[ ] fix operations: учитывать данные из матрицы трансформации при проведении операций.
 [ ] fix scaling and mirroring
     mirror: division by the point
     scaling: absolute coordinates
 
 [ ] check Model class: glRenderArea width and window width.
-[ ] upload button
-[ ] save button
-
-[ ] add object grouping 
+[ ] добавить флажки: isFileReading | isFileSaving в модель, активировать через рендер и обрабатывать на контроллере
 ======================= TODO =======================
 
 ======================= TODO (OLD) =======================
@@ -81,6 +76,11 @@ LineInputData должен посылать view контроллеру.
 ======================= TODO (OLD) ======================= 
 
 ======================= DONE ======================= 
+[#] upload button
+[#] save button
+[x] file saving and loading. (boost)
+[x] split serialization process into save/load
+[x] operator << and operator >> for all classes. [ не нужен -> boost]
 [x] add "zero" point - beginning for the transformation
 [x] add mirroring
 [x] refactor: centerPoint   (make in normal coordinates)
@@ -161,6 +161,7 @@ LineInputData должен посылать view контроллеру.
 
 
 ======================= NONE ======================= 
+[-] нужно выделить место под объекты предварительно.
 [-] add projection operation
 [-] after adding set object to active node
 [-] refactoring: xml other enum with stringss

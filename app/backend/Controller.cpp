@@ -366,6 +366,7 @@ void Controller::processRubberThread()
         rubberDrawable = false;
     }
 }
+
 void Controller::processEvent(SDL_Event& event, const float& wWidth, const float& wHeight)      // get full model data in 1 structure
 {
     SDL_Rect glRenderArea = model->getRenderRect();
