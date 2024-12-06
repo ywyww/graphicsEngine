@@ -2,16 +2,16 @@
 
 Saver::Saver() {}
 
-bool Saver::saveIntoAFile(std::string filename, const Model* model)
+bool Saver::saveIntoAFile(std::string filename, const Model& model)
 {
     try
     {
-        std::ofstream filestream = std::ofstream(filename, std::ios_base::out);
+        std::ofstream ofs(filename, std::ios::out);
+        boost::archive::text_oarchive oa(ofs);
 
-        filestream << model;
+        oa << model;
 
-        filestream.close();
-
+        ofs.close();
         return true;
     }
     catch (std::exception &e)
@@ -21,22 +21,21 @@ bool Saver::saveIntoAFile(std::string filename, const Model* model)
     return false;
 }
 
-bool Saver::readFromFile(std::string filename, Model* model)
+bool Saver::readFromAFile(std::string filename, Model& model)
 {
-    // try
-    // {
-    //     std::fstream filestream = std::fstream(filename);
+    try
+    {
+        std::fstream ifs(filename, std::ios::in);
+        boost::archive::text_iarchive ia(ifs);
 
-    //     while (!filestream.eof())
-    //         filestream >> model;
-    //     filestream.close();
-    
-    //     return true;
-    // }
-    // catch (std::exception &e)
-    // {
-    //     std::cout << e.what() << std::endl;
-    // }
+        ia >> model;
 
+        ifs.close();
+        return true;
+    }
+    catch (std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
+    }
     return false;
 }

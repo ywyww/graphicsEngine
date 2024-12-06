@@ -10,7 +10,15 @@ LineInputData должен посылать view контроллеру.
 
 
 ======================= TODO =======================
-[ ] serialization branch
+[ ] нужно выделить место под объекты предварительно.
+[ ] split serialization process into save/load
+[ ] fix operations: учитывать данные из матрицы трансформации при проведении операций.
+[ ] operator << and operator >> for all classes.
+
+[ ] fix scaling and mirroring
+    mirror: division by the point
+    scaling: absolute coordinates
+
 [ ] check Model class: glRenderArea width and window width.
 [ ] upload button
 [ ] save button
@@ -19,14 +27,13 @@ LineInputData должен посылать view контроллеру.
 ======================= TODO =======================
 
 ======================= TODO (OLD) =======================
+[ ] fix save and read from file: refactoring to JSON 
+    -> event based architecture implement
+
 [ ] after changin operation: set transformation matrix identity and apply transformation matrix on buffer.
 [ ] fix renderInputData
 [ ] add color and point size into points class.
 [ ] fix objects creation: do it on controller or on the objects.
-
-[ ] add "zero" point - beginning for the transformation
-    [ ] also fix scale function: it works with absolute values.
-
 
 [ ] divide controller into different controllers: operations, ...
 [ ] add throw exception and control it.
@@ -74,6 +81,7 @@ LineInputData должен посылать view контроллеру.
 ======================= TODO (OLD) ======================= 
 
 ======================= DONE ======================= 
+[x] add "zero" point - beginning for the transformation
 [x] add mirroring
 [x] refactor: centerPoint   (make in normal coordinates)
 [x] add start point. (for operations)

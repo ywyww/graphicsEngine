@@ -9,6 +9,7 @@
 #include "Objects/GL/Line.h"
 #include "Objects/Polyline.h"
 
+#include <boost/serialization/access.hpp>
 
 #ifndef MODEL_H
 #define MODEL_H
@@ -16,6 +17,38 @@
 
 class Model
 {
+    friend class boost::serialization::access;
+
+    template <class Archive>
+    void serialize(Archive& ar, const unsigned int version)
+    {
+        ar & renderRect.w;
+        ar & renderRect.h;
+        ar & renderRect.x;
+        ar & renderRect.y;
+
+        ar & shiftX;
+        ar & shiftY;
+
+        ar & windowWidth;
+        ar & windowHeight;
+        
+        ar & cursorX;
+        ar & cursorY;
+
+        ar & centerX;
+        ar & centerY;
+
+        ar & activeNodeType;
+        ar & mode;
+
+        ar & points;
+
+        ar & lines;
+
+        ar & polyLines;
+    }
+
     // doubling data.
     SDL_Rect renderRect;
     float shiftX;

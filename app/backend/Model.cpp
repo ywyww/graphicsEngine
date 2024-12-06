@@ -233,9 +233,11 @@ bool Model::deletePolyLine(int idx)
 //     << model.cursorX << " " << model.cursorY << "\n"
 //     << model.centerX << " " << model.centerY << "\n"
 //     << ObjectType::NULLTYPE << "\n"
-//     << WorkModes::POINTER << "\n";
+//     << WorkModes::POINTER << "\n"
+//     << model.points << "\n"
+//     << model.lines << "\n"
+//     << model.polyLines << "\n";
 
-//     // how to nodes data?
 
 //     return os;
 // }
@@ -247,10 +249,20 @@ bool Model::deletePolyLine(int idx)
 //     is >> model.windowWidth >> model.windowHeight;
 //     is >> model.cursorX >> model.cursorY;
 //     is >> model.centerX >> model.centerY;
-//     is >> model.activeNodeType;
-//     is >> model.mode;
+
+//     int nodeType;
+
+//     is >> nodeType;
+//     model.activeNodeType = static_cast<ObjectType>(nodeType);
+
+//     int mode;
+//     is >> mode;
+//     model.mode = static_cast<WorkModes>(mode);
 
 //     model.activeNode = nullptr;
+
     
-//     return is;
+
+            
+//     return is;  
 // }

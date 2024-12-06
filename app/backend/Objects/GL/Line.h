@@ -6,11 +6,45 @@
 #include "Shader.h"
 #include "../../Interfaces/Object.h"
 
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/split_member.hpp>
+
 #ifndef LINES_H
 #define LINES_H
 
 class Line: public Object
 {
+    friend class boost::serialization::access;
+    
+    template <class Archive>
+    void save(Archive& ar, const unsigned int version) const
+    {
+        ar & boost::serialization::base_object<Object>(*this);
+        
+        for (int i = 0; i < 6; i++)
+            ar & buffer[i];
+
+        for (int i = 0; i < 3; i++)
+            ar & color[i];
+
+    }
+
+    template <class Archive>
+    void load(Archive& ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<Object>(*this);
+        
+        for (int i = 0; i < 6; i++)
+            ar & buffer[i];
+
+        for (int i = 0; i < 3; i++)
+            ar & color[i];
+
+        updateBuffer(buffer);
+    }
+
+    BOOST_SERIALIZATION_SPLIT_MEMBER();
+
     GLuint VAO;
     GLuint VBO;
     Shader shader;

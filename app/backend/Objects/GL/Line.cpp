@@ -84,9 +84,12 @@ void Line::updateBuffer(float* data)    // 6 floats
 {
     if (data != nullptr)
     {
-        delete buffer;
-        buffer = data;
-
+        if (buffer != data)
+        {
+            delete buffer;
+            buffer = data;
+        }
+        
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
             glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, data, GL_DYNAMIC_DRAW);

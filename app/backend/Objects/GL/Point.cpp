@@ -73,9 +73,12 @@ void Point::updateBuffer(float* data)
 {
     if (data != nullptr)
     {
-        delete coords;
-        coords = data;
-
+        if (coords != data)
+        {
+            delete coords;
+            coords = data;
+        }
+        
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
             glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3, data, GL_DYNAMIC_DRAW);

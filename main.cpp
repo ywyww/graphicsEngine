@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
@@ -8,9 +9,10 @@
 #include <glm/mat3x3.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "app/Saver.h"
+#include "app/backend/Objects/GL/Shader.h"
 #include "app/backend/Objects/GL/Point.h"
 #include "app/backend/Objects/GL/Line.h"
-#include "app/backend/Objects/GL/Shader.h"
 
 #include "app/backend/Model.h"
 #include "app/backend/Controller.h"
@@ -19,7 +21,6 @@
 #include "include/imgui_impl_sdl2.h"
 #include "include/imgui_impl_opengl3.h"
 #include "include/imgui.h"
-
 
 void loop(SDL_Window* window, const float& wWidth, const float& wHeight);
 
@@ -60,8 +61,7 @@ int main(int argc, char** args) {
 
     glEnable(GL_PROGRAM_POINT_SIZE);
 
-	loop(window, windowW, windowH);
-
+    loop(window, windowW, windowH);
 
     // [CONTEXT DESTROYING]
 	ImGui_ImplOpenGL3_Shutdown();
@@ -87,6 +87,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
     Controller* controller = new Controller(model);
     Renderer renderer = Renderer(model, controller);
 
+    std::string filename = "temp";
+
     while (runningWindow)  
     {
         SDL_Event event;
@@ -100,6 +102,24 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
             }
 
             controller->processEvent(event, wWidth, wHeight);
+
+            if (event.type == SDL_KEYDOWN)
+            {
+                if (event.key.keysym.sym == SDLK_s)
+                {
+                    if (Saver::saveIntoAFile(filename, *model))
+                        std::cout << "Sucess to save" << std::endl;
+                    else
+                        std::cout << "Raised problem" << std::endl;
+                }
+                else if (event.key.keysym.sym == SDLK_r)
+                {
+                    if (Saver::readFromAFile(filename, *model))
+                        std::cout << "Sucess to read" << std::endl;
+                    else
+                        std::cout << "Raised problem" << std::endl;
+                }
+            }
         }
         // clear imgui buffer
         glViewport(0, 0, wWidth, wHeight);

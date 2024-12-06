@@ -4,11 +4,25 @@
 #include "../Interfaces/Object.h"
 #include "../Helpers/Translator.h"
 
+#include <boost/serialization/access.hpp>
+
 #ifndef POLYLINE_H
 #define POLYLINE_H
 
 class Polyline: public Object
 {
+    friend class boost::serialization::access;
+
+    template <class Archive>
+    void serialize(Archive& ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<Object>(*this);
+
+        ar & dots;
+        ar & lines; 
+        ar & previousDot;
+    }
+
     std::vector<std::pair<float, float>> dots;
     std::vector<Line*> lines;
     
