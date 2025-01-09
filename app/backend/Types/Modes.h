@@ -8,6 +8,7 @@ enum WorkModes {
     CREATE_POINT,
     CREATE_LINE,
     CREATE_POLYLINE,
+    CREATE_GROUP,
 
     TRANSLATE,
     ROTATE,

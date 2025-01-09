@@ -18,6 +18,7 @@ private:
     void drawSceneTreePoints();
     void drawSceneTreeLines();
     void drawSceneTreePolylines();
+    void drawSceneTreeGroups();
     
 public:
     Renderer(Model* model, Controller* controller);

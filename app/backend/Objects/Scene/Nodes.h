@@ -9,8 +9,8 @@
 
 #include <boost/serialization/access.hpp>
 
-#ifndef LINE_GROUP_H
-#define LINE_GROUP_H
+#ifndef NODE_GROUP_H
+#define NODE_GROUP_H
 
 
 enum ObjectType {
@@ -18,6 +18,7 @@ enum ObjectType {
     POINT,
     LINE,
     POLYLINE
+    GROUPMODE
 };
 
 struct NodeGroup
@@ -51,7 +52,6 @@ struct NodeGroup
     BOOST_SERIALIZATION_SPLIT_MEMBER();
 
 
-
     Object* node;
     std::string name;
     ObjectType type;
@@ -78,37 +78,5 @@ struct NodeGroup
 };
 
 typedef std::vector<NodeGroup> Nodes;
-
-// std::ostream& operator<<(std::ostream& os, NodeGroup& node)
-// {
-//     if (node.type == ObjectType::POINT)
-//         os << *(dynamic_cast<Point*>(node.node)) << " " << node.name << " " << node.type << "\n";
-
-//     else if (node.type == ObjectType::LINE)
-//         os << *(dynamic_cast<Line*>(node.node)) << " " << node.name << " " << node.type << "\n";
-
-//     else if (node.type == ObjectType::POLYLINE)
-//         os << *(dynamic_cast<Polyline*>(node.node)) << " " << node.name << " " << node.type << "\n";
-    
-//     return os;
-// }
-
-// std::istream& operator>>(std::istream& is, NodeGroup& node)
-// {
-//     int type;
-//     is >> *(node.node) >> node.name >> type;
-//     node.type = static_cast<ObjectType>(type);
-
-//     return is;
-// }
-
-
-// std::ostream& operator<<(std::ostream& os, Nodes& nodes)
-// {
-//     for (int i = 0; i< nodes.size(); i++)
-//         os << nodes[i] << " ";
-
-//     return os;
-// }
 
 #endif

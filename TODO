@@ -10,7 +10,12 @@ LineInputData должен посылать view контроллеру.
 
 
 ======================= TODO =======================
-[ ] add object grouping 
+[ ] add operations on groups
+[ ] add active group mode
+[ ] убрать колизии при добавлении групп
+
+
+[ ] turn active node from model to controller
 
 [ ] fix operations: учитывать данные из матрицы трансформации при проведении операций.
 [ ] fix scaling and mirroring
@@ -64,7 +69,6 @@ LineInputData должен посылать view контроллеру.
 [ ] make own class for each type x - glRenderArea.xof objects
 [ ] make structure for Controller`s objects 
 
-[ ] fix point belong function: one line overlaps another
 [ ] if x1 == x2 or y1 == y2 in LineBelongFunction, it isn`t work
 
 [ ] make different threads for computing and rendering
@@ -73,9 +77,13 @@ LineInputData должен посылать view контроллеру.
 
 [ ] camera class
 [ ] scaling polzunok
+[ ] Прописать объекты-обработчики, которые бы обрабатывали объекты-группы, отрисоовчные объекты и прочее (рефакторинг)
 ======================= TODO (OLD) ======================= 
 
 ======================= DONE ======================= 
+[x] add group view
+[x] add object grouping
+[x] fix point belong function: one line overlaps another
 [#] upload button
 [#] save button
 [x] file saving and loading. (boost)

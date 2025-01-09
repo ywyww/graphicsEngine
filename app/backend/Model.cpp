@@ -4,6 +4,7 @@ std::map<WorkModes, const char*> Model::modeMap = {
         std::pair(WorkModes::CREATE_POINT, "Point"),
         std::pair(WorkModes::CREATE_LINE, "Line"),
         std::pair(WorkModes::CREATE_POLYLINE, "Polyline"),
+        std::pair(WorkModes::CREATE_GROUP, "Group"),
 
         std::pair(WorkModes::TRANSLATE, "Translate"),
         std::pair(WorkModes::ROTATE, "Rotate"),
@@ -22,6 +23,7 @@ Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(r
     points = Nodes();
     lines = Nodes();
     polyLines = Nodes();
+    groups = Groups();
         
     mode = WorkModes::POINTER;
 
@@ -108,6 +110,12 @@ Nodes& Model::getPolylines()
 {
     return polyLines;
 }
+
+Groups& Model::getGroups()
+{
+    return groups;
+}
+
 
 NodeGroup* Model::getActiveNode()
 {
@@ -225,44 +233,13 @@ bool Model::deletePolyLine(int idx)
     return false;
 }
 
-// std::ostream& operator<<(std::ostream& os, const Model& model)
-// {
-//     os << model.renderRect.h << " " << model.renderRect.w << " " << model.renderRect.x << " " << model.renderRect.y << "\n"
-//     << model.shiftX << " " << model.shiftY << "\n"
-//     << model.windowWidth << " " << model.windowHeight << "\n"
-//     << model.cursorX << " " << model.cursorY << "\n"
-//     << model.centerX << " " << model.centerY << "\n"
-//     << ObjectType::NULLTYPE << "\n"
-//     << WorkModes::POINTER << "\n"
-//     << model.points << "\n"
-//     << model.lines << "\n"
-//     << model.polyLines << "\n";
+void Model::addGroup(Nodes group)
+{
+    groups.addGroupAndName(group, "defaultName1");
+    std::cout << "ADDED NEW GROUP." << std::endl;
+}
 
-
-//     return os;
-// }
-
-// std::istream& operator>>(std::istream& is, Model& model)
-// {
-//     is >> model.renderRect.h >> model.renderRect.w >> model.renderRect.x >> model.renderRect.y;
-//     is >> model.shiftX >> model.shiftY;
-//     is >> model.windowWidth >> model.windowHeight;
-//     is >> model.cursorX >> model.cursorY;
-//     is >> model.centerX >> model.centerY;
-
-//     int nodeType;
-
-//     is >> nodeType;
-//     model.activeNodeType = static_cast<ObjectType>(nodeType);
-
-//     int mode;
-//     is >> mode;
-//     model.mode = static_cast<WorkModes>(mode);
-
-//     model.activeNode = nullptr;
-
-    
-
-            
-//     return is;  
-// }
+bool Model::deleteGroup(int idx)
+{
+    return groups.deleteGroupAndName(idx);
+}

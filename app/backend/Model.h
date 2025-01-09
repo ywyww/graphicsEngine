@@ -4,10 +4,11 @@
 #include "Types/Modes.h"
 #include "Types/Data.h"
 
-#include "Objects/Scene/Groups.h"
+#include "Objects/Scene/Nodes.h"
 #include "Objects/GL/Point.h"
 #include "Objects/GL/Line.h"
 #include "Objects/Polyline.h"
+#include "Objects/Groups.h"
 
 #include <boost/serialization/access.hpp>
 
@@ -69,6 +70,7 @@ class Model
     Nodes points;
     Nodes lines;
     Nodes polyLines;
+    Groups groups;
 
     // [END]
 
@@ -108,6 +110,7 @@ class Model
         Nodes& getPoints();
         Nodes& getLines();
         Nodes& getPolylines();
+        Groups& getGroups();
 
         NodeGroup* getActiveNode();
         void setActiveNode(NodeGroup* object);
@@ -122,6 +125,9 @@ class Model
         
         void addPolyLine(Polyline*);
         bool deletePolyLine(int idx);
+
+        void addGroup(Nodes group);
+        bool deleteGroup(int idx);
 
         //friend std::ostream& operator<<(std::ostream& os, const Model& model);
         //friend std::istream& operator>>(std::istream& is, Model& model);

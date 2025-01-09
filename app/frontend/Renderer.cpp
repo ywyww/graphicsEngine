@@ -193,6 +193,49 @@ void Renderer::drawSceneTreePolylines()
     }
 }
 
+void Renderer::drawSceneTreeGroups()
+{
+    Groups& groups = model->getGroups();
+    
+    if (ImGui::BeginMenu("Groups"))
+    {   
+        for (int i = 0; i < groups.getSize(); i++)
+        {
+            std::pair<Nodes&, std::string&> groupPair = groups.getGroup(i);
+            Nodes& group = groupPair.first;
+            std::string& groupName = groupPair.second;
+
+            // beginMenu has own name. It shouldn't change. So:
+            const char* groupMenuName = ("Group #" + std::to_string(i + 1)).c_str();
+
+            if (ImGui::BeginMenu(groupMenuName))
+            {
+                ImGui::Text("Group name: %s", groupName.c_str());
+
+                for (int j = 0; j < group.size(); j++)
+                {
+                    
+                    ImGui::Text("Object name: %s", group[j].name.c_str());
+                }
+
+                if (ImGui::Button("Set active"))
+                {
+                    // pass
+                }
+
+                if (ImGui::Button("Delete group"))
+                {
+                    // pass
+                }
+
+                ImGui::EndMenu();
+            }
+        }
+
+        ImGui::EndMenu();
+    }
+}
+
 void Renderer::drawSceneTree()
 {
     ImGui::Begin("Scene Tree");
@@ -200,6 +243,7 @@ void Renderer::drawSceneTree()
     drawSceneTreePoints();
     drawSceneTreeLines();
     drawSceneTreePolylines();
+    drawSceneTreeGroups();
 
     ImGui::End();
 }

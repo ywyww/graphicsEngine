@@ -6,7 +6,7 @@
 #include "Types/Data.h"
 
 #include "Interfaces/Object.h"
-#include "Objects/Scene/Groups.h"
+#include "Objects/Scene/Nodes.h"
 #include "Objects/Polyline.h"
 
 #include "Model.h"
@@ -43,6 +43,10 @@ public:
     bool rubberDrawable;
     Point centerPoint;
 
+    Nodes buildingGroup;
+    bool isPushGroupInModelAndClear;        // запустить группу в модель и очистить
+    bool isGroupCreationMode;                   // набирается ли группа или нет (активен ли режим)
+
 private:
     
     NodeGroup* isPointInSpace(const float& x, const float& y);  // implement
@@ -77,6 +81,8 @@ public:
     void modifyLine();
     
     void addDotInActivePolyline(const float& x1, const float& y1);
+
+    void addNodeInBuildingGroup(const float& x1, const float& x2);
 
     void processRubberThread();
 

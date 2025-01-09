@@ -126,10 +126,9 @@ bool Line::isPointBelongs(const float& x, const float& y, const float z, const f
     
     if (coefficientTrim)
     {
-        if (xCoefficient > 1 || xCoefficient < -1 || yCoefficient > 1 || yCoefficient < -1)
+        if (xCoefficient > 1 || xCoefficient < 0 || yCoefficient > 1 || yCoefficient < 0)
             return false;
     }
-
 
     if (xCoefficient >= yCoefficient)
         return xCoefficient - yCoefficient < precision;

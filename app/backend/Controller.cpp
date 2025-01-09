@@ -106,6 +106,8 @@ Controller::Controller(Model* model)
     rubberThread->setColor(glm::vec3(1.f));
     rubberDrawable = false;
 
+    buildingGroup = Nodes();
+
     isPolylineCreationMode = false;
     scaleX = scaleY = 0.0f;
 
@@ -281,6 +283,7 @@ void Controller::addDotInActivePolyline(const float& x1, const float& y1)
     
 }
 
+
 bool Controller::setIfLineModifable(const float& precision) // if we on 
 {
     bool answer = false;
@@ -342,6 +345,16 @@ void Controller::modifyLine()
             line->updateBuffer(to);
         }
     }
+}
+
+void Controller::addNodeInBuildingGroup(const float& x, const float& y)
+{
+    NodeGroup* possibleNode = isObjectInSpace(x, y);
+
+    if (possibleNode != nullptr)
+        buildingGroup.push_back(*possibleNode);
+    else
+        std::cout << "CONTROLLER::ADD_NODE_IN_BUILDING_GROUP TROUBLE" << std::endl;
 }
 
 void Controller::processRubberThread()
@@ -414,6 +427,8 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         lastMouseDownY = cursorY;
         isMouseDown = true;
 
+        
+
 
         if (mode == WorkModes::POINTER)     // also other nodes
         {
@@ -448,6 +463,15 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
                 }
 
             }
+        }
+
+        if (mode == WorkModes::CREATE_GROUP)
+        {
+            if (isGroupCreationMode)
+            {
+                addNodeInBuildingGroup(lastMouseDownX, lastMouseDownY);
+            }
+
         }
 
         if (model->getActiveNodeType() == ObjectType::LINE && 
@@ -491,11 +515,25 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         
     }
 
-    if (event.type == SDL_KEYDOWN)
+    if (event.type == SDL_KEYDOWN)              // fix for current situation: polyline mode, group mode
     {
         isPolylineCreationMode = false;
+        isGroupCreationMode = false;
     }
-   
+
+    if (!isGroupCreationMode)
+    {
+        if (buildingGroup.size() != 0)
+        {
+            model->addGroup(buildingGroup);
+            buildingGroup = Nodes();
+        }
+        else
+        {
+            std::cout << "Trouble: buildingGroup size == 0" << std::endl;
+        }
+        isGroupCreationMode = true;
+    }
 
     processRubberThread();
     // process Controller's events.
