@@ -17,7 +17,7 @@ enum ObjectType {
     NULLTYPE,
     POINT,
     LINE,
-    POLYLINE
+    POLYLINE,
     GROUPMODE
 };
 

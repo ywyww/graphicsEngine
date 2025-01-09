@@ -28,6 +28,7 @@ Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(r
     mode = WorkModes::POINTER;
 
     activeNode = nullptr;
+    activeGroup = nullptr;
     activeNodeType = ObjectType::NULLTYPE;
 
     centerX = windowWidth / 2;
@@ -116,6 +117,30 @@ Groups& Model::getGroups()
     return groups;
 }
 
+Nodes* Model::getActiveGroup()
+{
+    return activeGroup;
+}
+
+void Model::setActiveGroup(int idx)
+{
+    if (idx < groups.getSize())
+        activeGroup = &groups.getGroup(idx).first;
+    else
+        activeGroup = nullptr;
+
+    if (activeGroup == nullptr)
+    {
+        activeNodeType = ObjectType::NULLTYPE;
+        std::cout << "Group: Setted active: NullType" << std::endl;
+    }
+    else
+    {
+        activeNodeType == ObjectType::GROUPMODE;
+        std::cout << "Group: Setted active: GroupMode" << std::endl;
+    }
+
+}
 
 NodeGroup* Model::getActiveNode()
 {
@@ -127,10 +152,15 @@ void Model::setActiveNode(NodeGroup* object)
     activeNode = object;
 
     if (activeNode == nullptr)
+    {
         activeNodeType = ObjectType::NULLTYPE;
+        std::cout << "Active: Setted active: NullType" << std::endl;
+    }
     else
+    {
         activeNodeType = activeNode->type;
-
+        std::cout << "Active: Setted active: activeNodeType..." << std::endl;
+    }
 }
 
 const ObjectType& Model::getActiveNodeType()

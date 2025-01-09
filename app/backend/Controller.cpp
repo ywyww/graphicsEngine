@@ -135,10 +135,34 @@ NodeGroup* Controller::isObjectInSpace(const float& x, const float& y)      // c
     return nullptr;
 }
 
-void Controller::translateObject(float relX, float relY)
+void Controller::doOperationOnGroup(std::function<void(NodeGroup*,float,float)> operation, Nodes* objects, float relX, float relY)
 {
-    NodeGroup* activeNode = model->getActiveNode();
-    if (activeNode != nullptr)
+    std::cout << "FUNCTION DO OPERATION ON GROUP" << std::endl;
+    if (objects != nullptr)
+    {
+        for (int i = 0; i < objects->size(); i++)
+        {
+            NodeGroup* object = &(objects->operator[](i));
+
+            if (object == nullptr)
+            {
+                std::cout << "OBJECT IN DO OPERATION ON GROUPP FUNCTION (CONTROLLER) IS NULLPTR!!!!!!!!!" << std::endl;
+            }
+            else
+            {
+                std::cout << object->name << std::endl;
+                operation(object, relX, relY);
+            }
+        }
+    }
+    else
+        std::cout << "operation for group failed." << std::endl;
+    
+}
+
+void Controller::translateObject(NodeGroup* object, float relX, float relY)
+{
+    if (object != nullptr)
     {
         float border = 50;
             
@@ -154,16 +178,17 @@ void Controller::translateObject(float relX, float relY)
         float glXRel = 2 * relX / model->getWidth();
         float glYRel = 2 * relY / model->getHeight();
 
-        glm::mat4 transformation = activeNode->node->getTransformation();
+        glm::mat4 transformation = object->node->getTransformation();
         transformation = glm::translate(transformation, glm::vec3(glXRel, glYRel, 0.0f));
-        activeNode->node->setTransformation(transformation);
+        object->node->setTransformation(transformation);
     }
+    else
+        std::cout << "Translation operation failed: object is nullptr" << std::endl;
 }
 
-void Controller::rotateObject(float relX, float relY)
+void Controller::rotateObject(NodeGroup* object, float relX, float relY)
 {
-    NodeGroup* activeNode = model->getActiveNode();
-    if (activeNode != nullptr)
+    if (object != nullptr)
     {
         float border = 100;
             
@@ -179,16 +204,17 @@ void Controller::rotateObject(float relX, float relY)
         float glXRel = 2 * relX / model->getWidth();
         float glYRel = 2 * relY / model->getHeight();
 
-        glm::mat4 transformation = activeNode->node->getTransformation();
+        glm::mat4 transformation = object->node->getTransformation();
         transformation = glm::rotate(transformation, glm::radians(std::atan(glXRel/glYRel)), glm::vec3(0.0f, 0.0f, 1.0f));
-        activeNode->node->setTransformation(transformation);
+        object->node->setTransformation(transformation);
     }
+    else
+        std::cout << "Rotation operation failed: object is nullptr" << std::endl;
 }
 
-void Controller::scaleObject(float relX, float relY)   // maximum x5
+void Controller::scaleObject(NodeGroup* object, float relX, float relY)   // maximum x5
 {
-    NodeGroup* activeNode = model->getActiveNode();
-    if (activeNode != nullptr)
+    if (object != nullptr)
     {
         float glXRel = 2 * relX / model->getWidth();
         float glYRel = 2 * relY / model->getHeight();
@@ -197,23 +223,23 @@ void Controller::scaleObject(float relX, float relY)   // maximum x5
         
         float value = 1 + sqrt(pow(glXRel, 2) + pow(glXRel, 2));
         value *= scale;
-        std::cout << glXRel << std::endl;
-
+        
         if (glXRel < 0)
         {
             value = 1 / value;
         }
 
-        glm::mat4 transformation = activeNode->node->getTransformation();
+        glm::mat4 transformation = object->node->getTransformation();
         transformation = glm::scale(transformation, glm::vec3(value, value, 1.0f));
-        activeNode->node->setTransformation(transformation);
+        object->node->setTransformation(transformation);
     }
+    else
+        std::cout << "Scaling operation failed: object is nullptr" << std::endl;
 }
 
-void Controller::mirrorObject(float lastUpX, float lastUpY)
+void Controller::mirrorObject(NodeGroup* object, float lastUpX, float lastUpY)
 {
-    NodeGroup* activeNode = model->getActiveNode();
-    if (activeNode != nullptr)
+    if (object != nullptr)
     {
         glm::vec2 vecToMirror = glm::vec2(lastUpX - model->getCenterX(), lastUpY - model->getCenterY());
         
@@ -229,10 +255,12 @@ void Controller::mirrorObject(float lastUpX, float lastUpY)
         if (glYRel < 0)
             scaleValY = -1;
 
-        glm::mat4 transformation = activeNode->node->getTransformation();
+        glm::mat4 transformation = object->node->getTransformation();
         transformation = glm::scale(transformation, glm::vec3(scaleValX, scaleValY, 1.0f));
-        activeNode->node->setTransformation(transformation);
+        object->node->setTransformation(transformation);
     } 
+    else
+        std::cout << "Mirroring operation failed: object is nullptr" << std::endl;
 }
 
 void Controller::trySetActiveNode(float lastClickedX, float lastClickedY)
@@ -274,13 +302,11 @@ void Controller::addDotInActivePolyline(const float& x1, const float& y1)
         {
             std::cout << "Failed to add dot in polyline";
         }
-        
     }
     else
     {
         std::cout << "ActiveNode is nullptr";
     }
-    
 }
 
 
@@ -352,7 +378,16 @@ void Controller::addNodeInBuildingGroup(const float& x, const float& y)
     NodeGroup* possibleNode = isObjectInSpace(x, y);
 
     if (possibleNode != nullptr)
-        buildingGroup.push_back(*possibleNode);
+    {
+        NodeGroup addingNode = NodeGroup();
+        addingNode.name = possibleNode->name;
+        addingNode.node = possibleNode->node;
+        addingNode.type = possibleNode->type;
+
+        if (addingNode.node == nullptr)
+            std::cout << "TROUBLE IN CONTROLLER:: ADD_NODE_IN_BUILDING_GROUP FUNCTION: node->node nullptr" << std::endl;
+        buildingGroup.push_back(addingNode);
+    }
     else
         std::cout << "CONTROLLER::ADD_NODE_IN_BUILDING_GROUP TROUBLE" << std::endl;
 }
@@ -384,6 +419,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
 {
     SDL_Rect glRenderArea = model->getRenderRect();
     WorkModes mode = model->getMode();
+    ObjectType objectType = model->getActiveNodeType();
    
     // get active node 
 
@@ -416,9 +452,35 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             float yRel = event.motion.yrel;
             
             if (mode == WorkModes::TRANSLATE)
-                translateObject(xRel, -yRel);       // ubrat', postavit' flagi
+            {
+                if (model->getActiveGroup() != nullptr)
+                {
+                    std::function<void(NodeGroup*, float, float)> operation = std::bind(&Controller::translateObject, this, 
+                                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+
+                    doOperationOnGroup(operation, model->getActiveGroup(), xRel, -yRel);
+
+                }
+                else
+                {
+                    std::cout << "OBJECT TYPE NE GROUPMODE MAZAFAKA!: " << objectType << std::endl;
+                    translateObject(model->getActiveNode(), xRel, -yRel);
+                }
+            }
             else if (mode == WorkModes::ROTATE)
-                rotateObject(xRel, -yRel);            
+            {
+                if (model->getActiveGroup() != nullptr)
+                {
+                    std::function<void(NodeGroup*, float, float)> operation = std::bind(&Controller::rotateObject, this, 
+                                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+
+                    doOperationOnGroup(operation , model->getActiveGroup(), xRel, -yRel);
+                }
+                else
+                {
+                    rotateObject(model->getActiveNode(), xRel, -yRel);            
+                }
+            }
         }
     }
     if (event.type == SDL_MOUSEBUTTONDOWN && isCursorInRenderArea)
@@ -426,8 +488,6 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         lastMouseDownX = cursorX;
         lastMouseDownY = cursorY;
         isMouseDown = true;
-
-        
 
 
         if (mode == WorkModes::POINTER)     // also other nodes
@@ -474,7 +534,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
 
         }
 
-        if (model->getActiveNodeType() == ObjectType::LINE && 
+        if (objectType == ObjectType::LINE && 
             mode == MODIFY)
         { 
             isLineModifable = setIfLineModifable(5.0f);
@@ -493,7 +553,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         if (mode == WorkModes::CREATE_LINE)
             addLine(lastMouseDownX, lastMouseDownY, lastMouseUpX, lastMouseUpY);
 
-        if (model->getActiveNodeType() == ObjectType::LINE &&
+        if (objectType == ObjectType::LINE &&
             mode == WorkModes::MODIFY && 
             isLineModifable)
         {
@@ -505,12 +565,33 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         {
             float aX = lastMouseDownX - lastMouseUpX;
             float aY = lastMouseDownY - lastMouseUpY;
-            scaleObject(-aX, aY);
+
+            if (model->getActiveGroup() != nullptr)
+            {
+                std::function<void(NodeGroup*, float, float)> operation = std::bind(&Controller::scaleObject, this, 
+                                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+
+                doOperationOnGroup(operation, model->getActiveGroup(), -aX, aY);
+            }
+            else 
+            {
+                scaleObject(model->getActiveNode(), -aX, aY);
+            }
         }
 
         if (mode == WorkModes::MIRROR)
         {
-            mirrorObject(lastMouseUpX, lastMouseUpY);
+            if (model->getActiveGroup() != nullptr)
+            {
+                std::function<void(NodeGroup*, float, float)> operation = std::bind(&Controller::mirrorObject, this, 
+                                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+                                
+                doOperationOnGroup(operation, model->getActiveGroup(), lastMouseUpX, lastMouseUpY);
+            }
+            else
+            {
+                mirrorObject(model->getActiveNode(), lastMouseUpX, lastMouseUpY);
+            }
         }
         
     }
@@ -525,7 +606,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
     {
         if (buildingGroup.size() != 0)
         {
-            model->addGroup(buildingGroup);
+            model->addGroup(buildingGroup);                 // what ptr.
             buildingGroup = Nodes();
         }
         else

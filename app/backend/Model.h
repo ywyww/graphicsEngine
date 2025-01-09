@@ -74,9 +74,9 @@ class Model
 
     // [END]
 
+    Nodes* activeGroup;
     NodeGroup* activeNode;  // make a massive
     ObjectType activeNodeType;
-
 
     WorkModes mode;
     
@@ -112,9 +112,12 @@ class Model
         Nodes& getPolylines();
         Groups& getGroups();
 
+        Nodes* getActiveGroup();
+        void setActiveGroup(int idx);
+
         NodeGroup* getActiveNode();
         void setActiveNode(NodeGroup* object);
-        
+
         const ObjectType& getActiveNodeType();
     
         void addPoint(Point* point);

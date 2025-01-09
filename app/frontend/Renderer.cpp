@@ -220,12 +220,12 @@ void Renderer::drawSceneTreeGroups()
 
                 if (ImGui::Button("Set active"))
                 {
-                    // pass
+                    model->setActiveGroup(i);
                 }
 
                 if (ImGui::Button("Delete group"))
                 {
-                    // pass
+                    model->deleteGroup(i);
                 }
 
                 ImGui::EndMenu();

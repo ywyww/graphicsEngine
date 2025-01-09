@@ -1,4 +1,6 @@
 #include <SDL2/SDL_events.h>
+
+#include <functional>
 #include <map>
 
 #include "Helpers/Translator.h"
@@ -66,12 +68,15 @@ public:
 
     void trySetActiveNode(float lastClickedX, float lastClickedY);
 
-    void translateObject(float relX, float relY);      // now only lines, then all objects.
-    void rotateObject(float relX, float relY);
-    void scaleObject(float relX, float relY);
-    void mirrorObject(float lastUpX, float lastUpY);
+    void doOperationOnGroup(std::function<void(NodeGroup*,float,float)> operation, 
+                                               Nodes* objects, float relX, float relY);
 
-    void projectionObject(float lastUpX, float lastUpY);        // implement
+    void translateObject(NodeGroup* object, float relX, float relY);      // now only lines, then all objects.
+    void rotateObject(NodeGroup* object, float relX, float relY);
+    void scaleObject(NodeGroup* object, float relX, float relY);
+    void mirrorObject(NodeGroup* object, float lastUpX, float lastUpY);
+
+    void projectObject(NodeGroup* object, float lastUpX, float lastUpY);        // implement
     
     void addPoint(const float& x, const float& y);
     void addLine(const float& x1, const float& y1, const float& x2, const float& y2);
