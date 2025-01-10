@@ -453,7 +453,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             
             if (mode == WorkModes::TRANSLATE)
             {
-                if (model->getActiveGroup() != nullptr)
+                if (objectType == ObjectType::GROUPMODE)
                 {
                     std::function<void(NodeGroup*, float, float)> operation = std::bind(&Controller::translateObject, this, 
                                 std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
@@ -469,7 +469,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             }
             else if (mode == WorkModes::ROTATE)
             {
-                if (model->getActiveGroup() != nullptr)
+                if (objectType == ObjectType::GROUPMODE)
                 {
                     std::function<void(NodeGroup*, float, float)> operation = std::bind(&Controller::rotateObject, this, 
                                 std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
@@ -566,7 +566,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             float aX = lastMouseDownX - lastMouseUpX;
             float aY = lastMouseDownY - lastMouseUpY;
 
-            if (model->getActiveGroup() != nullptr)
+            if (objectType == ObjectType::GROUPMODE)
             {
                 std::function<void(NodeGroup*, float, float)> operation = std::bind(&Controller::scaleObject, this, 
                                 std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
@@ -581,7 +581,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
 
         if (mode == WorkModes::MIRROR)
         {
-            if (model->getActiveGroup() != nullptr)
+            if (objectType == ObjectType::GROUPMODE)
             {
                 std::function<void(NodeGroup*, float, float)> operation = std::bind(&Controller::mirrorObject, this, 
                                 std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);

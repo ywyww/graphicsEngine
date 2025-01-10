@@ -124,6 +124,8 @@ Nodes* Model::getActiveGroup()
 
 void Model::setActiveGroup(int idx)
 {
+    setActiveNode(nullptr);
+
     if (idx < groups.getSize())
         activeGroup = &groups.getGroup(idx).first;
     else
@@ -136,7 +138,7 @@ void Model::setActiveGroup(int idx)
     }
     else
     {
-        activeNodeType == ObjectType::GROUPMODE;
+        activeNodeType = ObjectType::GROUPMODE;
         std::cout << "Group: Setted active: GroupMode" << std::endl;
     }
 
@@ -149,6 +151,8 @@ NodeGroup* Model::getActiveNode()
 
 void Model::setActiveNode(NodeGroup* object)
 {
+    activeGroup = nullptr;
+
     activeNode = object;
 
     if (activeNode == nullptr)
