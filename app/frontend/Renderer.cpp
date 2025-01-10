@@ -30,9 +30,6 @@ void Renderer::drawStatusBar()
             else
                 ImGui::Text("Chosen: %s", activeNode->name.c_str());     // here
         ImGui::EndChild();
-
-       
-
     
     ImGui::End();
 }

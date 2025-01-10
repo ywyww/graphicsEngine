@@ -12,7 +12,6 @@ std::map<WorkModes, const char*> Model::modeMap = {
         std::pair(WorkModes::MIRROR, "Mirror"),
         std::pair(WorkModes::PROJECTION, "Projection"),
 
-
         std::pair(WorkModes::MODIFY, "Modify active"),
         std::pair(WorkModes::COLORIZE, "Colorize"),
     };

@@ -12,7 +12,6 @@ LineInputData должен посылать view контроллеру.
 ======================= TODO =======================
 [ ] camera class
 
-
 [ ] active Node должен лежать в контроллере, но не в модели
 [ ] add operations on groups
 [ ] add active group mode
