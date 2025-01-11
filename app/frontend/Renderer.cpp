@@ -259,6 +259,23 @@ void Renderer::drawLineTransformation(Line* line)
         }
         ImGui::EndMenu();
     }
+    
+    if (ImGui::BeginMenu("NewCoordinates"))
+    {
+        std::memcpy(lineInput->coordinates, line->getBuffer(), 6 * sizeof(float));
+        float* first = &lineInput->coordinates[0];
+        float* second = &lineInput->coordinates[3];
+
+
+        ImGui::InputFloat3("X1 Y1 Z1", first);
+        ImGui::InputFloat3("X2 Y2 Z2", second);
+        if (ImGui::Button("Click me for change coordinates."))
+        {
+            line->updateBuffer(lineInput->coordinates);
+        }
+
+        ImGui::EndMenu();
+    }
 
     if (ImGui::BeginMenu("Translation"))
     {

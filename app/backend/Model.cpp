@@ -148,13 +148,8 @@ void Model::setViewAndProjection(Nodes& nodes, const glm::mat4& view, const glm:
 
 void Model::setViewAndProjectionForAll()
 {
-    std::cout << "FOR POINTS" << std::endl;
     Model::setViewAndProjection<Point>(points, view, projection);
-   
-    std::cout << "FOR LINES" << std::endl;
     Model::setViewAndProjection<Line>(lines, view, projection);
-   
-    std::cout << "FOR POLYLINES" << std::endl;
     Model::setViewAndProjection<Polyline>(polyLines, view, projection);
 }
 

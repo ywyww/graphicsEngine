@@ -84,8 +84,6 @@ class Model
     ObjectType activeNodeType;
 
     ViewState viewState;
-    
-
 
     WorkModes mode;
     

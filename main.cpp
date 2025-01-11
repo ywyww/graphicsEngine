@@ -11,7 +11,7 @@
 #include <glm/gtx/projection.hpp>
 
 #include "app/Saver.h"
-#include "app/Camera.h"
+#include "app/backend/Rotator.h"
 
 #include "app/backend/Objects/GL/Shader.h"
 #include "app/backend/Objects/GL/Point.h"
@@ -89,33 +89,23 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
     Model model = Model(glRenderArea);
     Controller controller = Controller(model);
     Renderer renderer = Renderer(model, controller);
+    
+    Rotator rotator = Rotator();
+    rotator.settedView = glm::rotate(rotator.settedView, glm::radians(90.0f), glm::vec3(0, 1, 0));
 
 
+    // glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1400.0f / 800, 0.1f, 100.0f);
+    // model.setProjection(projection);
+    // glm::mat4 view = model.getView();
+    // view = glm::translate(view, glm::vec3(0, 0, -5.0f));
+    // model.setView(view);
+    // model.setViewAndProjectionForAll();
 
-    Camera camera = Camera();
-    camera.Position = glm::vec3(0, 0, 3.0f);
-    camera.updateCameraVectors();
-
-    float fov = 45.0f;
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1400.0f / 800, 0.1f, 100.0f);
-    model.setProjection(projection);
-
+    
     std::string filename = "/home/german/Documents/dev/source/sourceC++/CG_SDL_GL/projects/temp";
 
-    float deltaTime = 0;
-    float lastFrame = 0;
-
-    float lastX = 750.f;
-    float lastY = 750.f;
     while (runningWindow)  
     {
-        float currentFrame = SDL_GetTicks64() / 1000.0f;
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-
-        if (deltaTime < 0.01)
-            deltaTime = 0.01;
-
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
@@ -127,21 +117,6 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
             }
 
             controller.processEvent(event, wWidth, wHeight);
-
-/*
-            glm::mat4 view = model.getView();
-            glm::mat4 projection = model.getProjection();
-
-            view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -0.02f));
-            projection = glm::perspective(glm::radians(45.0f), (float)glRenderArea.w / (float)glRenderArea.h, 0.1f, 100.0f);
-
-            model.setView(view);
-            model.setProjection(projection);
-            model.setViewAndProjectionForAll();
-*/
-            // glm::mat4 view = camera.GetViewMatrix();
-            // model.setView(view);
-            // model.setViewAndProjectionForAll();
 
             if (event.type == SDL_KEYDOWN)
             {
@@ -159,42 +134,18 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                     else
                         std::cout << "Raised problem" << std::endl;
                 }
-
-                // if (event.key.keysym.sym == SDLK_UP)
-                // {
-                //     camera.ProcessKeyboard(CameraMovement::FORWARD, deltaTime);
-                // }
-                // else if (event.key.keysym.sym == SDLK_DOWN)
-                // {
-                //     camera.ProcessKeyboard(CameraMovement::DOWN, deltaTime);
-                // }
-                // else if (event.key.keysym.sym == SDLK_RIGHT)
-                // {
-                //     camera.ProcessKeyboard(CameraMovement::RIGHT, deltaTime);
-                // }
-                // else if (event.key.keysym.sym == SDLK_LEFT)
-                // {
-                //     camera.ProcessKeyboard(CameraMovement::LEFT, deltaTime);
-                // }
             }
-            // if (event.type = SDL_MOUSEMOTION)
-            // {
-            //     float xoffset = event.motion.x - lastX;
-            //     float yoffset = lastY - event.motion.y; // reversed since y-coordinates go from bottom to top
-
-            //     lastX = event.motion.x;
-            //     lastY = event.motion.y;
-
-            //     float coeff = 6;
-            //     xoffset *= coeff;
-            //     yoffset *= coeff;
-
-            //     camera.ProcessMouseMovement(xoffset, 
-            //                                 yoffset);
-            //     std::cout << "MOUSE!" << std::endl;
-            // }
 
         }
+
+        rotator.viewState = model.getViewState();
+        glm::mat4 view = rotator.getCurrent();
+        model.setView(view);
+        model.setViewAndProjectionForAll();
+
+        
+        rotator.cameraView = glm::rotate(rotator.cameraView, 0.02f, glm::vec3(1, 0, 1));
+
 
         // clear imgui buffer
         glViewport(0, 0, wWidth, wHeight);
