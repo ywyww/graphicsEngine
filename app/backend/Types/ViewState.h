@@ -8,5 +8,4 @@ enum ViewState
     SETTED              // несколько установленных режимов
 };
 
-
 #endif

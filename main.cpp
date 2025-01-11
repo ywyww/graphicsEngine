@@ -87,6 +87,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
     Controller* controller = new Controller(model);
     Renderer renderer = Renderer(model, controller);
 
+    
     std::string filename = "/home/german/Documents/dev/source/sourceC++/CG_SDL_GL/projects/temp";
 
     while (runningWindow)  
@@ -164,6 +165,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         renderer.drawSceneTree();
         renderer.drawStatusBar();
         renderer.drawModes();
+        renderer.drawViewState();
         renderer.drawSettings();
         
         ImGui::Render();

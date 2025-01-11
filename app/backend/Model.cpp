@@ -1,20 +1,26 @@
 #include "Model.h"
 std::map<WorkModes, const char*> Model::modeMap = {
-        std::pair(WorkModes::POINTER, "Pointer"),
-        std::pair(WorkModes::CREATE_POINT, "Point"),
-        std::pair(WorkModes::CREATE_LINE, "Line"),
-        std::pair(WorkModes::CREATE_POLYLINE, "Polyline"),
-        std::pair(WorkModes::CREATE_GROUP, "Group"),
+    std::pair(WorkModes::POINTER, "Pointer"),
+    std::pair(WorkModes::CREATE_POINT, "Point"),
+    std::pair(WorkModes::CREATE_LINE, "Line"),
+    std::pair(WorkModes::CREATE_POLYLINE, "Polyline"),
+    std::pair(WorkModes::CREATE_GROUP, "Group"),
 
-        std::pair(WorkModes::TRANSLATE, "Translate"),
-        std::pair(WorkModes::ROTATE, "Rotate"),
-        std::pair(WorkModes::SCALE, "Scale"),
-        std::pair(WorkModes::MIRROR, "Mirror"),
-        std::pair(WorkModes::PROJECTION, "Projection"),
+    std::pair(WorkModes::TRANSLATE, "Translate"),
+    std::pair(WorkModes::ROTATE, "Rotate"),
+    std::pair(WorkModes::SCALE, "Scale"),
+    std::pair(WorkModes::MIRROR, "Mirror"),
+    std::pair(WorkModes::PROJECTION, "Projection"),
 
-        std::pair(WorkModes::MODIFY, "Modify active"),
-        std::pair(WorkModes::COLORIZE, "Colorize"),
-    };
+    std::pair(WorkModes::MODIFY, "Modify active"),
+    std::pair(WorkModes::COLORIZE, "Colorize"),
+};
+
+std::map<ViewState, const char*> Model::viewStateMap = {
+    std::pair(ViewState::BASE, "Base"),
+    std::pair(ViewState::CAMERA, "Camera"),
+    std::pair(ViewState::SETTED, "Setted"),
+};
 
 
 Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(renderArea.h), windowWidth(renderArea.w), shiftX(renderArea.x), shiftY(renderArea.y)
@@ -25,6 +31,7 @@ Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(r
     groups = Groups();
         
     mode = WorkModes::POINTER;
+    viewState = ViewState::BASE;
 
     activeNode = nullptr;
     activeGroup = nullptr;
@@ -236,6 +243,16 @@ void Model::setMode(const WorkModes& mode)
 const WorkModes& Model::getMode()
 {
     return mode;
+}
+
+void Model::setViewState(const ViewState& viewState)
+{
+    this->viewState = viewState;
+}
+
+const ViewState& Model::getViewState()
+{
+    return viewState;
 }
 
 void Model::addPoint(Point* point)

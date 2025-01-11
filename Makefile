@@ -5,7 +5,7 @@ SOURCES = main.cpp
 SOURCES += include/imgui.cpp include/imgui_widgets.cpp include/imgui_draw.cpp include/imgui_tables.cpp include/imgui_demo.cpp
 SOURCES += include/imgui_impl_opengl3.cpp include/imgui_impl_sdl2.cpp
 
-SOURCES += app/Saver.cpp
+SOURCES += app/Saver.cpp app/Camera.cpp
 SOURCES += app/backend/Objects/Scene/Nodes.cpp 
 SOURCES += app/backend/Objects/Groups.cpp
 SOURCES += app/backend/Objects/GL/Shader.cpp app/backend/Objects/GL/Line.cpp app/backend/Objects/Polyline.cpp app/backend/Objects/GL/Point.cpp

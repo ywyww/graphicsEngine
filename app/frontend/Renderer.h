@@ -29,6 +29,7 @@ public:
     void drawSceneTree();
     void drawModes();
     void drawSettings();
+    void drawViewState();
 
     // GL
     void draw();

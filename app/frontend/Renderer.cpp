@@ -23,6 +23,8 @@ void Renderer::drawStatusBar()
 
         ImGui::Text("Active mode: %s", model->modeMap[model->getMode()]);
 
+        ImGui::Text("Current view state: %s", Model::viewStateMap[model->getViewState()]);
+
         ImGui::BeginChild("Object chosen");
             Node* activeNode = model->getActiveNode();
             if (activeNode == nullptr)
@@ -346,6 +348,24 @@ void Renderer::drawSettings()
 
     ImGui::End();
 }
+
+void Renderer::drawViewState()
+{
+    ImGui::Begin("ViewState");
+
+    std::map<ViewState, const char*> map = Model::viewStateMap;
+
+    for (auto iter = map.begin(); iter != map.end(); iter++)
+    {
+        if (ImGui::Button(iter->second))
+        {
+            model->setViewState(iter->first);
+        }
+    }
+
+    ImGui::End();
+}
+
 
 void Renderer::draw()
 {

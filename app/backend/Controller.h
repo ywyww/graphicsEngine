@@ -75,7 +75,6 @@ public:
     void rotateObject(Node* object, float relX, float relY);
     void scaleObject(Node* object, float relX, float relY);
     void mirrorObject(Node* object, float lastUpX, float lastUpY);
-
     void projectObject(Node* object, float lastUpX, float lastUpY);        // implement
     
     void addPoint(const float& x, const float& y);

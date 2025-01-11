@@ -4,6 +4,7 @@
 #include "Types/WorkModes.h"
 #include "Types/ObjectType.h"
 #include "Types/LineInputData.h"
+#include "Types/ViewState.h"
 
 #include "Objects/Scene/Nodes.h"
 #include "Objects/GL/Point.h"
@@ -82,10 +83,15 @@ class Model
     Node* activeNode;  // make a massive
     ObjectType activeNodeType;
 
+    ViewState viewState;
+    
+
+
     WorkModes mode;
     
     public:
         static std::map<WorkModes, const char*> modeMap; 
+        static std::map<ViewState, const char*> viewStateMap; 
 
     public:
         Model(const SDL_Rect& renderArea);
@@ -111,11 +117,13 @@ class Model
         void setMode(const WorkModes& mode);
         const WorkModes& getMode();
 
+        void setViewState(const ViewState& viewState);
+        const ViewState& getViewState();
+
         Nodes& getPoints();
         Nodes& getLines();
         Nodes& getPolylines();
         Groups& getGroups();
-
         
         template <class NodesType>
         void setViewAndProjection(Nodes& nodes, const glm::mat4& view, const glm::mat4& projection);
