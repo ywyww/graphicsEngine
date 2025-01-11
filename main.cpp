@@ -93,7 +93,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
 
     Camera camera = Camera();
-    //camera.Position = glm::vec3(0, 0, 1.0f);
+    camera.Position = glm::vec3(0, 0, 3.0f);
     camera.updateCameraVectors();
 
     float fov = 45.0f;
@@ -109,9 +109,12 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
     float lastY = 750.f;
     while (runningWindow)  
     {
-        float currentFrame = SDL_GetTicks() / 1000.0f;
+        float currentFrame = SDL_GetTicks64() / 1000.0f;
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+        if (deltaTime < 0.01)
+            deltaTime = 0.01;
 
         SDL_Event event;
         while (SDL_PollEvent(&event))
@@ -136,10 +139,9 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
             model.setProjection(projection);
             model.setViewAndProjectionForAll();
 */
-
-            glm::mat4 view = camera.GetViewMatrix();
-            model.setView(view);
-            model.setViewAndProjectionForAll();
+            // glm::mat4 view = camera.GetViewMatrix();
+            // model.setView(view);
+            // model.setViewAndProjectionForAll();
 
             if (event.type == SDL_KEYDOWN)
             {
@@ -158,36 +160,42 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                         std::cout << "Raised problem" << std::endl;
                 }
 
-                if (event.key.keysym.sym == SDLK_UP)
-                {
-                    camera.ProcessKeyboard(CameraMovement::FORWARD, deltaTime);
-                }
-                else if (event.key.keysym.sym == SDLK_DOWN)
-                {
-                    camera.ProcessKeyboard(CameraMovement::DOWN, deltaTime);
-                }
-                else if (event.key.keysym.sym == SDLK_RIGHT)
-                {
-                    camera.ProcessKeyboard(CameraMovement::RIGHT, deltaTime);
-                }
-                else if (event.key.keysym.sym == SDLK_LEFT)
-                {
-                    camera.ProcessKeyboard(CameraMovement::LEFT, deltaTime);
-                }
+                // if (event.key.keysym.sym == SDLK_UP)
+                // {
+                //     camera.ProcessKeyboard(CameraMovement::FORWARD, deltaTime);
+                // }
+                // else if (event.key.keysym.sym == SDLK_DOWN)
+                // {
+                //     camera.ProcessKeyboard(CameraMovement::DOWN, deltaTime);
+                // }
+                // else if (event.key.keysym.sym == SDLK_RIGHT)
+                // {
+                //     camera.ProcessKeyboard(CameraMovement::RIGHT, deltaTime);
+                // }
+                // else if (event.key.keysym.sym == SDLK_LEFT)
+                // {
+                //     camera.ProcessKeyboard(CameraMovement::LEFT, deltaTime);
+                // }
             }
-            if (event.type = SDL_MOUSEMOTION)
-            {
-                float xoffset = event.motion.x - lastX;
-                float yoffset = lastY - event.motion.y; // reversed since y-coordinates go from bottom to top
+            // if (event.type = SDL_MOUSEMOTION)
+            // {
+            //     float xoffset = event.motion.x - lastX;
+            //     float yoffset = lastY - event.motion.y; // reversed since y-coordinates go from bottom to top
 
-                lastX = event.motion.x;
-                lastY = event.motion.y;
+            //     lastX = event.motion.x;
+            //     lastY = event.motion.y;
 
-                camera.ProcessMouseMovement(xoffset * 10, 
-                                            yoffset * 10);
-            }
+            //     float coeff = 6;
+            //     xoffset *= coeff;
+            //     yoffset *= coeff;
+
+            //     camera.ProcessMouseMovement(xoffset, 
+            //                                 yoffset);
+            //     std::cout << "MOUSE!" << std::endl;
+            // }
 
         }
+
         // clear imgui buffer
         glViewport(0, 0, wWidth, wHeight);
         glDisable(GL_SCISSOR_TEST);
