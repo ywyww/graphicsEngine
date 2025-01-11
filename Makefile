@@ -9,7 +9,7 @@ SOURCES += app/Saver.cpp
 SOURCES += app/backend/Objects/Scene/Nodes.cpp 
 SOURCES += app/backend/Objects/Groups.cpp
 SOURCES += app/backend/Objects/GL/Shader.cpp app/backend/Objects/GL/Line.cpp app/backend/Objects/Polyline.cpp app/backend/Objects/GL/Point.cpp
-SOURCES += app/backend/Types/Data.cpp app/backend/Types/Modes.cpp
+SOURCES += app/backend/Types/LineInputData.cpp
 
 SOURCES += app/backend/Controller.cpp 
 SOURCES += app/backend/Model.cpp

@@ -4,8 +4,8 @@
 #include <map>
 
 #include "Helpers/Translator.h"
-#include "Types/Modes.h"
-#include "Types/Data.h"
+#include "Types/WorkModes.h"
+#include "Types/ObjectType.h"
 
 #include "Interfaces/Object.h"
 #include "Objects/Scene/Nodes.h"
@@ -51,9 +51,9 @@ public:
 
 private:
     
-    NodeGroup* isPointInSpace(const float& x, const float& y);  // implement
-    NodeGroup* isLineInSpace(const float& x, const float& y);
-    NodeGroup* isPolylineInSpace(const float& x, const float& y);
+    Node* isPointInSpace(const float& x, const float& y);  // implement
+    Node* isLineInSpace(const float& x, const float& y);
+    Node* isPolylineInSpace(const float& x, const float& y);
 
     Point* createPoint(const float& x, const float& y);
     Line* createLine(const float& x1, const float& y1, const float& x2, const float& y2);
@@ -64,19 +64,19 @@ public:
     Controller(Model* model);
     ~Controller();
 
-    NodeGroup* isObjectInSpace(const float& x, const float& y);    // check if object in space
+    Node* isObjectInSpace(const float& x, const float& y);    // check if object in space
 
     void trySetActiveNode(float lastClickedX, float lastClickedY);
 
-    void doOperationOnGroup(std::function<void(NodeGroup*,float,float)> operation, 
+    void doOperationOnGroup(std::function<void(Node*,float,float)> operation, 
                                                Nodes* objects, float relX, float relY);
 
-    void translateObject(NodeGroup* object, float relX, float relY);      // now only lines, then all objects.
-    void rotateObject(NodeGroup* object, float relX, float relY);
-    void scaleObject(NodeGroup* object, float relX, float relY);
-    void mirrorObject(NodeGroup* object, float lastUpX, float lastUpY);
+    void translateObject(Node* object, float relX, float relY);      // now only lines, then all objects.
+    void rotateObject(Node* object, float relX, float relY);
+    void scaleObject(Node* object, float relX, float relY);
+    void mirrorObject(Node* object, float lastUpX, float lastUpY);
 
-    void projectObject(NodeGroup* object, float lastUpX, float lastUpY);        // implement
+    void projectObject(Node* object, float lastUpX, float lastUpY);        // implement
     
     void addPoint(const float& x, const float& y);
     void addLine(const float& x1, const float& y1, const float& x2, const float& y2);

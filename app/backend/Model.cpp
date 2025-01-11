@@ -32,6 +32,9 @@ Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(r
 
     centerX = windowWidth / 2;
     centerY = windowHeight / 2;
+
+    projection = glm::mat4(1.0f);
+    view = glm::mat4(1.0f);
 }
 
 Model::~Model()
@@ -116,6 +119,60 @@ Groups& Model::getGroups()
     return groups;
 }
 
+template <class NodesType>
+void Model::setViewAndProjection(Nodes& nodes, const glm::mat4& view, const glm::mat4& projection)
+{
+    for (int i = 0; i < nodes.size(); i++)
+    {
+        Node& grp = nodes[i];
+        NodesType* node = dynamic_cast<NodesType*>(grp.node);
+
+        if (node == nullptr)
+        {
+            std::cout << "BAD CAST: FAILED TO SET VIEW AND PROJECTION FOR NODES." << std::endl;
+        }
+        else
+        {
+            node->setView(view);
+            node->setProjection(projection);
+        }
+    }
+}
+
+void Model::setViewAndProjectionForAll()
+{
+    std::cout << "FOR POINTS" << std::endl;
+    Model::setViewAndProjection<Point>(points, view, projection);
+   
+    std::cout << "FOR LINES" << std::endl;
+    Model::setViewAndProjection<Line>(lines, view, projection);
+   
+    std::cout << "FOR POLYLINES" << std::endl;
+    Model::setViewAndProjection<Polyline>(polyLines, view, projection);
+}
+
+const glm::mat4& Model::getProjection()
+{
+    return projection;
+}
+
+void Model::setProjection(const glm::mat4& projection)
+{
+    /* for updating general view use setViewAndProjectionForAll */
+    this->projection = projection;
+}
+
+const glm::mat4& Model::getView()
+{
+    return view;
+}
+
+void Model::setView(const glm::mat4& view)
+{
+    /* for updating general view use setViewAndProjectionForAll */
+    this->view = view;
+}
+
 Nodes* Model::getActiveGroup()
 {
     return activeGroup;
@@ -143,12 +200,12 @@ void Model::setActiveGroup(int idx)
 
 }
 
-NodeGroup* Model::getActiveNode()
+Node* Model::getActiveNode()
 {
     return activeNode;
 }
 
-void Model::setActiveNode(NodeGroup* object)
+void Model::setActiveNode(Node* object)
 {
     activeGroup = nullptr;
 
@@ -183,7 +240,7 @@ const WorkModes& Model::getMode()
 
 void Model::addPoint(Point* point)
 {
-    NodeGroup pnt;
+    Node pnt;
     pnt.node = point;
     pnt.name = "point1";
     pnt.type = ObjectType::POINT;
@@ -212,7 +269,7 @@ bool Model::deletePoint(int idx)
 
 void Model::addLine(Line* line)
 {
-    NodeGroup lineGrp;
+    Node lineGrp;
     lineGrp.node = line;
     lineGrp.name = "line1";
     lineGrp.type = ObjectType::LINE;
@@ -240,7 +297,7 @@ bool Model::deleteLine(int idx)
 
 void Model::addPolyLine(Polyline* polyline)
 {
-    NodeGroup grp;
+    Node grp;
     grp.name = "polyline1";
     grp.node = polyline;
     grp.type = ObjectType::POLYLINE;

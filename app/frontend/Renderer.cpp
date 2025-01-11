@@ -17,14 +17,14 @@ void Renderer::drawStatusBar()
         std::string cursor = std::to_string(x) + " " + std::to_string(y);
         ImGui::Text(cursor.c_str());
 
-        NodeGroup* currentNode = controller->isObjectInSpace(x, y);
+        Node* currentNode = controller->isObjectInSpace(x, y);
         if (currentNode != nullptr)
             ImGui::Text("Pointer is at the object: %s", currentNode->name.c_str());     // here
 
         ImGui::Text("Active mode: %s", model->modeMap[model->getMode()]);
 
         ImGui::BeginChild("Object chosen");
-            NodeGroup* activeNode = model->getActiveNode();
+            Node* activeNode = model->getActiveNode();
             if (activeNode == nullptr)
                 ImGui::Text("No object chosen");
             else
@@ -43,7 +43,7 @@ void Renderer::drawSceneTreePoints()
     {   
         for (int i = 0; i < points->size(); i++)
         {
-            NodeGroup* node = &points->operator[](i);
+            Node* node = &points->operator[](i);
 
             Point* point = dynamic_cast<Point*>(node->node);
 
@@ -93,7 +93,7 @@ void Renderer::drawSceneTreeLines()
     {   
         for (int i = 0; i < lines->size(); i++)
         {
-            NodeGroup* node = &lines->operator[](i);
+            Node* node = &lines->operator[](i);
 
             Line* line = dynamic_cast<Line*>(node->node);
 
@@ -146,7 +146,7 @@ void Renderer::drawSceneTreePolylines()
     {   
         for (int i = 0; i < polylines->size(); i++)
         {
-            NodeGroup* node = &polylines->operator[](i);
+            Node* node = &polylines->operator[](i);
 
             Polyline* line = dynamic_cast<Polyline*>(node->node);
 

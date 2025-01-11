@@ -65,6 +65,9 @@ class Point: public Object {
     float* coords;      // 3 float.
     glm::vec3 color;
 
+    glm::mat4 projection;
+    glm::mat4 view;
+
     float pointSize;
 
 private:
@@ -79,6 +82,9 @@ public:
 
     void setColor(const glm::vec3& color);
     const glm::vec3& getColor();
+
+    void setProjection(const glm::mat4& projection);
+    void setView(const glm::mat4& view);
 
     GLuint getVAO();
     GLuint getVBO();

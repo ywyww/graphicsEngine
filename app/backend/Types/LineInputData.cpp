@@ -1,4 +1,4 @@
-#include "Data.h"
+#include "LineInputData.h"
 LineInputData::LineInputData()
 {
     lineNameSize = 36;

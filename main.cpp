@@ -103,6 +103,16 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
             controller->processEvent(event, wWidth, wHeight);
 
+            glm::mat4 view = model->getView();
+            glm::mat4 projection = model->getProjection();
+
+            view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -0.02f));
+            projection = glm::perspective(glm::radians(45.0f), (float)glRenderArea.w / (float)glRenderArea.h, 0.1f, 100.0f);
+
+            model->setView(view);
+            model->setProjection(projection);
+            model->setViewAndProjectionForAll();
+
             if (event.type == SDL_KEYDOWN)
             {
                 if (event.key.keysym.sym == SDLK_s)

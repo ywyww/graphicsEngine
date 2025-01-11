@@ -2,26 +2,19 @@
 #include <vector>
 
 #include <glm/glm.hpp>
+
 #include "../../Interfaces/Object.h"
 #include "../GL/Point.h"
 #include "../GL/Line.h"
 #include "../Polyline.h"
+#include "../../Types/ObjectType.h"
 
 #include <boost/serialization/access.hpp>
 
 #ifndef NODE_GROUP_H
 #define NODE_GROUP_H
 
-
-enum ObjectType {
-    NULLTYPE,
-    POINT,
-    LINE,
-    POLYLINE,
-    GROUPMODE
-};
-
-struct NodeGroup
+struct Node
 {
     friend class boost::serialization::access;
 
@@ -56,14 +49,14 @@ struct NodeGroup
     std::string name;
     ObjectType type;
 
-    NodeGroup()
+    Node()
     {
         node = nullptr;
         name = "";
         type = NULLTYPE;
     }
     
-    NodeGroup& operator=(const NodeGroup other){
+    Node& operator=(const Node other){
         if (this == &other)
             return *this;
 
@@ -73,10 +66,10 @@ struct NodeGroup
 
         return *this;
     }
-    virtual ~NodeGroup() = default;
+    virtual ~Node() = default;
 
 };
 
-typedef std::vector<NodeGroup> Nodes;
+typedef std::vector<Node> Nodes;
 
 #endif

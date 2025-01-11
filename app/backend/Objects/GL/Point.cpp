@@ -15,12 +15,15 @@ void Point::Init()
     glBindVertexArray(0);
 
     shader = Shader("data/point.vertexshader", "data/point.fragmentshader");
+    
 }
 
 Point::Point() : Object()
 {
     transformation = glm::mat4(1.0f);
     color = glm::vec3(1.0f);
+    projection = glm::mat4(1.0f);
+    view = glm::mat4(1.0f);
     coords = new float[3] {0, 0, 0};
 
     Init();
@@ -30,7 +33,10 @@ Point::Point(const float& x, const float& y, const float& z) : Object()
 {
     transformation = glm::mat4(1.0f);
     color = glm::vec3(1.0f);
+    projection = glm::mat4(1.0f);
+    view = glm::mat4(1.0f);
     coords = new float[3] {x, y, z};
+    
     Init();
 }
 
@@ -52,6 +58,16 @@ void Point::setColor(const glm::vec3& color)
 const glm::vec3& Point::getColor()
 {
     return color;
+}
+
+void Point::setProjection(const glm::mat4& projection)
+{
+    this->projection = projection;
+}
+
+void Point::setView(const glm::mat4& view)
+{
+    this->view = view;
 }
 
 GLuint Point::getVAO()
@@ -94,7 +110,7 @@ void Point::draw()
     glUseProgram(getShaderID());
 
     GLuint matrixName = glGetUniformLocation(getShaderID(), "MVP");
-    glUniformMatrix4fv(matrixName, 1, GL_FALSE, glm::value_ptr(transformation));
+    glUniformMatrix4fv(matrixName, 1, GL_FALSE, glm::value_ptr(projection * view * transformation));
 
     GLuint colorName = glGetUniformLocation(getShaderID(), "color");
     glUniform3fv(colorName, 1, glm::value_ptr(color));

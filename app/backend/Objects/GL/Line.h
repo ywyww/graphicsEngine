@@ -1,6 +1,7 @@
 #include <GL/gl.h>
 #include <GLES3/gl3.h>
 #include <glm/mat4x4.hpp>
+#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Shader.h"
@@ -49,6 +50,9 @@ class Line: public Object
     GLuint VBO;
     Shader shader;
 
+    glm::mat4 projection;
+    glm::mat4 view;
+
     glm::vec3 color;
 
     float* buffer;  // 6 floats
@@ -63,6 +67,9 @@ public:
     GLuint getShaderID();
 
     void setColor(const glm::vec3& color);
+
+    void setProjection(const glm::mat4& projection);
+    void setView(const glm::mat4& view);
     
     bool isGLPointBelongs(const float& x, const float& y, const float z = 0);  // only 2d  // point in gl coordinates
     bool isPointBelongs(const float& x, const float& y, const float z, const float& wWidth, const float& wHeight, bool coefficientTrim = true, float precision=0.03f);   // only 2d  // point in human coordinates

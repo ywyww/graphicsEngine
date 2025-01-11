@@ -1,14 +1,14 @@
 #include "Controller.h"
 
-NodeGroup* Controller::isPointInSpace(const float& x, const float& y)
+Node* Controller::isPointInSpace(const float& x, const float& y)
 {
     // implement
     return nullptr;
 }
 
-NodeGroup* Controller::isLineInSpace(const float& x, const float& y)
+Node* Controller::isLineInSpace(const float& x, const float& y)
 {
-    NodeGroup* current = new NodeGroup();
+    Node* current = new Node();
     Nodes lines = model->getLines();
     for (int i = 0; i < lines.size(); i++)
     {
@@ -28,9 +28,9 @@ NodeGroup* Controller::isLineInSpace(const float& x, const float& y)
     return current;
 }
 
-NodeGroup* Controller::isPolylineInSpace(const float& x, const float& y)
+Node* Controller::isPolylineInSpace(const float& x, const float& y)
 {
-    NodeGroup* current = new NodeGroup();
+    Node* current = new Node();
     Nodes polylines = model->getPolylines();
     for (int i = 0; i < polylines.size(); i++)
     {
@@ -118,9 +118,9 @@ Controller::~Controller()
 {
 }
 
-NodeGroup* Controller::isObjectInSpace(const float& x, const float& y)      // can be problems here.
+Node* Controller::isObjectInSpace(const float& x, const float& y)      // can be problems here.
 {
-    NodeGroup* obj = isPointInSpace(x, y);
+    Node* obj = isPointInSpace(x, y);
     if (obj != nullptr)
        return obj;
     
@@ -135,14 +135,14 @@ NodeGroup* Controller::isObjectInSpace(const float& x, const float& y)      // c
     return nullptr;
 }
 
-void Controller::doOperationOnGroup(std::function<void(NodeGroup*,float,float)> operation, Nodes* objects, float relX, float relY)
+void Controller::doOperationOnGroup(std::function<void(Node*,float,float)> operation, Nodes* objects, float relX, float relY)
 {
     std::cout << "FUNCTION DO OPERATION ON GROUP" << std::endl;
     if (objects != nullptr)
     {
         for (int i = 0; i < objects->size(); i++)
         {
-            NodeGroup* object = &(objects->operator[](i));
+            Node* object = &(objects->operator[](i));
 
             if (object == nullptr)
             {
@@ -160,7 +160,7 @@ void Controller::doOperationOnGroup(std::function<void(NodeGroup*,float,float)> 
     
 }
 
-void Controller::translateObject(NodeGroup* object, float relX, float relY)
+void Controller::translateObject(Node* object, float relX, float relY)
 {
     if (object != nullptr)
     {
@@ -186,7 +186,7 @@ void Controller::translateObject(NodeGroup* object, float relX, float relY)
         std::cout << "Translation operation failed: object is nullptr" << std::endl;
 }
 
-void Controller::rotateObject(NodeGroup* object, float relX, float relY)
+void Controller::rotateObject(Node* object, float relX, float relY)
 {
     if (object != nullptr)
     {
@@ -212,7 +212,7 @@ void Controller::rotateObject(NodeGroup* object, float relX, float relY)
         std::cout << "Rotation operation failed: object is nullptr" << std::endl;
 }
 
-void Controller::scaleObject(NodeGroup* object, float relX, float relY)   // maximum x5
+void Controller::scaleObject(Node* object, float relX, float relY)   // maximum x5
 {
     if (object != nullptr)
     {
@@ -237,7 +237,7 @@ void Controller::scaleObject(NodeGroup* object, float relX, float relY)   // max
         std::cout << "Scaling operation failed: object is nullptr" << std::endl;
 }
 
-void Controller::mirrorObject(NodeGroup* object, float lastUpX, float lastUpY)
+void Controller::mirrorObject(Node* object, float lastUpX, float lastUpY)
 {
     if (object != nullptr)
     {
@@ -265,7 +265,7 @@ void Controller::mirrorObject(NodeGroup* object, float lastUpX, float lastUpY)
 
 void Controller::trySetActiveNode(float lastClickedX, float lastClickedY)
 {
-    NodeGroup* node = isObjectInSpace(lastClickedX, lastClickedY);
+    Node* node = isObjectInSpace(lastClickedX, lastClickedY);
     model->setActiveNode(node);
 }
 
@@ -289,7 +289,7 @@ void Controller::addPolyline(const float& x0, const float& y0)
 
 void Controller::addDotInActivePolyline(const float& x1, const float& y1)
 {
-    NodeGroup* activeNode = model->getActiveNode();
+    Node* activeNode = model->getActiveNode();
     if (activeNode != nullptr)
     {
         Polyline* polyline = dynamic_cast<Polyline*>(activeNode->node); 
@@ -313,7 +313,7 @@ void Controller::addDotInActivePolyline(const float& x1, const float& y1)
 bool Controller::setIfLineModifable(const float& precision) // if we on 
 {
     bool answer = false;
-    NodeGroup* active = model->getActiveNode();
+    Node* active = model->getActiveNode();
     if (active != nullptr)
     {
         Line* line = dynamic_cast<Line*>(active->node);
@@ -349,7 +349,7 @@ bool Controller::setIfLineModifable(const float& precision) // if we on
 
 void Controller::modifyLine()
 {
-    NodeGroup* active = model->getActiveNode();
+    Node* active = model->getActiveNode();
     if (active != nullptr && active->type == ObjectType::LINE)
     {
         Line* line = dynamic_cast<Line*>(active->node);
@@ -375,11 +375,11 @@ void Controller::modifyLine()
 
 void Controller::addNodeInBuildingGroup(const float& x, const float& y)
 {
-    NodeGroup* possibleNode = isObjectInSpace(x, y);
+    Node* possibleNode = isObjectInSpace(x, y);
 
     if (possibleNode != nullptr)
     {
-        NodeGroup addingNode = NodeGroup();
+        Node addingNode = Node();
         addingNode.name = possibleNode->name;
         addingNode.node = possibleNode->node;
         addingNode.type = possibleNode->type;
@@ -455,7 +455,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             {
                 if (objectType == ObjectType::GROUPMODE)
                 {
-                    std::function<void(NodeGroup*, float, float)> operation = std::bind(&Controller::translateObject, this, 
+                    std::function<void(Node*, float, float)> operation = std::bind(&Controller::translateObject, this, 
                                 std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 
                     doOperationOnGroup(operation, model->getActiveGroup(), xRel, -yRel);
@@ -471,7 +471,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             {
                 if (objectType == ObjectType::GROUPMODE)
                 {
-                    std::function<void(NodeGroup*, float, float)> operation = std::bind(&Controller::rotateObject, this, 
+                    std::function<void(Node*, float, float)> operation = std::bind(&Controller::rotateObject, this, 
                                 std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 
                     doOperationOnGroup(operation , model->getActiveGroup(), xRel, -yRel);
@@ -513,7 +513,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
                 int size = massive.size();
                 if (size >= 1)
                 {
-                    NodeGroup* newActiveNode = new NodeGroup();
+                    Node* newActiveNode = new Node();
                     newActiveNode->node = massive[size - 1].node;
                     newActiveNode->name = massive[size - 1].name;
                     newActiveNode->type = massive[size - 1].type;
@@ -568,7 +568,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
 
             if (objectType == ObjectType::GROUPMODE)
             {
-                std::function<void(NodeGroup*, float, float)> operation = std::bind(&Controller::scaleObject, this, 
+                std::function<void(Node*, float, float)> operation = std::bind(&Controller::scaleObject, this, 
                                 std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 
                 doOperationOnGroup(operation, model->getActiveGroup(), -aX, aY);
@@ -583,7 +583,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         {
             if (objectType == ObjectType::GROUPMODE)
             {
-                std::function<void(NodeGroup*, float, float)> operation = std::bind(&Controller::mirrorObject, this, 
+                std::function<void(Node*, float, float)> operation = std::bind(&Controller::mirrorObject, this, 
                                 std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
                                 
                 doOperationOnGroup(operation, model->getActiveGroup(), lastMouseUpX, lastMouseUpY);

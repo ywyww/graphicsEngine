@@ -1,8 +1,9 @@
 #include <SDL2/SDL_rect.h>
 #include <map>
 
-#include "Types/Modes.h"
-#include "Types/Data.h"
+#include "Types/WorkModes.h"
+#include "Types/ObjectType.h"
+#include "Types/LineInputData.h"
 
 #include "Objects/Scene/Nodes.h"
 #include "Objects/GL/Point.h"
@@ -72,10 +73,13 @@ class Model
     Nodes polyLines;
     Groups groups;
 
+    glm::mat4 projection;
+    glm::mat4 view;
+
     // [END]
 
     Nodes* activeGroup;
-    NodeGroup* activeNode;  // make a massive
+    Node* activeNode;  // make a massive
     ObjectType activeNodeType;
 
     WorkModes mode;
@@ -112,11 +116,23 @@ class Model
         Nodes& getPolylines();
         Groups& getGroups();
 
+        
+        template <class NodesType>
+        void setViewAndProjection(Nodes& nodes, const glm::mat4& view, const glm::mat4& projection);
+
+        void setViewAndProjectionForAll();
+
+        const glm::mat4& getProjection();
+        void setProjection(const glm::mat4& projection);
+
+        const glm::mat4& getView();
+        void setView(const glm::mat4& view);
+
         Nodes* getActiveGroup();
         void setActiveGroup(int idx);
 
-        NodeGroup* getActiveNode();
-        void setActiveNode(NodeGroup* object);
+        Node* getActiveNode();
+        void setActiveNode(Node* object);
 
         const ObjectType& getActiveNodeType();
     
