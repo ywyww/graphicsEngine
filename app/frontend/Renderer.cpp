@@ -1,32 +1,30 @@
 #include "Renderer.h"
 
 
-Renderer::Renderer(Model* model, Controller* controller)
+Renderer::Renderer(Model& model, Controller& controller): model(model), controller(controller)
 {
-    this->model = model;
-    this->controller = controller;
     lineInput = new LineInputData();
 }
 
 void Renderer::drawStatusBar()
 {
-    float x = model->getCursorX();
-    float y = model->getCursorY();
+    float x = model.getCursorX();
+    float y = model.getCursorY();
 
     ImGui::Begin("StatusBar");
         std::string cursor = std::to_string(x) + " " + std::to_string(y);
         ImGui::Text(cursor.c_str());
 
-        Node* currentNode = controller->isObjectInSpace(x, y);
+        Node* currentNode = controller.isObjectInSpace(x, y);
         if (currentNode != nullptr)
             ImGui::Text("Pointer is at the object: %s", currentNode->name.c_str());     // here
 
-        ImGui::Text("Active mode: %s", model->modeMap[model->getMode()]);
+        ImGui::Text("Active mode: %s", model.modeMap[model.getMode()]);
 
-        ImGui::Text("Current view state: %s", Model::viewStateMap[model->getViewState()]);
+        ImGui::Text("Current view state: %s", Model::viewStateMap[model.getViewState()]);
 
         ImGui::BeginChild("Object chosen");
-            Node* activeNode = model->getActiveNode();
+            Node* activeNode = model.getActiveNode();
             if (activeNode == nullptr)
                 ImGui::Text("No object chosen");
             else
@@ -38,7 +36,7 @@ void Renderer::drawStatusBar()
 
 void Renderer::drawSceneTreePoints()
 {
-    Nodes* points = &model->getPoints();
+    Nodes* points = &model.getPoints();
     
 
     if (ImGui::BeginMenu("Points"))
@@ -70,12 +68,12 @@ void Renderer::drawSceneTreePoints()
 
                 if (ImGui::Button("Set active"))
                 {
-                    model->setActiveNode(node);
+                    model.setActiveNode(node);
                 }
 
                 if (ImGui::Button("Delete point"))
                 {
-                    if (!model->deletePoint(i))
+                    if (!model.deletePoint(i))
                         std::cout << "cannot delete";                    
                 }
 
@@ -88,7 +86,7 @@ void Renderer::drawSceneTreePoints()
 }
 void Renderer::drawSceneTreeLines()
 {
-    Nodes* lines = &model->getLines();
+    Nodes* lines = &model.getLines();
     
 
     if (ImGui::BeginMenu("Lines"))
@@ -122,12 +120,12 @@ void Renderer::drawSceneTreeLines()
 
                 if (ImGui::Button("Set active"))
                 {
-                    model->setActiveNode(node);
+                    model.setActiveNode(node);
                 }
 
                 if (ImGui::Button("Delete line"))
                 {
-                    if (!model->deleteLine(i))
+                    if (!model.deleteLine(i))
                         std::cout << "cannot delete";                    
                 }
 
@@ -141,7 +139,7 @@ void Renderer::drawSceneTreeLines()
 
 void Renderer::drawSceneTreePolylines()
 {
-    Nodes* polylines = &model->getPolylines();
+    Nodes* polylines = &model.getPolylines();
     
 
     if (ImGui::BeginMenu("Polylines"))
@@ -175,12 +173,12 @@ void Renderer::drawSceneTreePolylines()
 
                 if (ImGui::Button("Set active"))
                 {
-                    model->setActiveNode(node);
+                    model.setActiveNode(node);
                 }
 
                 if (ImGui::Button("Delete line"))
                 {
-                    if (!model->deletePolyLine(i))
+                    if (!model.deletePolyLine(i))
                         std::cout << "cannot delete";                    
                 }
 
@@ -194,7 +192,7 @@ void Renderer::drawSceneTreePolylines()
 
 void Renderer::drawSceneTreeGroups()
 {
-    Groups& groups = model->getGroups();
+    Groups& groups = model.getGroups();
     
     if (ImGui::BeginMenu("Groups"))
     {   
@@ -219,12 +217,12 @@ void Renderer::drawSceneTreeGroups()
 
                 if (ImGui::Button("Set active"))
                 {
-                    model->setActiveGroup(i);
+                    model.setActiveGroup(i);
                 }
 
                 if (ImGui::Button("Delete group"))
                 {
-                    model->deleteGroup(i);
+                    model.deleteGroup(i);
                 }
 
                 ImGui::EndMenu();
@@ -305,7 +303,7 @@ void Renderer::drawModes()
     {
         if (ImGui::Button(iter->second))
         {
-            model->setMode(iter->first);
+            model.setMode(iter->first);
         }
     }
 
@@ -331,19 +329,19 @@ void Renderer::drawSettings()
         ImGui::EndMainMenuBar();
     }
 
-    float centerX = model->getCenterX();
-    float centerY = model->getCenterY();
+    float centerX = model.getCenterX();
+    float centerY = model.getCenterY();
     
     ImGui::Begin("Settings");
     
     if (ImGui::InputFloat("CenterX", &centerX))
     {
-        model->setCenterX(centerX);
+        model.setCenterX(centerX);
     }
 
     if (ImGui::InputFloat("CenterY", &centerY))
     {
-        model->setCenterY(centerY);
+        model.setCenterY(centerY);
     }
 
     ImGui::End();
@@ -359,7 +357,7 @@ void Renderer::drawViewState()
     {
         if (ImGui::Button(iter->second))
         {
-            model->setViewState(iter->first);
+            model.setViewState(iter->first);
         }
     }
 
@@ -376,7 +374,7 @@ void Renderer::draw()
 
 void Renderer::drawPoints()
 {
-    Nodes points = model->getPoints();
+    Nodes points = model.getPoints();
     for (int i = 0; i < points.size(); i++)
     {
         Point* point = dynamic_cast<Point*>(points[i].node);
@@ -392,7 +390,7 @@ void Renderer::drawPoints()
 
 void Renderer::drawLines()
 {
-    Nodes lines = model->getLines();
+    Nodes lines = model.getLines();
     for (int i = 0; i < lines.size(); i++)
     {
         lines[i].node->draw();
@@ -401,7 +399,7 @@ void Renderer::drawLines()
 
 void Renderer::drawPolylines()
 {
-    Nodes lines = model->getPolylines(); 
+    Nodes lines = model.getPolylines(); 
     for (int i = 0; i < lines.size(); i++)
     {
         Polyline* line = dynamic_cast<Polyline*>(lines[i].node);

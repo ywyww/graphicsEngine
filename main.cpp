@@ -8,8 +8,11 @@
 #include <glm/glm.hpp>
 #include <glm/mat3x3.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/projection.hpp>
 
 #include "app/Saver.h"
+#include "app/Camera.h"
+
 #include "app/backend/Objects/GL/Shader.h"
 #include "app/backend/Objects/GL/Point.h"
 #include "app/backend/Objects/GL/Line.h"
@@ -83,15 +86,33 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
     SDL_Rect glRenderArea = {20, 50, 1400, 800};
 
-    Model* model = new Model(glRenderArea);
-    Controller* controller = new Controller(model);
+    Model model = Model(glRenderArea);
+    Controller controller = Controller(model);
     Renderer renderer = Renderer(model, controller);
 
-    
+
+
+    Camera camera = Camera();
+    //camera.Position = glm::vec3(0, 0, 1.0f);
+    camera.updateCameraVectors();
+
+    float fov = 45.0f;
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1400.0f / 800, 0.1f, 100.0f);
+    model.setProjection(projection);
+
     std::string filename = "/home/german/Documents/dev/source/sourceC++/CG_SDL_GL/projects/temp";
 
+    float deltaTime = 0;
+    float lastFrame = 0;
+
+    float lastX = 750.f;
+    float lastY = 750.f;
     while (runningWindow)  
     {
+        float currentFrame = SDL_GetTicks() / 1000.0f;
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
@@ -102,35 +123,70 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                 runningWindow = false;
             }
 
-            controller->processEvent(event, wWidth, wHeight);
+            controller.processEvent(event, wWidth, wHeight);
 
-            glm::mat4 view = model->getView();
-            glm::mat4 projection = model->getProjection();
+/*
+            glm::mat4 view = model.getView();
+            glm::mat4 projection = model.getProjection();
 
             view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -0.02f));
             projection = glm::perspective(glm::radians(45.0f), (float)glRenderArea.w / (float)glRenderArea.h, 0.1f, 100.0f);
 
-            model->setView(view);
-            model->setProjection(projection);
-            model->setViewAndProjectionForAll();
+            model.setView(view);
+            model.setProjection(projection);
+            model.setViewAndProjectionForAll();
+*/
+
+            glm::mat4 view = camera.GetViewMatrix();
+            model.setView(view);
+            model.setViewAndProjectionForAll();
 
             if (event.type == SDL_KEYDOWN)
             {
                 if (event.key.keysym.sym == SDLK_s)
                 {
-                    if (Saver::saveIntoAFile(filename, *model))
+                    if (Saver::saveIntoAFile(filename, model))
                         std::cout << "Sucess to save" << std::endl;
                     else
                         std::cout << "Raised problem" << std::endl;
                 }
                 else if (event.key.keysym.sym == SDLK_r)
                 {
-                    if (Saver::readFromAFile(filename, *model))
+                    if (Saver::readFromAFile(filename, model))
                         std::cout << "Sucess to read" << std::endl;
                     else
                         std::cout << "Raised problem" << std::endl;
                 }
+
+                if (event.key.keysym.sym == SDLK_UP)
+                {
+                    camera.ProcessKeyboard(CameraMovement::FORWARD, deltaTime);
+                }
+                else if (event.key.keysym.sym == SDLK_DOWN)
+                {
+                    camera.ProcessKeyboard(CameraMovement::DOWN, deltaTime);
+                }
+                else if (event.key.keysym.sym == SDLK_RIGHT)
+                {
+                    camera.ProcessKeyboard(CameraMovement::RIGHT, deltaTime);
+                }
+                else if (event.key.keysym.sym == SDLK_LEFT)
+                {
+                    camera.ProcessKeyboard(CameraMovement::LEFT, deltaTime);
+                }
             }
+            if (event.type = SDL_MOUSEMOTION)
+            {
+                float xoffset = event.motion.x - lastX;
+                float yoffset = lastY - event.motion.y; // reversed since y-coordinates go from bottom to top
+
+                lastX = event.motion.x;
+                lastY = event.motion.y;
+
+                camera.ProcessMouseMovement(xoffset * 10, 
+                                            yoffset * 10);
+            }
+
         }
         // clear imgui buffer
         glViewport(0, 0, wWidth, wHeight);
@@ -148,14 +204,14 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
 		// draw scene
 
-        if (controller->rubberDrawable)
+        if (controller.rubberDrawable)
         {
-            controller->rubberThread->draw();
+            controller.rubberThread->draw();
         }
 
         renderer.draw();
 
-        controller->centerPoint.draw();
+        controller.centerPoint.draw();
         
         // draw imgui
         ImGui_ImplOpenGL3_NewFrame();

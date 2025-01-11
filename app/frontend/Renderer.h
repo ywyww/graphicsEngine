@@ -8,8 +8,8 @@
 #define REDNERER_H
 
 class Renderer {
-    Controller* controller;
-    Model* model;
+    Controller& controller;
+    Model& model;
 
     LineInputData* lineInput;
 
@@ -21,7 +21,7 @@ private:
     void drawSceneTreeGroups();
     
 public:
-    Renderer(Model* model, Controller* controller);
+    Renderer(Model& model, Controller& controller);
 
     // IMGUI
     void drawStatusBar();

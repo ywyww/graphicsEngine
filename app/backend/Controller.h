@@ -19,7 +19,7 @@
 
 class Controller    // unique coordinates.
 {
-    Model* model;
+    Model& model;
 
     float cursorAbsX, cursorAbsY;   // cursor coordinates in window (absolute)
     float cursorX, cursorY;         // cursor coordinates in viewPort
@@ -61,7 +61,7 @@ private:
 
 public:
     // after adding set object to active node
-    Controller(Model* model);
+    Controller(Model& model);
     ~Controller();
 
     Node* isObjectInSpace(const float& x, const float& y);    // check if object in space

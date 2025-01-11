@@ -9,11 +9,11 @@ Node* Controller::isPointInSpace(const float& x, const float& y)
 Node* Controller::isLineInSpace(const float& x, const float& y)
 {
     Node* current = new Node();
-    Nodes lines = model->getLines();
+    Nodes lines = model.getLines();
     for (int i = 0; i < lines.size(); i++)
     {
         Line* line = dynamic_cast<Line*>(lines.operator[](i).node);
-        if (line != nullptr && line->isPointBelongs(x, y, 0, model->getWidth(), model->getHeight(), true, 0.07))
+        if (line != nullptr && line->isPointBelongs(x, y, 0, model.getWidth(), model.getHeight(), true, 0.07))
         {
             current->node = lines[i].node;
             current->name = lines[i].name;
@@ -31,11 +31,11 @@ Node* Controller::isLineInSpace(const float& x, const float& y)
 Node* Controller::isPolylineInSpace(const float& x, const float& y)
 {
     Node* current = new Node();
-    Nodes polylines = model->getPolylines();
+    Nodes polylines = model.getPolylines();
     for (int i = 0; i < polylines.size(); i++)
     {
         Polyline* polyline = dynamic_cast<Polyline*>(polylines.operator[](i).node);
-        if (polyline != nullptr && polyline->isPointBelongs(x, y, 0, model->getWidth(), model->getHeight(), true, 0.07))
+        if (polyline != nullptr && polyline->isPointBelongs(x, y, 0, model.getWidth(), model.getHeight(), true, 0.07))
         {
             current->node = polylines[i].node;
             current->name = polylines[i].name;
@@ -54,8 +54,8 @@ Node* Controller::isPolylineInSpace(const float& x, const float& y)
 
 Point* Controller::createPoint(const float& x, const float& y)
 {
-    float width = model->getWidth();
-    float height = model->getHeight();
+    float width = model.getWidth();
+    float height = model.getHeight();
     Point* point = new Point(
         Translator::producePixelCoordinatesToGL(x, width),
         Translator::producePixelCoordinatesToGL(y, height),
@@ -66,8 +66,8 @@ Point* Controller::createPoint(const float& x, const float& y)
 
 Line* Controller::createLine(const float& x1, const float& y1, const float& x2, const float& y2)
 {
-    float width = model->getWidth();
-    float height = model->getHeight();
+    float width = model.getWidth();
+    float height = model.getHeight();
     Line* line = new Line(
                     Translator::producePixelCoordinatesToGL(x1, width),
                     Translator::producePixelCoordinatesToGL(y1, height),
@@ -86,10 +86,8 @@ Polyline* Controller::createPolyline(const float& x0, const float& y0)
     return polyline;       
 }
 
-Controller::Controller(Model* model)
+Controller::Controller(Model& model): model(model)
 {
-    this->model = model;
-
     cursorAbsX = cursorAbsY = 0;
     cursorX = cursorY = 0;
     cursorGlX = cursorGlY = 0;  
@@ -175,8 +173,8 @@ void Controller::translateObject(Node* object, float relX, float relY)
         else if (relY < -border)
             relY = -border;
 
-        float glXRel = 2 * relX / model->getWidth();
-        float glYRel = 2 * relY / model->getHeight();
+        float glXRel = 2 * relX / model.getWidth();
+        float glYRel = 2 * relY / model.getHeight();
 
         glm::mat4 transformation = object->node->getTransformation();
         transformation = glm::translate(transformation, glm::vec3(glXRel, glYRel, 0.0f));
@@ -201,8 +199,8 @@ void Controller::rotateObject(Node* object, float relX, float relY)
         else if (relY < -border)
             relY = -border; 
 
-        float glXRel = 2 * relX / model->getWidth();
-        float glYRel = 2 * relY / model->getHeight();
+        float glXRel = 2 * relX / model.getWidth();
+        float glYRel = 2 * relY / model.getHeight();
 
         glm::mat4 transformation = object->node->getTransformation();
         transformation = glm::rotate(transformation, glm::radians(std::atan(glXRel/glYRel)), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -216,8 +214,8 @@ void Controller::scaleObject(Node* object, float relX, float relY)   // maximum 
 {
     if (object != nullptr)
     {
-        float glXRel = 2 * relX / model->getWidth();
-        float glYRel = 2 * relY / model->getHeight();
+        float glXRel = 2 * relX / model.getWidth();
+        float glYRel = 2 * relY / model.getHeight();
 
         float scale = 1.0f;                                 // make polzunok for scaling
         
@@ -241,10 +239,10 @@ void Controller::mirrorObject(Node* object, float lastUpX, float lastUpY)
 {
     if (object != nullptr)
     {
-        glm::vec2 vecToMirror = glm::vec2(lastUpX - model->getCenterX(), lastUpY - model->getCenterY());
+        glm::vec2 vecToMirror = glm::vec2(lastUpX - model.getCenterX(), lastUpY - model.getCenterY());
         
-        float glXRel = 2 * vecToMirror.x / model->getWidth();
-        float glYRel = 2 * vecToMirror.y / model->getHeight();
+        float glXRel = 2 * vecToMirror.x / model.getWidth();
+        float glYRel = 2 * vecToMirror.y / model.getHeight();
 
         float scaleValX;
         float scaleValY;
@@ -266,30 +264,30 @@ void Controller::mirrorObject(Node* object, float lastUpX, float lastUpY)
 void Controller::trySetActiveNode(float lastClickedX, float lastClickedY)
 {
     Node* node = isObjectInSpace(lastClickedX, lastClickedY);
-    model->setActiveNode(node);
+    model.setActiveNode(node);
 }
 
 void Controller::addPoint(const float& x, const float& y)
 {
     Point* point = createPoint(x, y);
-    model->addPoint(point);
+    model.addPoint(point);
 }
 
 void Controller::addLine(const float& x1, const float& y1, const float& x2, const float& y2)
 {
     Line* line = createLine(x1, y1, x2, y2);
-    model->addLine(line);
+    model.addLine(line);
 }
 
 void Controller::addPolyline(const float& x0, const float& y0)
 {
     Polyline* line = createPolyline(x0, y0);
-    model->addPolyLine(line); 
+    model.addPolyLine(line); 
 }
 
 void Controller::addDotInActivePolyline(const float& x1, const float& y1)
 {
-    Node* activeNode = model->getActiveNode();
+    Node* activeNode = model.getActiveNode();
     if (activeNode != nullptr)
     {
         Polyline* polyline = dynamic_cast<Polyline*>(activeNode->node); 
@@ -313,15 +311,15 @@ void Controller::addDotInActivePolyline(const float& x1, const float& y1)
 bool Controller::setIfLineModifable(const float& precision) // if we on 
 {
     bool answer = false;
-    Node* active = model->getActiveNode();
+    Node* active = model.getActiveNode();
     if (active != nullptr)
     {
         Line* line = dynamic_cast<Line*>(active->node);
         if (line != nullptr)
         {
             float* buffer = line->getBuffer();
-            float height = model->getHeight();
-            float width = model->getWidth();
+            float height = model.getHeight();
+            float width = model.getWidth();
 
             float x1 = Translator::produceGLCoordinatesToPixel(buffer[0], width);
             float y1 = Translator::produceGLCoordinatesToPixel(buffer[1], height);
@@ -349,7 +347,7 @@ bool Controller::setIfLineModifable(const float& precision) // if we on
 
 void Controller::modifyLine()
 {
-    Node* active = model->getActiveNode();
+    Node* active = model.getActiveNode();
     if (active != nullptr && active->type == ObjectType::LINE)
     {
         Line* line = dynamic_cast<Line*>(active->node);
@@ -365,8 +363,8 @@ void Controller::modifyLine()
             to[otherIdx] =  buffer[otherIdx];
             to[otherIdx2] =  buffer[otherIdx2];
 
-            to[xModifableIdx] = Translator::producePixelCoordinatesToGL(lastMouseUpX, model->getWidth());
-            to[yModifableIdx] = Translator::producePixelCoordinatesToGL(lastMouseUpY, model->getHeight());
+            to[xModifableIdx] = Translator::producePixelCoordinatesToGL(lastMouseUpX, model.getWidth());
+            to[yModifableIdx] = Translator::producePixelCoordinatesToGL(lastMouseUpY, model.getHeight());
 
             line->updateBuffer(to);
         }
@@ -394,17 +392,17 @@ void Controller::addNodeInBuildingGroup(const float& x, const float& y)
 
 void Controller::processRubberThread()
 {
-    if (isMouseDown && model->getMode() != WorkModes::TRANSLATE)
+    if (isMouseDown && model.getMode() != WorkModes::TRANSLATE)
     {
         float* newBuff = new float[6] {
             0, 0, 0,
             0, 0, 0
         };
 
-        newBuff[0] = Translator::producePixelCoordinatesToGL(lastMouseDownX, model->getWidth());
-        newBuff[1] = Translator::producePixelCoordinatesToGL(lastMouseDownY, model->getHeight());
-        newBuff[3] = Translator::producePixelCoordinatesToGL(cursorX, model->getWidth());
-        newBuff[4] = Translator::producePixelCoordinatesToGL(cursorY, model->getHeight());
+        newBuff[0] = Translator::producePixelCoordinatesToGL(lastMouseDownX, model.getWidth());
+        newBuff[1] = Translator::producePixelCoordinatesToGL(lastMouseDownY, model.getHeight());
+        newBuff[3] = Translator::producePixelCoordinatesToGL(cursorX, model.getWidth());
+        newBuff[4] = Translator::producePixelCoordinatesToGL(cursorY, model.getHeight());
 
         rubberThread->updateBuffer(newBuff);
         rubberDrawable = true;
@@ -417,15 +415,15 @@ void Controller::processRubberThread()
 
 void Controller::processEvent(SDL_Event& event, const float& wWidth, const float& wHeight)      // get full model data in 1 structure
 {
-    SDL_Rect glRenderArea = model->getRenderRect();
-    WorkModes mode = model->getMode();
-    ObjectType objectType = model->getActiveNodeType();
+    SDL_Rect glRenderArea = model.getRenderRect();
+    WorkModes mode = model.getMode();
+    ObjectType objectType = model.getActiveNodeType();
    
     // get active node 
 
     float* centerPointBuff = new float[3] {
-        Translator::producePixelCoordinatesToGL(model->getCenterX(), glRenderArea.w), 
-        Translator::producePixelCoordinatesToGL(model->getCenterY(), glRenderArea.h), 
+        Translator::producePixelCoordinatesToGL(model.getCenterX(), glRenderArea.w), 
+        Translator::producePixelCoordinatesToGL(model.getCenterY(), glRenderArea.h), 
         0.0f};
 
     centerPoint.updateBuffer(centerPointBuff);
@@ -438,8 +436,8 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         cursorX = cursorAbsX - glRenderArea.x;
         cursorY = wHeight - glRenderArea.y - cursorAbsY;
 
-        model->setCursorX(cursorX);
-        model->setCursorY(cursorY);        
+        model.setCursorX(cursorX);
+        model.setCursorY(cursorY);        
 
         if (cursorX <= glRenderArea.w && cursorY <= glRenderArea.h)
             isCursorInRenderArea = true;
@@ -458,13 +456,13 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
                     std::function<void(Node*, float, float)> operation = std::bind(&Controller::translateObject, this, 
                                 std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 
-                    doOperationOnGroup(operation, model->getActiveGroup(), xRel, -yRel);
+                    doOperationOnGroup(operation, model.getActiveGroup(), xRel, -yRel);
 
                 }
                 else
                 {
                     std::cout << "OBJECT TYPE NE GROUPMODE MAZAFAKA!: " << objectType << std::endl;
-                    translateObject(model->getActiveNode(), xRel, -yRel);
+                    translateObject(model.getActiveNode(), xRel, -yRel);
                 }
             }
             else if (mode == WorkModes::ROTATE)
@@ -474,11 +472,11 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
                     std::function<void(Node*, float, float)> operation = std::bind(&Controller::rotateObject, this, 
                                 std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 
-                    doOperationOnGroup(operation , model->getActiveGroup(), xRel, -yRel);
+                    doOperationOnGroup(operation , model.getActiveGroup(), xRel, -yRel);
                 }
                 else
                 {
-                    rotateObject(model->getActiveNode(), xRel, -yRel);            
+                    rotateObject(model.getActiveNode(), xRel, -yRel);            
                 }
             }
         }
@@ -509,7 +507,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             else
             {
                 addPolyline(lastMouseDownX, lastMouseDownY);
-                Nodes massive = model->getPolylines();
+                Nodes massive = model.getPolylines();
                 int size = massive.size();
                 if (size >= 1)
                 {
@@ -518,7 +516,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
                     newActiveNode->name = massive[size - 1].name;
                     newActiveNode->type = massive[size - 1].type;
 
-                    model->setActiveNode(newActiveNode);
+                    model.setActiveNode(newActiveNode);
                     isPolylineCreationMode = true;
                 }
 
@@ -571,11 +569,11 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
                 std::function<void(Node*, float, float)> operation = std::bind(&Controller::scaleObject, this, 
                                 std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 
-                doOperationOnGroup(operation, model->getActiveGroup(), -aX, aY);
+                doOperationOnGroup(operation, model.getActiveGroup(), -aX, aY);
             }
             else 
             {
-                scaleObject(model->getActiveNode(), -aX, aY);
+                scaleObject(model.getActiveNode(), -aX, aY);
             }
         }
 
@@ -586,11 +584,11 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
                 std::function<void(Node*, float, float)> operation = std::bind(&Controller::mirrorObject, this, 
                                 std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
                                 
-                doOperationOnGroup(operation, model->getActiveGroup(), lastMouseUpX, lastMouseUpY);
+                doOperationOnGroup(operation, model.getActiveGroup(), lastMouseUpX, lastMouseUpY);
             }
             else
             {
-                mirrorObject(model->getActiveNode(), lastMouseUpX, lastMouseUpY);
+                mirrorObject(model.getActiveNode(), lastMouseUpX, lastMouseUpY);
             }
         }
         
@@ -606,7 +604,7 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
     {
         if (buildingGroup.size() != 0)
         {
-            model->addGroup(buildingGroup);                 // what ptr.
+            model.addGroup(buildingGroup);                 // what ptr.
             buildingGroup = Nodes();
         }
         else
