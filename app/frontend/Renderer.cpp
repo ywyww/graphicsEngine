@@ -66,6 +66,21 @@ void Renderer::drawSceneTreePoints()
                     node->name = std::string(lineInput->lineName, lineInput->lineNameSize);
                 }
 
+                if (ImGui::BeginMenu("NewCoordinates"))
+                {
+                    std::memcpy(lineInput->coordinates, point->getBuffer(), 3 * sizeof(float));
+                    float* first = &lineInput->coordinates[0];
+
+                    ImGui::InputFloat3("X1 Y1 Z1", first);
+                    if (ImGui::Button("Click me for change coordinates."))
+                    {
+                        point->updateBuffer(lineInput->coordinates);
+                    }
+
+                    ImGui::EndMenu();
+                }
+
+
                 if (ImGui::Button("Set active"))
                 {
                     model.setActiveNode(node);

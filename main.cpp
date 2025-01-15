@@ -96,12 +96,16 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
     // glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1400.0f / 800, 0.1f, 100.0f);
     // model.setProjection(projection);
-    // glm::mat4 view = model.getView();
-    // view = glm::translate(view, glm::vec3(0, 0, -5.0f));
-    // model.setView(view);
+    // //glm::mat4 view = model.getView();
+    // //view = glm::translate(view, glm::vec3(0, 0, -20.0f));
+    // //model.setView(view);
     // model.setViewAndProjectionForAll();
 
-    
+    // glm::vec3 cameraPos = glm::vec3(0, 0, -1);
+    // rotator.settedView = glm::lookAt(cameraPos,
+    //                          glm::vec3(0, 0, 0), 
+    //                          glm::vec3(0, 1, 0));
+    // rotator.cameraView = rotator.settedView;
     std::string filename = "/home/german/Documents/dev/source/sourceC++/CG_SDL_GL/projects/temp";
 
     while (runningWindow)  
@@ -145,7 +149,6 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
         
         rotator.cameraView = glm::rotate(rotator.cameraView, 0.02f, glm::vec3(1, 0, 1));
-
 
         // clear imgui buffer
         glViewport(0, 0, wWidth, wHeight);

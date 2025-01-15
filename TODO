@@ -12,6 +12,8 @@ LineInputData должен посылать view контроллеру.
 
 
 ======================= TODO =======================
+[ ] править изменение линий: проекции
+[ ] make world grid.
 [ ] add 3d support (full function)
     [x] вид слева, вращение
     [x] Rotor class - состояние матриц view

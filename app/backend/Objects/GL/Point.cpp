@@ -105,6 +105,12 @@ void Point::updateBuffer(float* data)
     }
 }
 
+float* Point::getBuffer()
+{
+    return coords;
+}
+
+
 void Point::draw()
 {
     glUseProgram(getShaderID());

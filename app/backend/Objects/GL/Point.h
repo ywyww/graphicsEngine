@@ -91,6 +91,7 @@ public:
     GLuint getShaderID();
 
     void updateBuffer(float* buff);     // 3 floats
+    float* getBuffer();
 
     void draw() override;
 };

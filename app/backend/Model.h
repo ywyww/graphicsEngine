@@ -153,9 +153,6 @@ class Model
 
         void addGroup(Nodes group);
         bool deleteGroup(int idx);
-
-        //friend std::ostream& operator<<(std::ostream& os, const Model& model);
-        //friend std::istream& operator>>(std::istream& is, Model& model);
 };
 
 
