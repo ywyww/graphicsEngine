@@ -30,6 +30,7 @@ public:
     void drawModes();
     void drawSettings();
     void drawViewState();
+    void drawProjectionState();
 
     // GL
     void draw();

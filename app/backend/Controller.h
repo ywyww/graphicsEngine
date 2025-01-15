@@ -40,10 +40,6 @@ class Controller    // unique coordinates.
 
     float scaleX, scaleY;
 
-    bool XYActive;
-    bool XZActive;
-    bool YZActive;
-
 public:
     Line* rubberThread;
     bool rubberDrawable;
@@ -75,14 +71,13 @@ public:
 
     void doOperationOnGroup(std::function<void(const ViewState&,Node*,float,float)> operation, 
                                                     const ViewState& viewState, Nodes* objects, float relX, float relY);
-    void doOperationOnGroup(std::function<void(Node*,float,float)> operation, 
-                                               Nodes* objects, float relX, float relY);
 
     void translateObject(const ViewState& viewState, Node* object, float relX, float relY);      // now only lines, then all objects.
-    void rotateObject(Node* object, float relX, float relY);
-    void scaleObject(Node* object, float relX, float relY);
-    void mirrorObject(Node* object, float lastUpX, float lastUpY);
-    void projectObject(Node* object, float lastUpX, float lastUpY);        // implement
+    void rotateObject(const ViewState& viewState, Node* object, float relX, float relY);
+    void scaleObject(const ViewState& viewState, Node* object, float relX, float relY);
+    void mirrorObject(const ViewState& viewState, Node* object, float lastUpX, float lastUpY);
+    
+    void projectObject(const ViewState& viewState, Node* object, float lastUpX, float lastUpY);        // implement
     
     void addPoint(const float& x, const float& y);
     void addLine(const float& x1, const float& y1, const float& x2, const float& y2);
@@ -93,8 +88,11 @@ public:
     
     void addDotInActivePolyline(const float& x1, const float& y1);
 
+    void addNodeInBuildingGroup(Node* possibleNode);
     void addNodeInBuildingGroup(const float& x1, const float& x2);
 
+    void clearBuildingGroup();
+    
     void processRubberThread();
 
     void processEvent(SDL_Event& event, const float& wWidth, const float& wHeight);

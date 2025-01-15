@@ -91,8 +91,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
     Renderer renderer = Renderer(model, controller);
 
     Rotator rotator = Rotator();
-   
-    
+
     std::string filename = "/home/german/Documents/dev/source/sourceC++/CG_SDL_GL/projects/temp";
 
     while (runningWindow)  
@@ -129,9 +128,15 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
         }
 
-        rotator.viewState = model.getViewState();
-        const glm::mat4& view = rotator.getCurrent();
+        const ViewState& viewState = model.getViewState();
+        const glm::mat4& view = rotator.getView(viewState);
+        
+        const ProjectionState& projectionState = model.getProjectionState();
+        const glm::mat4& projection = rotator.getProjection(projectionState);
+
+
         model.setView(view);
+        model.setProjection(projection);
         model.setViewAndProjectionForAll();
 
         
@@ -171,6 +176,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         renderer.drawStatusBar();
         renderer.drawModes();
         renderer.drawViewState();
+        renderer.drawProjectionState();
         renderer.drawSettings();
         
         ImGui::Render();

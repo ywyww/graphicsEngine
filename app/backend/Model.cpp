@@ -27,9 +27,12 @@ std::map<ViewState, const char*> Model::viewStateMap = {
     std::pair(ViewState::VIEW_3, "view 3"),
     std::pair(ViewState::VIEW_4, "view 4"),
     std::pair(ViewState::VIEW_5, "view 5"),
-    
 };
 
+std::map<ProjectionState, const char*> Model::projectionStateMap = {
+    std::pair(ProjectionState::ORTHOGONAL, "Orthogonal"),
+    std::pair(ProjectionState::PERSPECTIVE, "Perspective")
+};
 
 Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(renderArea.h), windowWidth(renderArea.w), shiftX(renderArea.x), shiftY(renderArea.y)
 {
@@ -40,6 +43,7 @@ Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(r
         
     mode = WorkModes::POINTER;
     viewState = ViewState::XY;
+    projectionState = ProjectionState::ORTHOGONAL;
 
     activeNode = nullptr;
     activeGroup = nullptr;
@@ -256,6 +260,16 @@ void Model::setViewState(const ViewState& viewState)
 const ViewState& Model::getViewState()
 {
     return viewState;
+}
+
+void Model::setProjectionState(const ProjectionState& projectionState)
+{
+    this->projectionState = projectionState;
+}
+
+const ProjectionState& Model::getProjectionState()
+{
+    return projectionState;
 }
 
 void Model::addPoint(Point* point)

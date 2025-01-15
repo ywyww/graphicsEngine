@@ -138,12 +138,18 @@ void Renderer::drawSceneTreeLines()
                     model.setActiveNode(node);
                 }
 
+                if (ImGui::Button("Add in building group"))
+                {
+                    controller.addNodeInBuildingGroup(node);
+                }
+
                 if (ImGui::Button("Delete line"))
                 {
                     if (!model.deleteLine(i))
                         std::cout << "cannot delete";                    
                 }
 
+                
                 ImGui::EndMenu();
             }
         }
@@ -243,6 +249,9 @@ void Renderer::drawSceneTreeGroups()
                 ImGui::EndMenu();
             }
         }
+
+        if (ImGui::Button("Clear building group"))
+            controller.clearBuildingGroup();
 
         ImGui::EndMenu();
     }
@@ -396,6 +405,21 @@ void Renderer::drawViewState()
     ImGui::End();
 }
 
+void Renderer::drawProjectionState()
+{
+    ImGui::Begin("ProjectionState");
+    std::map<ProjectionState, const char*> map = Model::projectionStateMap;
+
+    for (auto iter = map.begin(); iter != map.end(); iter++)
+    {
+        if (ImGui::Button(iter->second))
+        {
+            model.setProjectionState(iter->first);
+        }
+    }
+
+    ImGui::End();
+}
 
 void Renderer::draw()
 {

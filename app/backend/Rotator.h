@@ -4,6 +4,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "Types/ViewState.h"
+#include "Types/ProjectionState.h"
 
 
 #ifndef ROTATOR_H
@@ -22,12 +23,15 @@ struct Rotator
     glm::mat4 view4;
     glm::mat4 view5;
 
-    ViewState viewState;
+    glm::mat4 projectionPerspective;
+    glm::mat4 projectionOrtho;
 
     Rotator();
 
-    const glm::mat4& getCurrent();
-    bool setCurrent(const glm::mat4& view);
+    const glm::mat4& getProjection(const ProjectionState& projectionState);
+
+    const glm::mat4& getView(const ViewState& viewState);      // depends on viewState
+    bool setView(const glm::mat4& view, const ViewState& viewState);
 };
 
 

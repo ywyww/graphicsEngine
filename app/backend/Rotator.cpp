@@ -3,8 +3,6 @@
 
 Rotator::Rotator()
 {
-    viewState = ViewState::XY;
-
     viewXY = glm::mat4(1.0f);
     viewXZ = glm::mat4(1.0f);
     viewYZ = glm::mat4(1.0f);
@@ -19,9 +17,33 @@ Rotator::Rotator()
     view3 = glm::mat4(1.0f);
     view4 = glm::mat4(1.0f);
     view5 = glm::mat4(1.0f);
+
+    projectionPerspective = glm::mat4(1.0f);
+    projectionOrtho = glm::mat4(1.0f);
+
+
+    float ortho = 1.0f;
+    projectionPerspective = glm::perspective(glm::radians(45.0f), 1400.0f / 800, -0.1f, 100.0f);
+    projectionOrtho = glm::ortho(-ortho, ortho, -ortho, ortho, -100.0f, 100.0f); 
 }
 
-const glm::mat4& Rotator::getCurrent()
+const glm::mat4& Rotator::getProjection(const ProjectionState& projectionState)
+{
+    switch (projectionState)
+    {
+        case ProjectionState::ORTHOGONAL:
+        {
+            return projectionOrtho;
+        }
+        case ProjectionState::PERSPECTIVE:
+        {
+            return projectionPerspective;
+        }
+    }
+    return projectionOrtho;
+}
+
+const glm::mat4& Rotator::getView(const ViewState& viewState)
 {
     switch (viewState)
     {
@@ -65,7 +87,7 @@ const glm::mat4& Rotator::getCurrent()
     return viewXY;
 }
 
-bool Rotator::setCurrent(const glm::mat4& view)
+bool Rotator::setView(const glm::mat4& view, const ViewState& viewState)
 {
     bool isSetted = true;
     switch (viewState)

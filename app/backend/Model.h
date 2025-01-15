@@ -1,10 +1,11 @@
 #include <SDL2/SDL_rect.h>
 #include <map>
 
-#include "Types/WorkModes.h"
-#include "Types/ObjectType.h"
-#include "Types/LineInputData.h"
+#include "Types/ProjectionState.h"
 #include "Types/ViewState.h"
+#include "Types/WorkModes.h"
+#include "Types/LineInputData.h"
+#include "Types/ObjectType.h"
 
 #include "Objects/Scene/Nodes.h"
 #include "Objects/GL/Point.h"
@@ -84,12 +85,14 @@ class Model
     ObjectType activeNodeType;
 
     ViewState viewState;
+    ProjectionState projectionState;
 
     WorkModes mode;
     
     public:
         static std::map<WorkModes, const char*> modeMap; 
         static std::map<ViewState, const char*> viewStateMap; 
+        static std::map<ProjectionState, const char*> projectionStateMap;
 
     public:
         Model(const SDL_Rect& renderArea);
@@ -117,6 +120,9 @@ class Model
 
         void setViewState(const ViewState& viewState);
         const ViewState& getViewState();
+
+        void setProjectionState(const ProjectionState& projectionState);
+        const ProjectionState& getProjectionState();
 
         Nodes& getPoints();
         Nodes& getLines();
