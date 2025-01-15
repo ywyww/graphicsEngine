@@ -64,11 +64,17 @@ Point* Controller::createPoint(const float& x, const float& y)
     return point;
 }
 
-Line* Controller::createLine(const float& x1, const float& y1, const float& x2, const float& y2)
+Line* Controller::createLine(const ViewState& viewState, const float& x1, const float& y1, const float& x2, const float& y2)
 {
     float width = model.getWidth();
     float height = model.getHeight();
-    Line* line = new Line(
+
+    Line* line;
+    switch (viewState)          // подумать над std::bind вместо этой конструкции
+    {
+        case ViewState::XY:
+        {
+            line = new Line(
                     Translator::producePixelCoordinatesToGL(x1, width),
                     Translator::producePixelCoordinatesToGL(y1, height),
                     0,
@@ -76,6 +82,35 @@ Line* Controller::createLine(const float& x1, const float& y1, const float& x2, 
                     Translator::producePixelCoordinatesToGL(y2, height),
                     0
                 );
+            break;
+        }
+        case ViewState::XZ:
+        {
+            line = new Line(
+                    Translator::producePixelCoordinatesToGL(x1, width),
+                    0,
+                    Translator::producePixelCoordinatesToGL(y1, height),
+                    Translator::producePixelCoordinatesToGL(x2, width),
+                    0,
+                    Translator::producePixelCoordinatesToGL(y2, height)
+                );
+            break;
+        }
+        case ViewState::YZ:
+        {
+            line = new Line(
+                    0,
+                    Translator::producePixelCoordinatesToGL(y1, height),
+                    Translator::producePixelCoordinatesToGL(x1, width),
+                    0,
+                    Translator::producePixelCoordinatesToGL(y2, height),
+                    Translator::producePixelCoordinatesToGL(x2, width)
+                );
+            break;
+        }
+        default:
+            line = nullptr;
+    }
     return line;
 }
 
@@ -110,6 +145,10 @@ Controller::Controller(Model& model): model(model)
     scaleX = scaleY = 0.0f;
 
     centerPoint = Point(0, 0, 0);
+
+    XYActive = true;
+    XZActive = false;
+    YZActive = false;
 }
 
 Controller::~Controller()
@@ -131,6 +170,30 @@ Node* Controller::isObjectInSpace(const float& x, const float& y)      // can be
         return obj;
     
     return nullptr;
+}
+
+void Controller::doOperationOnGroup(std::function<void(const ViewState&,Node*,float,float)> operation, const ViewState& viewState, Nodes* objects, float relX, float relY)
+{
+    std::cout << "FUNCTION DO OPERATION ON GROUP" << std::endl;
+    if (objects != nullptr)
+    {
+        for (int i = 0; i < objects->size(); i++)
+        {
+            Node* object = &(objects->operator[](i));
+
+            if (object == nullptr)
+            {
+                std::cout << "OBJECT IN DO OPERATION ON GROUPP FUNCTION (CONTROLLER) IS NULLPTR!!!!!!!!!" << std::endl;
+            }
+            else
+            {
+                std::cout << object->name << std::endl;
+                operation(viewState, object, relX, relY);
+            }
+        }
+    }
+    else
+        std::cout << "operation for group failed." << std::endl;
 }
 
 void Controller::doOperationOnGroup(std::function<void(Node*,float,float)> operation, Nodes* objects, float relX, float relY)
@@ -158,7 +221,7 @@ void Controller::doOperationOnGroup(std::function<void(Node*,float,float)> opera
     
 }
 
-void Controller::translateObject(Node* object, float relX, float relY)
+void Controller::translateObject(const ViewState& viewState, Node* object, float relX, float relY)
 {
     if (object != nullptr)
     {
@@ -177,6 +240,28 @@ void Controller::translateObject(Node* object, float relX, float relY)
         float glYRel = 2 * relY / model.getHeight();
 
         glm::mat4 transformation = object->node->getTransformation();
+
+        switch (viewState)          // подумать над std::bind вместо этой конструкции
+        {
+            case ViewState::XY:
+            {
+                transformation = glm::translate(transformation, glm::vec3(glXRel, glYRel, 0.0f));
+
+                break;
+            }
+            case ViewState::XZ:
+            {
+                transformation = glm::translate(transformation, glm::vec3(glXRel, 0.0f, glYRel));
+                break;
+            }
+            case ViewState::YZ:
+            {
+                transformation = glm::translate(transformation, glm::vec3(0.0f, glYRel, glXRel));
+                break;
+            }
+            default:
+                std::cout << "Failed to transform. check transformation function" << std::endl;
+        }   
         transformation = glm::translate(transformation, glm::vec3(glXRel, glYRel, 0.0f));
         object->node->setTransformation(transformation);
     }
@@ -275,8 +360,12 @@ void Controller::addPoint(const float& x, const float& y)
 
 void Controller::addLine(const float& x1, const float& y1, const float& x2, const float& y2)
 {
-    Line* line = createLine(x1, y1, x2, y2);
-    model.addLine(line);
+    Line* line = createLine(model.getViewState(), x1, y1, x2, y2);
+
+    if (line == nullptr)
+        std::cout << "Failed to create line. Check line creation function." << std::endl;
+    else
+        model.addLine(line);
 }
 
 void Controller::addPolyline(const float& x0, const float& y0)
@@ -453,16 +542,16 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             {
                 if (objectType == ObjectType::GROUPMODE)
                 {
-                    std::function<void(Node*, float, float)> operation = std::bind(&Controller::translateObject, this, 
-                                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+                    std::function<void(const ViewState&, Node*, float, float)> operation = std::bind(&Controller::translateObject, this, 
+                                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
 
-                    doOperationOnGroup(operation, model.getActiveGroup(), xRel, -yRel);
+                    doOperationOnGroup(operation, model.getViewState(), model.getActiveGroup(), xRel, -yRel);
 
                 }
                 else
                 {
                     std::cout << "OBJECT TYPE NE GROUPMODE MAZAFAKA!: " << objectType << std::endl;
-                    translateObject(model.getActiveNode(), xRel, -yRel);
+                    translateObject(model.getViewState(), model.getActiveNode(), xRel, -yRel);
                 }
             }
             else if (mode == WorkModes::ROTATE)

@@ -1,5 +1,6 @@
 #include <SDL2/SDL_events.h>
 
+#include <iostream>
 #include <functional>
 #include <map>
 
@@ -39,6 +40,9 @@ class Controller    // unique coordinates.
 
     float scaleX, scaleY;
 
+    bool XYActive;
+    bool XZActive;
+    bool YZActive;
 
 public:
     Line* rubberThread;
@@ -56,7 +60,7 @@ private:
     Node* isPolylineInSpace(const float& x, const float& y);
 
     Point* createPoint(const float& x, const float& y);
-    Line* createLine(const float& x1, const float& y1, const float& x2, const float& y2);
+    Line* createLine(const ViewState& viewState, const float& x1, const float& y1, const float& x2, const float& y2);
     Polyline* createPolyline(const float& x0, const float& y0);
 
 public:
@@ -68,10 +72,13 @@ public:
 
     void trySetActiveNode(float lastClickedX, float lastClickedY);
 
+
+    void doOperationOnGroup(std::function<void(const ViewState&,Node*,float,float)> operation, 
+                                                    const ViewState& viewState, Nodes* objects, float relX, float relY);
     void doOperationOnGroup(std::function<void(Node*,float,float)> operation, 
                                                Nodes* objects, float relX, float relY);
 
-    void translateObject(Node* object, float relX, float relY);      // now only lines, then all objects.
+    void translateObject(const ViewState& viewState, Node* object, float relX, float relY);      // now only lines, then all objects.
     void rotateObject(Node* object, float relX, float relY);
     void scaleObject(Node* object, float relX, float relY);
     void mirrorObject(Node* object, float lastUpX, float lastUpY);

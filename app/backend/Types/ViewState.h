@@ -3,9 +3,16 @@
 
 enum ViewState
 {
-    BASE,
-    CAMERA,
-    SETTED              // несколько установленных режимов
+    XY,
+    XZ,
+    YZ,
+    
+    VIEW_0,
+    VIEW_1,
+    VIEW_2,
+    VIEW_3,
+    VIEW_4,
+    VIEW_5
 };
 
 #endif

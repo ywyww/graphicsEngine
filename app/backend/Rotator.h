@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <glm/glm.hpp>
+#include "glm/gtc/matrix_transform.hpp"
 
 #include "Types/ViewState.h"
 
@@ -10,9 +11,16 @@
 
 struct Rotator
 {
-    glm::mat4 baseView;
-    glm::mat4 cameraView;
-    glm::mat4 settedView;
+    glm::mat4 viewXY;
+    glm::mat4 viewXZ;
+    glm::mat4 viewYZ;
+    
+    glm::mat4 view0;
+    glm::mat4 view1;
+    glm::mat4 view2;
+    glm::mat4 view3;
+    glm::mat4 view4;
+    glm::mat4 view5;
 
     ViewState viewState;
 

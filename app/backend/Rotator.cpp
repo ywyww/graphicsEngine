@@ -3,51 +3,100 @@
 
 Rotator::Rotator()
 {
-    viewState = ViewState::BASE;
-    baseView = glm::mat4(1.0f);
-    cameraView = glm::mat4(1.0f);
-    settedView = glm::mat4(1.0f);
+    viewState = ViewState::XY;
+
+    viewXY = glm::mat4(1.0f);
+    viewXZ = glm::mat4(1.0f);
+    viewYZ = glm::mat4(1.0f);
+
+    viewXZ = glm::rotate(viewXZ, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+    viewYZ = glm::rotate(viewYZ, glm::radians(90.0f), glm::vec3(0, 1, 0));
+
+    
+    view0 = glm::mat4(1.0f);
+    view1 = glm::mat4(1.0f);
+    view2 = glm::mat4(1.0f);
+    view3 = glm::mat4(1.0f);
+    view4 = glm::mat4(1.0f);
+    view5 = glm::mat4(1.0f);
 }
 
 const glm::mat4& Rotator::getCurrent()
 {
     switch (viewState)
     {
-        case ViewState::BASE:
+        case ViewState::XY:
         {
-            return baseView;
+            return viewXY;
         }
-        case ViewState::CAMERA:
+        case ViewState::XZ:
         {
-            return cameraView;
+            return viewXZ;
         }
-        case ViewState::SETTED:
+        case ViewState::YZ:
         {
-            return settedView;
+            return viewYZ;
+        }
+        case ViewState::VIEW_0:
+        {
+            return view0;
+        }
+        case ViewState::VIEW_1:
+        {
+            return view1;
+        }
+        case ViewState::VIEW_2:
+        {
+            return view2;
+        }
+        case ViewState::VIEW_3:
+        {
+            return view3;
+        }
+        case ViewState::VIEW_4:
+        {
+            return view4;
+        }
+        case ViewState::VIEW_5:
+        {
+            return view5;
         }
     }
-    return baseView;
+    return viewXY;
 }
 
 bool Rotator::setCurrent(const glm::mat4& view)
 {
-    bool isSetted = false;
+    bool isSetted = true;
     switch (viewState)
     {
-        case ViewState::CAMERA:
+        case ViewState::VIEW_0:
         {
-            cameraView = view;
-            isSetted = true;
-            break;
+            view0 = view;
         }
-        case ViewState::SETTED:
+        case ViewState::VIEW_1:
         {
-            settedView = view;
-            isSetted = true;
-            break;
+            view1 = view;
+        }
+        case ViewState::VIEW_2:
+        {
+            view2 = view;
+        }
+        case ViewState::VIEW_3:
+        {
+            view3 = view;
+        }
+        case ViewState::VIEW_4:
+        {
+            view4 = view;
+        }
+        case ViewState::VIEW_5:
+        {
+            view5 = view;
         }
         default:
             std::cout << "VIEW NOT SETTED.";
+            isSetted = false;
     }
     return isSetted;
 }

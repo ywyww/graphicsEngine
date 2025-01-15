@@ -17,9 +17,17 @@ std::map<WorkModes, const char*> Model::modeMap = {
 };
 
 std::map<ViewState, const char*> Model::viewStateMap = {
-    std::pair(ViewState::BASE, "Base"),
-    std::pair(ViewState::CAMERA, "Camera"),
-    std::pair(ViewState::SETTED, "Setted"),
+    std::pair(ViewState::XY, "XY"),
+    std::pair(ViewState::XZ, "XZ"),
+    std::pair(ViewState::YZ, "YZ"),
+
+    std::pair(ViewState::VIEW_0, "view 0"),
+    std::pair(ViewState::VIEW_1, "view 1"),
+    std::pair(ViewState::VIEW_2, "view 2"),
+    std::pair(ViewState::VIEW_3, "view 3"),
+    std::pair(ViewState::VIEW_4, "view 4"),
+    std::pair(ViewState::VIEW_5, "view 5"),
+    
 };
 
 
@@ -31,7 +39,7 @@ Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(r
     groups = Groups();
         
     mode = WorkModes::POINTER;
-    viewState = ViewState::BASE;
+    viewState = ViewState::XY;
 
     activeNode = nullptr;
     activeGroup = nullptr;
