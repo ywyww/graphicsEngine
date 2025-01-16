@@ -20,6 +20,7 @@
 #include "app/backend/Model.h"
 #include "app/backend/Controller.h"
 #include "app/frontend/Renderer.h"
+#include "app/backend/Objects/CoordinateSystem.h"
 
 #include "include/imgui_impl_sdl2.h"
 #include "include/imgui_impl_opengl3.h"
@@ -86,11 +87,34 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
     SDL_Rect glRenderArea = {20, 50, 1400, 800};
 
+
     Model model = Model(glRenderArea);
     Controller controller = Controller(model);
     Renderer renderer = Renderer(model, controller);
 
     Rotator rotator = Rotator();
+
+
+    // Line line;
+    // line = Line();
+
+    try
+    {
+        std::cout << "1: START" << std::endl;
+        CoordinateSystem cs;
+
+        std::cout << "2: Variable " << std::endl;
+        cs = CoordinateSystem();
+
+        std::cout << "3: MEMORY ALLOCATED FOR COORDINATE SYSTEM" << std::endl;
+
+        //delete cs;
+        std::cout << "4: DELETED COORDINATE SYSTEM" << std::endl;
+    }
+    catch (std::exception& e)
+    {
+        std::cout << "WW" << " " << e.what() << std::endl;
+    }
 
     std::string filename = "/home/german/Documents/dev/source/sourceC++/CG_SDL_GL/projects/temp";
 
@@ -134,8 +158,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         const ProjectionState& projectionState = model.getProjectionState();
         const glm::mat4& projection = rotator.getProjection(projectionState);
 
-        controller.coordinateSystem.setView(view);
-        controller.coordinateSystem.setProjection(projection);
+        // controller.coordinateSystem.setView(view);
+        // controller.coordinateSystem.setProjection(projection);
 
         model.setView(view);
         model.setProjection(projection);
@@ -169,7 +193,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         renderer.draw();
 
         controller.centerPoint.draw();
-        controller.coordinateSystem.draw();
+        
+        // controller.coordinateSystem.draw();
         
         // draw imgui
         ImGui_ImplOpenGL3_NewFrame();

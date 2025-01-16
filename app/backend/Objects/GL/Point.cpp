@@ -40,6 +40,11 @@ Point::Point(const float& x, const float& y, const float& z) : Object()
     Init();
 }
 
+Point::~Point()
+{
+    delete[] coords;
+}
+
 void Point::setPointSize(const float& size)
 {
     this->pointSize = size;

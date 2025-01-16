@@ -29,6 +29,11 @@ Polyline::Polyline(): Object()
     view = glm::mat4(1.0f);
 }
 
+Polyline::~Polyline()
+{
+    
+}
+
 void Polyline::addDot(float dotX, float dotY)      // plus add Line
 {
     dots.push_back(std::pair(dotX, dotY));

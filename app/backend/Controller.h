@@ -50,7 +50,7 @@ public:
     bool isPushGroupInModelAndClear;        // запустить группу в модель и очистить
     bool isGroupCreationMode;                   // набирается ли группа или нет (активен ли режим)
 
-    CoordinateSystem coordinateSystem;
+    // CoordinateSystem coordinateSystem;
 
 private:
     
@@ -95,7 +95,9 @@ public:
     void addNodeInBuildingGroup(const float& x1, const float& x2);
 
     void clearBuildingGroup();
-    
+
+    void copyGroupAndCreateObjects();
+
     void processRubberThread();
 
     void processEvent(SDL_Event& event, const float& wWidth, const float& wHeight);

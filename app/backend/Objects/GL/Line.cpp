@@ -3,6 +3,7 @@
 
 Line::Line(): Object()
 {
+    std::cout << "LINE BASE CONSTRUCTOR BEGIN" << std::endl;
     buffer = new float[6] {0.0, 0.0, 0.0,
                            0.0, 0.0, 0.0};
 
@@ -24,9 +25,15 @@ Line::Line(): Object()
     
     projection = glm::mat4(1.0f);
     view = glm::mat4(1.0f);
+
+    std::cout << "LINE BASE CONSTRUCTOR END" << std::endl;
 }
 
 Line::Line(const float x1, const float y1, const float z1, const float x2, const float y2, const float z2) : Object() {
+
+    std::cout << "LINE PARAMETERISED CONSTRUCTOR BEGIN" << std::endl;
+
+
     buffer = new float[6] {x1, y1, z1, 
                            x2, y2, z2};
 
@@ -48,13 +55,54 @@ Line::Line(const float x1, const float y1, const float z1, const float x2, const
     
     projection = glm::mat4(1.0f);
     view = glm::mat4(1.0f);
+
+    std::cout << "LINE PARAMETERISED CONSTRUCTOR END" << std::endl;
+
+}
+
+Line::Line(const Line& other)
+{
+    std::cout << "COPYING CONSTRUCTOR OF LINE. " << std::endl;
+    if (buffer != nullptr)
+    {
+        delete[] buffer;
+        buffer = new float[6]{};
+    }
+
+    for (int i = 0; i < 6; i++)
+            buffer[i] = other.buffer[i];
+
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glBindVertexArray(VAO);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, buffer, GL_DYNAMIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    shader = Shader("data/line.vertexshader", "data/line.fragmentshader");
+    transformation = other.transformation;
+    color = other.color;
+    
+    projection = other.projection;
+    view = other.view;
 }
 
 Line::~Line()
 {
-    delete[] buffer;
-}
+    std::cout << "LINE DESTRUCTOR CALLED: " << color.x << " " << color.y << " " << color.z << std::endl;
 
+    std::cout << "BUFFER POINTER: " << buffer << std::endl;
+
+    if (buffer != nullptr)
+        delete[] buffer;
+
+    std::cout << "LINE DESTRUCTOR ENDED: " << color.x << " " << color.y << " " << color.z << std::endl;
+}
 
 GLuint Line::getVAO() {
     return VAO;

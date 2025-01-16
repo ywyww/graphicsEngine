@@ -76,6 +76,7 @@ private:
 public:
     Point();
     Point(const float& x, const float& y, const float& z);
+    ~Point();
 
     void setPointSize(const float& size);
     const float& getPointSize();

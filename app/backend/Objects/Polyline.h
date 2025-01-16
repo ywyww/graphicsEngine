@@ -35,7 +35,8 @@ private:
    void addLine(float newDotX, float newDotY);  // if we have at least 2 points
 public:
     Polyline();
-
+    ~Polyline();
+    
     void addDot(float dotX, float dotY);
 
     void updateMVP();

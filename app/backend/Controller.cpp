@@ -146,9 +146,11 @@ Controller::Controller(Model& model): model(model)
     isLineModifable = false;
     xModifableIdx = yModifableIdx = 0;
 
+    
     rubberThread = new Line();
     rubberThread->setColor(glm::vec3(1.f));
     rubberDrawable = false;
+
 
     buildingGroup = Nodes();
 
@@ -156,7 +158,10 @@ Controller::Controller(Model& model): model(model)
     scaleX = scaleY = 0.0f;
 
     centerPoint = Point(0, 0, 0);
-    coordinateSystem = CoordinateSystem();
+
+
+    //coordinateSystem = CoordinateSystem();
+
 }
 
 Controller::~Controller()
