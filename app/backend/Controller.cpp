@@ -156,6 +156,7 @@ Controller::Controller(Model& model): model(model)
     scaleX = scaleY = 0.0f;
 
     centerPoint = Point(0, 0, 0);
+    coordinateSystem = CoordinateSystem();
 }
 
 Controller::~Controller()

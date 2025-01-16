@@ -114,37 +114,6 @@ bool Line::isGLPointBelongs(const float& x, const float& y, const float z)    //
     return false;
 }
 
-// bool Line::isPointBelongs(const glm::mat4& view, const float& x, const float& y, const float z, const float& width, const float& height, bool coefficientTrim, float precision)  // only 2d
-// {
-//     // x(t) = x1 + (x2 - x1) * t, 0 <= t <= 1
-// 
-//     glm::vec4 transformedP1 = view * transformation * glm::vec4(buffer[0], buffer[1], 1, 1);
-//     glm::vec4 transformedP2 = view * transformation * glm::vec4(buffer[3], buffer[4], 1, 1);
-// 
-//     float x1Normal = width * (transformedP1[0] + 1) / 2;
-//     float y1Normal = height * (transformedP1[1] + 1) / 2;
-//      
-//     float x2Normal = width * (transformedP2[0] + 1) / 2;
-//     float y2Normal = height * (transformedP2[1] + 1) / 2;
-//         
-// 
-//     float xCoefficient = (x - x1Normal) / (x2Normal - x1Normal);
-//     float yCoefficient = (y - y1Normal) / (y2Normal - y1Normal);
-//     
-//     if (coefficientTrim)
-//     {
-//         if (xCoefficient > 1 || xCoefficient < 0 || yCoefficient > 1 || yCoefficient < 0)
-//             return false;
-//     }
-// 
-//     if (xCoefficient >= yCoefficient)
-//         return xCoefficient - yCoefficient < precision;
-//     else 
-//         return yCoefficient - xCoefficient < precision;
-//     
-//     // make z coodinate
-// }
-
 bool Line::isPointBelongs(const float& x, const float& y, const float z, const float& width, const float& height, bool coefficientTrim, float precision)  // only 2d
 {
     // x(t) = x1 + (x2 - x1) * t, 0 <= t <= 1

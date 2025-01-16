@@ -9,6 +9,7 @@
 #include "Types/ObjectType.h"
 
 #include "Interfaces/Object.h"
+#include "Objects/CoordinateSystem.h"
 #include "Objects/Scene/Nodes.h"
 #include "Objects/Polyline.h"
 
@@ -48,6 +49,8 @@ public:
     Nodes buildingGroup;
     bool isPushGroupInModelAndClear;        // запустить группу в модель и очистить
     bool isGroupCreationMode;                   // набирается ли группа или нет (активен ли режим)
+
+    CoordinateSystem coordinateSystem;
 
 private:
     

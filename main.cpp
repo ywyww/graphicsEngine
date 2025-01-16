@@ -134,6 +134,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         const ProjectionState& projectionState = model.getProjectionState();
         const glm::mat4& projection = rotator.getProjection(projectionState);
 
+        controller.coordinateSystem.setView(view);
+        controller.coordinateSystem.setProjection(projection);
 
         model.setView(view);
         model.setProjection(projection);
@@ -163,9 +165,11 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
             controller.rubberThread->draw();
         }
 
+        
         renderer.draw();
 
         controller.centerPoint.draw();
+        controller.coordinateSystem.draw();
         
         // draw imgui
         ImGui_ImplOpenGL3_NewFrame();

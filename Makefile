@@ -7,6 +7,7 @@ SOURCES += include/imgui_impl_opengl3.cpp include/imgui_impl_sdl2.cpp
 
 SOURCES += app/Saver.cpp
 SOURCES += app/backend/Rotator.cpp
+SOURCES += app/backend/Objects/CoordinateSystem.cpp
 SOURCES += app/backend/Objects/Scene/Nodes.cpp 
 SOURCES += app/backend/Objects/Groups.cpp
 SOURCES += app/backend/Objects/GL/Shader.cpp app/backend/Objects/GL/Line.cpp app/backend/Objects/Polyline.cpp app/backend/Objects/GL/Point.cpp
