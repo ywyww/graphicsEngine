@@ -13,7 +13,8 @@ LineInputData должен посылать view контроллеру.
 
 ======================= TODO =======================
 // Точно:
-[ ] fix save/load
+[ ] fix camera views: XY, XZ, YZ
+[ ] processCamera in controller class
 [ ] добавить работу с группами:
     [ ] удаление с объектами
     [ ] удаление без объектов
@@ -123,11 +124,10 @@ LineInputData должен посылать view контроллеру.
 [ ] make a logger
 
 [ ] Прописать объекты-обработчики, которые бы обрабатывали объекты-группы, отрисоовчные объекты и прочее (рефакторинг)
-
-[x] addActiveNodeType for no dynamic casts
 ======================= TODO (OLD) ======================= 
 
 ======================= DONE ======================= 
+[x] fix save/load
 [x] add line in interface 
 [x] coordinate system works with no pointer. For pointers overload new operator
 [x] добавить поддержку перспективы

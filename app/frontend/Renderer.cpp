@@ -309,9 +309,9 @@ void Renderer::drawLineTransformation(Line* line)
     
     if (ImGui::BeginMenu("NewCoordinates"))
     {
-        std::memcpy(lineInput->coordinates, line->getBuffer(), 6 * sizeof(float));
-        float* first = &lineInput->coordinates[0];
-        float* second = &lineInput->coordinates[3];
+        std::memcpy(lineInput->lastLineCoordinates, line->getBuffer(), 6 * sizeof(float));
+        float* first = &lineInput->lastLineCoordinates[0];
+        float* second = &lineInput->lastLineCoordinates[3];
 
 
         if (ImGui::InputFloat3("X1 Y1 Z1", first)) {
@@ -322,7 +322,7 @@ void Renderer::drawLineTransformation(Line* line)
         }
         if (ImGui::Button("Click me for change coordinates."))
         {
-            line->updateBuffer(lineInput->coordinates);
+            line->updateBuffer(lineInput->lastLineCoordinates);
         }
 
         ImGui::EndMenu();
@@ -386,23 +386,13 @@ void Renderer::drawSettings()
         {
             if (ImGui::MenuItem("Save project", "Ctrl+S", false, true))
             {
-                char* data = filename.data();
-                if (ImGui::InputText("Input /<fullpath>/<filename> to save a file", data, filename.size() + 30 * sizeof(char)))
-                {
-                    filename = std::string(data);
-                    controller.saveIntoFile(filename);
-                }
-                std::cout << "Saved" << std::endl;                      // послать сигнал контроллеру
+                controller.saveIntoFile(filename);
+                std::cout << "Saved" << std::endl;
             }
             if (ImGui::MenuItem("Read project", "Ctrl+O", false, true))
             {
-                char* data = filename.data();
-                if (ImGui::InputText("Input /<fullpath>/<filename> to save a file", data, filename.size() + 30 * sizeof(char)))
-                {
-                    filename = std::string(data);
-                    controller.readFromFile(filename);
-                }
-                std::cout << "Readed" << std::endl;                     // послать сигнал контроллеру
+                controller.readFromFile(filename);
+                std::cout << "Readed" << std::endl;
             }
             ImGui::EndMenu();
         }
@@ -413,17 +403,24 @@ void Renderer::drawSettings()
     float centerY = model.getCenterY();
     
     ImGui::Begin("Settings");
+        if (ImGui::InputFloat("CenterX", &centerX))
+        {
+            model.setCenterX(centerX);
+        }
+
+        if (ImGui::InputFloat("CenterY", &centerY))
+        {
+            model.setCenterY(centerY);
+        }
+    ImGui::End();
     
-    if (ImGui::InputFloat("CenterX", &centerX))
-    {
-        model.setCenterX(centerX);
-    }
-
-    if (ImGui::InputFloat("CenterY", &centerY))
-    {
-        model.setCenterY(centerY);
-    }
-
+    
+    ImGui::Begin("Filename", nullptr, ImGuiWindowFlags_NoTitleBar);
+        char* data = filename.data();
+        if (ImGui::InputText("Input /<fullpath>/<filename> to save a file", data, filename.size() + 30 * sizeof(char)))
+        {
+            filename = std::string(data);
+        }
     ImGui::End();
 }
 

@@ -96,11 +96,18 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
     Rotator rotator = Rotator();
 
-    rotator.view1 = glm::translate(rotator.view5, glm::vec3(0, 0, -4));
+    rotator.view1 = glm::translate(rotator.view1, glm::vec3(0, 0, -4));
 
     Camera camera = Camera();
 
     std::string filename = "/home/german/Documents/dev/source/sourceC++/CG_SDL_GL/projects/temp";
+
+    float f = glm::radians(0.0f);
+    float t = glm::radians(0.0f);
+
+    float zc = 30.0f;
+
+    bool up = true;
 
     while (runningWindow)  
     {
@@ -118,15 +125,6 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
             if (event.type == SDL_KEYDOWN)
             {
-                if (event.key.keysym.sym == SDLK_s)
-                {
-                    controller.saveIntoFile(filename);
-                }
-                else if (event.key.keysym.sym == SDLK_r)
-                {
-                    controller.readFromFile(filename);
-                }
-
                 float deltaTime = 0.1f;
                 if (event.key.keysym.sym == SDLK_UP)
                 {
@@ -170,20 +168,31 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         const ViewState& viewState = model.getViewState();
         const glm::mat4& view = rotator.getView(viewState);
         
-        const ProjectionState& projectionState = model.getProjectionState();
-        const glm::mat4& projection = rotator.getProjection(projectionState);
+       // const ProjectionState& projectionState = model.getProjectionState();
+       // const glm::mat4& projection = rotator.getProjection(projectionState);
 
         controller.coordinateSystem.setView(view);
-        controller.coordinateSystem.setProjection(projection);
+        //controller.coordinateSystem.setProjection(projection);
 
         model.setView(view);
-        model.setProjection(projection);
+        //model.setProjection(projection);
         model.setViewAndProjectionForAll();
 
         
         rotator.view0 = glm::rotate(rotator.view0, 0.02f, glm::vec3(1, 0, 1));
         rotator.view1 = glm::rotate(rotator.view1, 0.02f, glm::vec3(1, 0, 1));
         rotator.view5 = camera.GetViewMatrix();
+
+        f += glm::radians(0.5f);
+        t += glm::radians(0.5f);
+
+        glm::mat4 nigger = glm::mat4(0.0f);
+        nigger[0] = glm::vec4(cos(f), sin(f) * sin(t), 0, sin(f) * cos(t) / zc);
+        nigger[1] = glm::vec4(0, cos(t), 0, -sin(t) / zc);
+        nigger[2] = glm::vec4(sin(f), -cos(f) * sin(t), 0, -cos(f) * cos(t) / zc);
+        nigger[3] = glm::vec4(0, 0, 0, 1);
+
+        rotator.view4 = nigger;
 
         // clear imgui buffer
         glViewport(0, 0, wWidth, wHeight);
@@ -205,7 +214,6 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         {
             controller.rubberThread->draw();
         }
-
         
         renderer.draw();
 
@@ -224,7 +232,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         renderer.drawViewState();
         renderer.drawProjectionState();
         renderer.drawSettings();
-        
+
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

@@ -4,6 +4,8 @@
 
 struct LineInputData
 {
+    float* lastLineCoordinates;
+
     float* coordinates; // 6 (x, y, z) * 2
     float* color;       // r g b
 

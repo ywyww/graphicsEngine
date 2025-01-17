@@ -20,7 +20,6 @@ CoordinateSystem::CoordinateSystem(const CoordinateSystem& other)
     this->Y = other.Y;
     this->Z = other.Z;
     std::cout << "COORDINATE SYSTEM COPYING CONSTRUCTOR END" << std::endl;
-
 }
 
 CoordinateSystem::~CoordinateSystem()
