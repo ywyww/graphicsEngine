@@ -160,12 +160,28 @@ Controller::Controller(Model& model): model(model)
     centerPoint = Point(0, 0, 0);
 
 
-    //coordinateSystem = CoordinateSystem();
+    coordinateSystem = CoordinateSystem();
 
 }
 
 Controller::~Controller()
 {
+}
+
+void Controller::readFromFile(std::string filename)
+{
+    if (Saver::readFromAFile(filename, model))
+        std::cout << "Sucess to read" << std::endl;
+    else
+        std::cout << "Raised problem" << std::endl;
+}
+
+void Controller::saveIntoFile(std::string filename)
+{
+    if (Saver::saveIntoAFile(filename, model))
+        std::cout << "Sucess to save" << std::endl;
+    else
+        std::cout << "Raised problem" << std::endl;
 }
 
 Node* Controller::isObjectInSpace(const float& x, const float& y)      // can be problems here.

@@ -23,7 +23,7 @@ Rotator::Rotator()
 
 
     float ortho = 1.0f;
-    projectionPerspective = glm::perspective(glm::radians(45.0f), 1400.0f / 800, -0.1f, 100.0f);
+    projectionPerspective = glm::perspective(glm::radians(45.0f), 1400.0f / 800, 0.1f, 100.0f);
     projectionOrtho = glm::ortho(-ortho, ortho, -ortho, ortho, -100.0f, 100.0f); 
 }
 

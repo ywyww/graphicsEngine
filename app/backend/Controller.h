@@ -4,6 +4,8 @@
 #include <functional>
 #include <map>
 
+#include "../Saver.h"
+
 #include "Helpers/Translator.h"
 #include "Types/WorkModes.h"
 #include "Types/ObjectType.h"
@@ -50,7 +52,7 @@ public:
     bool isPushGroupInModelAndClear;        // запустить группу в модель и очистить
     bool isGroupCreationMode;                   // набирается ли группа или нет (активен ли режим)
 
-    // CoordinateSystem coordinateSystem;
+    CoordinateSystem coordinateSystem;
 
 private:
     
@@ -66,6 +68,9 @@ public:
     // after adding set object to active node
     Controller(Model& model);
     ~Controller();
+
+    void readFromFile(std::string filename);
+    void saveIntoFile(std::string filename);
 
     Node* isObjectInSpace(const float& x, const float& y);    // check if object in space
 

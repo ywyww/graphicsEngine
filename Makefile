@@ -16,6 +16,8 @@ SOURCES += app/backend/Objects/GL/Point.cpp
 SOURCES += app/backend/Objects/Polyline.cpp 
 SOURCES += app/backend/Objects/Groups.cpp
 
+SOURCES += app/backend/Objects/Camera.cpp
+
 SOURCES += app/backend/Types/LineInputData.cpp
 
 SOURCES += app/backend/Controller.cpp 

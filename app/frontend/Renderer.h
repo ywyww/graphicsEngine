@@ -12,6 +12,7 @@ class Renderer {
     Model& model;
 
     LineInputData* lineInput;
+    std::string filename {"/home/german/Documents/dev/source/sourceC++/CG_SDL_GL/projects/"};
 
 
 private:

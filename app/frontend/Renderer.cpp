@@ -106,6 +106,29 @@ void Renderer::drawSceneTreeLines()
 
     if (ImGui::BeginMenu("Lines"))
     {   
+        if (ImGui::BeginMenu("AddNewLine"))
+        {
+            float* first = &lineInput->coordinates[0];
+            float* second = &lineInput->coordinates[3];
+
+            if (ImGui::InputFloat3("X1 Y1 Z1", first)) {
+
+            }
+            if (ImGui::InputFloat3("X2 Y2 Z2", second)) {
+
+            }
+            
+            
+            if (ImGui::Button("Click me for add line."))
+            {
+                Line* line = new Line(first[0], first[1], first[2], 
+                                      second[0], second[1], second[2]);
+                model.addLine(line);
+            }
+
+            ImGui::EndMenu();
+        }
+
         for (int i = 0; i < lines->size(); i++)
         {
             Node* node = &lines->operator[](i);
@@ -291,8 +314,12 @@ void Renderer::drawLineTransformation(Line* line)
         float* second = &lineInput->coordinates[3];
 
 
-        ImGui::InputFloat3("X1 Y1 Z1", first);
-        ImGui::InputFloat3("X2 Y2 Z2", second);
+        if (ImGui::InputFloat3("X1 Y1 Z1", first)) {
+
+        }
+        if (ImGui::InputFloat3("X2 Y2 Z2", second)) {
+            
+        }
         if (ImGui::Button("Click me for change coordinates."))
         {
             line->updateBuffer(lineInput->coordinates);
@@ -359,10 +386,22 @@ void Renderer::drawSettings()
         {
             if (ImGui::MenuItem("Save project", "Ctrl+S", false, true))
             {
-                std::cout << "SAVED" << std::endl;                      // послать сигнал контроллеру
+                char* data = filename.data();
+                if (ImGui::InputText("Input /<fullpath>/<filename> to save a file", data, filename.size() + 30 * sizeof(char)))
+                {
+                    filename = std::string(data);
+                    controller.saveIntoFile(filename);
+                }
+                std::cout << "Saved" << std::endl;                      // послать сигнал контроллеру
             }
             if (ImGui::MenuItem("Read project", "Ctrl+O", false, true))
             {
+                char* data = filename.data();
+                if (ImGui::InputText("Input /<fullpath>/<filename> to save a file", data, filename.size() + 30 * sizeof(char)))
+                {
+                    filename = std::string(data);
+                    controller.readFromFile(filename);
+                }
                 std::cout << "Readed" << std::endl;                     // послать сигнал контроллеру
             }
             ImGui::EndMenu();

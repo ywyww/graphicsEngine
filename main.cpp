@@ -17,6 +17,8 @@
 #include "app/backend/Objects/GL/Point.h"
 #include "app/backend/Objects/GL/Line.h"
 
+#include "app/backend/Objects/Camera.h"
+
 #include "app/backend/Model.h"
 #include "app/backend/Controller.h"
 #include "app/frontend/Renderer.h"
@@ -94,27 +96,9 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
     Rotator rotator = Rotator();
 
+    rotator.view1 = glm::translate(rotator.view5, glm::vec3(0, 0, -4));
 
-    // Line line;
-    // line = Line();
-
-    try
-    {
-        std::cout << "1: START" << std::endl;
-        CoordinateSystem cs;
-
-        std::cout << "2: Variable " << std::endl;
-        cs = CoordinateSystem();
-
-        std::cout << "3: MEMORY ALLOCATED FOR COORDINATE SYSTEM" << std::endl;
-
-        //delete cs;
-        std::cout << "4: DELETED COORDINATE SYSTEM" << std::endl;
-    }
-    catch (std::exception& e)
-    {
-        std::cout << "WW" << " " << e.what() << std::endl;
-    }
+    Camera camera = Camera();
 
     std::string filename = "/home/german/Documents/dev/source/sourceC++/CG_SDL_GL/projects/temp";
 
@@ -136,20 +120,51 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
             {
                 if (event.key.keysym.sym == SDLK_s)
                 {
-                    if (Saver::saveIntoAFile(filename, model))
-                        std::cout << "Sucess to save" << std::endl;
-                    else
-                        std::cout << "Raised problem" << std::endl;
+                    controller.saveIntoFile(filename);
                 }
                 else if (event.key.keysym.sym == SDLK_r)
                 {
-                    if (Saver::readFromAFile(filename, model))
-                        std::cout << "Sucess to read" << std::endl;
-                    else
-                        std::cout << "Raised problem" << std::endl;
+                    controller.readFromFile(filename);
+                }
+
+                float deltaTime = 0.1f;
+                if (event.key.keysym.sym == SDLK_UP)
+                {
+                    camera.ProcessKeyboard(Camera_Movement::FORWARD, deltaTime);
+                }
+                else if (event.key.keysym.sym == SDLK_LEFT)
+                {
+                    camera.ProcessKeyboard(Camera_Movement::LEFT, deltaTime);
+                }
+                else if (event.key.keysym.sym == SDLK_RIGHT)
+                {
+                    camera.ProcessKeyboard(Camera_Movement::RIGHT, deltaTime);
+                }
+                else if (event.key.keysym.sym == SDLK_DOWN)
+                {
+                    camera.ProcessKeyboard(Camera_Movement::BACKWARD, deltaTime);
+                }
+                
+
+                float deltaShift = 0.7f;
+                if (event.key.keysym.sym == SDLK_i)
+                {
+                    camera.ProcessKeyboard(Camera_Movement::TURN_UP, deltaShift);
+                }
+                else if (event.key.keysym.sym == SDLK_k)
+                {
+                    camera.ProcessKeyboard(Camera_Movement::TURN_DOWN, deltaShift);
+                }
+                else if (event.key.keysym.sym == SDLK_j)
+                {
+                    camera.ProcessKeyboard(Camera_Movement::TURN_LEFT, deltaShift);
+                }
+                else if (event.key.keysym.sym == SDLK_l)
+                {
+                    camera.ProcessKeyboard(Camera_Movement::TURN_RIGHT, deltaShift);
                 }
             }
-
+            
         }
 
         const ViewState& viewState = model.getViewState();
@@ -158,8 +173,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         const ProjectionState& projectionState = model.getProjectionState();
         const glm::mat4& projection = rotator.getProjection(projectionState);
 
-        // controller.coordinateSystem.setView(view);
-        // controller.coordinateSystem.setProjection(projection);
+        controller.coordinateSystem.setView(view);
+        controller.coordinateSystem.setProjection(projection);
 
         model.setView(view);
         model.setProjection(projection);
@@ -167,6 +182,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
         
         rotator.view0 = glm::rotate(rotator.view0, 0.02f, glm::vec3(1, 0, 1));
+        rotator.view1 = glm::rotate(rotator.view1, 0.02f, glm::vec3(1, 0, 1));
+        rotator.view5 = camera.GetViewMatrix();
 
         // clear imgui buffer
         glViewport(0, 0, wWidth, wHeight);
@@ -194,7 +211,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
         controller.centerPoint.draw();
         
-        // controller.coordinateSystem.draw();
+        controller.coordinateSystem.draw();
         
         // draw imgui
         ImGui_ImplOpenGL3_NewFrame();
