@@ -16,22 +16,10 @@ std::map<WorkModes, const char*> Model::modeMap = {
     std::pair(WorkModes::COLORIZE, "Colorize"),
 };
 
-std::map<ViewState, const char*> Model::viewStateMap = {
-    std::pair(ViewState::XY, "XY"),
-    std::pair(ViewState::XZ, "XZ"),
-    std::pair(ViewState::YZ, "YZ"),
-
-    std::pair(ViewState::VIEW_0, "view 0"),
-    std::pair(ViewState::VIEW_1, "view 1"),
-    std::pair(ViewState::VIEW_2, "view 2"),
-    std::pair(ViewState::VIEW_3, "view 3"),
-    std::pair(ViewState::VIEW_4, "view 4"),
-    std::pair(ViewState::VIEW_5, "view 5"),
-};
-
-std::map<ProjectionState, const char*> Model::projectionStateMap = {
-    std::pair(ProjectionState::ORTHOGONAL, "Orthogonal"),
-    std::pair(ProjectionState::PERSPECTIVE, "Perspective")
+std::map<EditState, const char*> Model::editStateMap = {
+    std::pair(EditState::XY, "XY"),
+    std::pair(EditState::XZ, "XZ"),
+    std::pair(EditState::YZ, "YZ"),
 };
 
 Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(renderArea.h), windowWidth(renderArea.w), shiftX(renderArea.x), shiftY(renderArea.y)
@@ -42,8 +30,7 @@ Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(r
     groups = Groups();
         
     mode = WorkModes::POINTER;
-    viewState = ViewState::XY;
-    projectionState = ProjectionState::ORTHOGONAL;
+    editState = EditState::XY;
 
     activeNode = nullptr;
     activeGroup = nullptr;
@@ -252,24 +239,14 @@ const WorkModes& Model::getMode()
     return mode;
 }
 
-void Model::setViewState(const ViewState& viewState)
+void Model::setEditState(const EditState& editState)
 {
-    this->viewState = viewState;
+    this->editState = editState;
 }
 
-const ViewState& Model::getViewState()
+const EditState& Model::getEditState()
 {
-    return viewState;
-}
-
-void Model::setProjectionState(const ProjectionState& projectionState)
-{
-    this->projectionState = projectionState;
-}
-
-const ProjectionState& Model::getProjectionState()
-{
-    return projectionState;
+    return editState;
 }
 
 void Model::addPoint(Point* point)

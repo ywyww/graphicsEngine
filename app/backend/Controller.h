@@ -7,6 +7,8 @@
 #include "../Saver.h"
 
 #include "Helpers/Translator.h"
+#include "Helpers/Mathor.h"
+
 #include "Types/WorkModes.h"
 #include "Types/ObjectType.h"
 
@@ -61,7 +63,7 @@ private:
     Node* isPolylineInSpace(const float& x, const float& y);
 
     Point* createPoint(const float& x, const float& y);
-    Line* createLine(const ViewState& viewState, const float& x1, const float& y1, const float& x2, const float& y2);
+    Line* createLine(const EditState& viewState, const float& x1, const float& y1, const float& x2, const float& y2);
     Polyline* createPolyline(const float& x0, const float& y0);
 
 public:
@@ -79,15 +81,16 @@ public:
     void trySetActiveNode(float lastClickedX, float lastClickedY);
 
 
-    void doOperationOnGroup(std::function<void(const ViewState&,Node*,float,float)> operation, 
-                                                    const ViewState& viewState, Nodes* objects, float relX, float relY);
+    // void doOperationOnGroup(std::function<void(const EditState&,Node*,float,float)> operation, 
+    //                                                 const EditState& viewState, Nodes* objects, float relX, float relY);
 
-    void translateObject(const ViewState& viewState, Node* object, float relX, float relY);      // now only lines, then all objects.
-    void rotateObject(const ViewState& viewState, Node* object, float relX, float relY);
-    void scaleObject(const ViewState& viewState, Node* object, float relX, float relY);
-    void mirrorObject(const ViewState& viewState, Node* object, float lastUpX, float lastUpY);
-    
-    void projectObject(const ViewState& viewState, Node* object, float lastUpX, float lastUpY);        // implement
+
+    void translateObject(Node* object, float relX, float relY, float relZ);
+    void rotateObject(Node* object, float relX, float relY, float relZ);
+    void scaleObject(Node* object, float relX, float relY, float relZ);             // fix on each scaleCoeff
+    void mirrorObject(Node* object, float lastUpX, float lastUpY, float lastUpZ);
+
+    void projectObject(Node* object, float lastUpX, float lastUpY);        // implement
     
     void addPoint(const float& x, const float& y);
     void addLine(const float& x1, const float& y1, const float& x2, const float& y2);
@@ -107,7 +110,13 @@ public:
 
     void processRubberThread();
 
+    void processObjectTranslation(const EditState& editState, Node* object, float relA, float relB);
+    void processObjectRotation(const EditState& editState, Node* object, float relA, float relB);
+    void processObjectScaling(const EditState& editState, Node* object, float relA, float relB);
+    void processObjectMirroring(const EditState& editState, Node* object, float relA, float relB);
+
     void processEvent(SDL_Event& event, const float& wWidth, const float& wHeight);
+
 };
 
 #endif

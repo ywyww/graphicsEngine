@@ -24,7 +24,7 @@ void Renderer::drawStatusBar()
 
         ImGui::Text("Active mode: %s", model.modeMap[model.getMode()]);
 
-        ImGui::Text("Current view state: %s", Model::viewStateMap[model.getViewState()]);
+        ImGui::Text("Current edit state: %s", Model::editStateMap[model.getEditState()]);
 
         ImGui::BeginChild("Object chosen");
             Node* activeNode = model.getActiveNode();
@@ -427,38 +427,39 @@ void Renderer::drawSettings()
     ImGui::End();
 }
 
-void Renderer::drawViewState()
+void Renderer::drawEditState()
 {
-    ImGui::Begin("ViewState");
+    ImGui::Begin("EditState");
 
-    std::map<ViewState, const char*> map = Model::viewStateMap;
+    std::map<EditState, const char*> map = Model::editStateMap;
 
     for (auto iter = map.begin(); iter != map.end(); iter++)
     {
         if (ImGui::Button(iter->second))
         {
-            model.setViewState(iter->first);
+            model.setEditState(iter->first);
         }
     }
 
     ImGui::End();
 }
 
-void Renderer::drawProjectionState()
-{
-    ImGui::Begin("ProjectionState");
-    std::map<ProjectionState, const char*> map = Model::projectionStateMap;
+// void Renderer::drawEditState()
+// {
+//     ImGui::Begin("ViewState");
 
-    for (auto iter = map.begin(); iter != map.end(); iter++)
-    {
-        if (ImGui::Button(iter->second))
-        {
-            model.setProjectionState(iter->first);
-        }
-    }
+//     std::map<EditState, const char*> map = Model::viewStateMap;
 
-    ImGui::End();
-}
+//     for (auto iter = map.begin(); iter != map.end(); iter++)
+//     {
+//         if (ImGui::Button(iter->second))
+//         {
+//             model.setEditState(iter->first);
+//         }
+//     }
+
+//     ImGui::End();
+// }
 
 void Renderer::drawTrimetricMatrixSettings()
 {

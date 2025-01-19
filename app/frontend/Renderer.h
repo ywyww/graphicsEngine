@@ -34,8 +34,8 @@ public:
     void drawSceneTree();
     void drawModes();
     void drawSettings();
+    void drawEditState();
     void drawViewState();
-    void drawProjectionState();
 
     void drawTrimetricMatrixSettings();
 

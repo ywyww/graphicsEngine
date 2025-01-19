@@ -66,7 +66,7 @@ Point* Controller::createPoint(const float& x, const float& y)
 
 
 
-Line* Controller::createLine(const ViewState& viewState, const float& x1, const float& y1, const float& x2, const float& y2)
+Line* Controller::createLine(const EditState& editState, const float& x1, const float& y1, const float& x2, const float& y2)
 {
     float width = model.getWidth();
     float height = model.getHeight();
@@ -81,9 +81,9 @@ Line* Controller::createLine(const ViewState& viewState, const float& x1, const 
                                         Translator::producePixelCoordinatesToGL(y2, height), 0, 1);
 
 
-    switch (viewState)          // подумать над std::bind вместо этой конструкции
+    switch (editState)          // подумать над std::bind вместо этой конструкции
     {
-        case ViewState::XY:
+        case EditState::XY:
         {
             line = new Line(
                     first[0],
@@ -95,7 +95,7 @@ Line* Controller::createLine(const ViewState& viewState, const float& x1, const 
                 );
             break;
         }
-        case ViewState::XZ:
+        case EditState::XZ:
         {
             line = new Line(
                     Translator::producePixelCoordinatesToGL(x1, width),
@@ -107,7 +107,7 @@ Line* Controller::createLine(const ViewState& viewState, const float& x1, const 
                 );
             break;
         }
-        case ViewState::YZ:
+        case EditState::YZ:
         {
             line = new Line(
                     0,
@@ -212,211 +212,140 @@ Node* Controller::isObjectInSpace(const float& x, const float& y)      // can be
     return nullptr;
 }
 
-void Controller::doOperationOnGroup(std::function<void(const ViewState&,Node*,float,float)> operation, const ViewState& viewState, Nodes* objects, float relX, float relY)
-{
-    std::cout << "FUNCTION DO OPERATION ON GROUP" << std::endl;
-    if (objects != nullptr)
-    {
-        for (int i = 0; i < objects->size(); i++)
-        {
-            Node* object = &(objects->operator[](i));
+// void Controller::doOperationOnGroup(std::function<void(Node*,float,float)> operation, Nodes* objects, float relX, float relY)
+// {
+//     std::cout << "FUNCTION DO OPERATION ON GROUP" << std::endl;
+//     if (objects != nullptr)
+//     {
+//         for (int i = 0; i < objects->size(); i++)
+//         {
+//             Node* object = &(objects->operator[](i));
 
-            if (object == nullptr)
-            {
-                std::cout << "OBJECT IN DO OPERATION ON GROUPP FUNCTION (CONTROLLER) IS NULLPTR!!!!!!!!!" << std::endl;
-            }
-            else
-            {
-                std::cout << object->name << std::endl;
-                operation(viewState, object, relX, relY);
-            }
-        }
-    }
-    else
-        std::cout << "operation for group failed." << std::endl;
+//             if (object == nullptr)
+//             {
+//                 std::cout << "OBJECT IN DO OPERATION ON GROUPP FUNCTION (CONTROLLER) IS NULLPTR!!!!!!!!!" << std::endl;
+//             }
+//             else
+//             {
+//                 std::cout << object->name << std::endl;
+//                 operation(object, relX, relY);
+//             }
+//         }
+//     }
+//     else
+//         std::cout << "operation for group failed." << std::endl;
+// }
+
+void Controller::translateObject(Node* object, float relX, float relY, float relZ)
+{
+    if (object == nullptr)
+        throw std::invalid_argument("Object is nullptr (translate object function)");
+
+    float border = 50;
+
+    relX = Mathor::trimInBorders(relX, -border, border);
+    relY = Mathor::trimInBorders(relY, -border, border);
+    relZ = Mathor::trimInBorders(relZ, -border, border);
+
+    float glXRel = 2 * relX / model.getWidth();
+    float glYRel = 2 * relY / model.getHeight();
+    float glZRel = 2 * relZ / model.getHeight();
+
+    glm::mat4 transformation = object->node->getTransformation();
+    transformation = glm::translate(transformation, glm::vec3(glXRel, glYRel, glZRel));
+    object->node->setTransformation(transformation);
 }
 
-void Controller::translateObject(const ViewState& viewState, Node* object, float relX, float relY)
+void Controller::rotateObject(Node* object, float relX, float relY, float relZ)
 {
-    if (object != nullptr)
-    {
-        float border = 50;
-            
-        if (relX > border)
-            relX = border;
-        else if (relX < -border)
-            relX = -border;
-        if (relY > border)
-            relY = border;
-        else if (relY < -border)
-            relY = -border;
+    if (object == nullptr)
+        throw std::invalid_argument("Object is nullptr (rotate object function)");
 
-        float glXRel = 2 * relX / model.getWidth();
-        float glYRel = 2 * relY / model.getHeight();
+    float border = 50;
 
-        glm::mat4 transformation = object->node->getTransformation();
+    relX = Mathor::trimInBorders(relX, -border, border);
+    relY = Mathor::trimInBorders(relY, -border, border);
+    relZ = Mathor::trimInBorders(relZ, -border, border);
 
-        switch (viewState)          // подумать над std::bind вместо этой конструкции
-        {
-            case ViewState::XY:
-            {
-                transformation = glm::translate(transformation, glm::vec3(glXRel, glYRel, 0.0f));
-                break;
-            }
-            case ViewState::XZ:
-            {
-                transformation = glm::translate(transformation, glm::vec3(glXRel, 0.0f, glYRel));
-                break;
-            }
-            case ViewState::YZ:
-            {
-                transformation = glm::translate(transformation, glm::vec3(0.0f, glYRel, glXRel));
-                break;
-            }
-            default:
-                std::cout << "Failed to transform. check translate function" << std::endl;
-        }   
-        object->node->setTransformation(transformation);
-    }
-    else
-        std::cout << "Translation operation failed: object is nullptr" << std::endl;
+    float glXRel = 2 * relX / model.getWidth();
+    float glYRel = 2 * relY / model.getHeight();
+    float glZRel = 2 * relZ / model.getHeight();
+
+    // bool: 1 - glXRel: if (Z < 0) and (X and Y > 0): glm::vec3(0, 0, 1);
+
+    bool xActive = (glXRel != 0);
+    bool yActive = (glYRel != 0);
+    bool zActive = (glZRel != 0);
+
+    glm::mat4 transformation = object->node->getTransformation();
+    transformation = glm::rotate(transformation, glm::radians(1.0f), glm::vec3(1 - (float)xActive, 1 - (float)yActive, 1 - (float)zActive));
+    object->node->setTransformation(transformation);
 }
 
-void Controller::rotateObject(const ViewState& viewState, Node* object, float relX, float relY)
+void Controller::scaleObject(Node* object, float relX, float relY, float relZ)      // fix on each scaleCoeff
 {
-    if (object != nullptr)
+    if (object == nullptr)
+        throw std::invalid_argument("Object is nullptr (scale object function)");
+
+    float glXRel = 2 * relX / model.getWidth();
+    float glYRel = 2 * relY / model.getHeight();
+    float glZRel = 2 * relZ / model.getHeight();
+
+    float scale = 1.0f;
+    float value = 1 + sqrt(pow(glXRel, 2) + pow(glXRel, 2) + pow(glZRel, 2));
+    value *= scale;
+    if (glXRel < 0)
     {
-        float border = 100;
-            
-        if (relX > border)
-            relX = border;
-        else if (relX < -border)
-            relX = -border;
-        if (relY > border)
-            relY = border;
-        else if (relY < -border)
-            relY = -border; 
-
-        float glXRel = 2 * relX / model.getWidth();
-        float glYRel = 2 * relY / model.getHeight();
-
-        glm::mat4 transformation = object->node->getTransformation();
-
-        switch (viewState)          // подумать над std::bind вместо этой конструкции
-        {
-            case ViewState::XY:
-            {
-                transformation = glm::rotate(transformation, glm::radians(std::atan(glXRel/glYRel)), glm::vec3(0.0f, 0.0f, 1.0f));
-                break;
-            }
-            case ViewState::XZ:
-            {
-                transformation = glm::rotate(transformation, glm::radians(std::atan(glXRel/glYRel)), glm::vec3(0.0f, 1.0f, 0.0f));
-                break;
-            }
-            case ViewState::YZ:
-            {
-                transformation = glm::rotate(transformation, glm::radians(std::atan(glXRel/glYRel)), glm::vec3(1.0f, 0.0f, 0.0f));
-                break;
-            }
-            default:
-                std::cout << "Failed to transform. check rotate function" << std::endl;
-        }   
-
-        object->node->setTransformation(transformation);
+        value = 1 / value;
     }
-    else
-        std::cout << "Rotation operation failed: object is nullptr" << std::endl;
+
+    bool xActive = (glXRel != 0);
+    bool yActive = (glYRel != 0);
+    bool zActive = (glZRel != 0);
+
+    float scaleX = xActive ? value : 1.0f;
+    float scaleY = yActive ? value : 1.0f;
+    float scaleZ = zActive ? value : 1.0f;
+
+    glm::mat4 transformation = object->node->getTransformation();
+    transformation = glm::scale(transformation, glm::vec3(scaleX, scaleY, scaleZ));
+    object->node->setTransformation(transformation);
 }
 
-void Controller::scaleObject(const ViewState& viewState, Node* object, float relX, float relY)   // maximum x5
+void Controller::mirrorObject(Node* object, float lastUpX, float lastUpY, float lastUpZ)
 {
-    if (object != nullptr)
-    {
-        float glXRel = 2 * relX / model.getWidth();
-        float glYRel = 2 * relY / model.getHeight();
-
-        float scale = 1.0f;                                 // make polzunok for scaling
+    if (object == nullptr)
+        throw std::invalid_argument("Object is nullptr (mirror object function)");
+   
+    glm::vec2 vecToMirror = glm::vec2(lastUpX - model.getCenterX(), lastUpY - model.getCenterY());
         
-        float value = 1 + sqrt(pow(glXRel, 2) + pow(glXRel, 2));
-        value *= scale;
-        
-        if (glXRel < 0)
-        {
-            value = 1 / value;
-        }
+    float glXRel = 2 * vecToMirror.x / model.getWidth();
+    float glYRel = 2 * vecToMirror.y / model.getHeight();
+    float glZRel = 2 * vecToMirror.y / model.getHeight();
 
-        glm::mat4 transformation = object->node->getTransformation();
+    float scaleValX;
+    float scaleValY;
+    float scaleValZ;
+    scaleValX = scaleValY = scaleValZ = 1;
 
-        switch (viewState)          // подумать над std::bind вместо этой конструкции
-        {
-            case ViewState::XY:
-            {
-                transformation = glm::scale(transformation, glm::vec3(value, value, 1.0f));
-                break;
-            }
-            case ViewState::XZ:
-            {
-                transformation = glm::scale(transformation, glm::vec3(value, 1.0f, value));
-                break;
-            }
-            case ViewState::YZ:
-            {
-                transformation = glm::scale(transformation, glm::vec3(1.0f, value, value));
-                break;
-            }
-            default:
-                std::cout << "Failed to transform. check scale function" << std::endl;
-        }   
-        object->node->setTransformation(transformation);
-    }
-    else
-        std::cout << "Scaling operation failed: object is nullptr" << std::endl;
-}
+    if (glXRel < 0)
+        scaleValX = -1;
+    if (glYRel < 0)
+        scaleValY = -1;
+    if (glZRel < 0)
+        scaleValZ = -1;
 
-void Controller::mirrorObject(const ViewState& viewState, Node* object, float lastUpX, float lastUpY)
-{
-    if (object != nullptr)
-    {
-        glm::vec2 vecToMirror = glm::vec2(lastUpX - model.getCenterX(), lastUpY - model.getCenterY());
-        
-        float glXRel = 2 * vecToMirror.x / model.getWidth();
-        float glYRel = 2 * vecToMirror.y / model.getHeight();
+    bool xActive = (glXRel != 0);
+    bool yActive = (glYRel != 0);
+    bool zActive = (glZRel != 0);
 
-        float scaleValX;
-        float scaleValY;
-        scaleValX = scaleValY = 1;
-
-        if (glXRel < 0)
-            scaleValX = -1;
-        if (glYRel < 0)
-            scaleValY = -1;
-
-        glm::mat4 transformation = object->node->getTransformation();
-        switch (viewState)          // подумать над std::bind вместо этой конструкции
-        {
-            case ViewState::XY:
-            {
-                transformation = glm::scale(transformation, glm::vec3(scaleValX, scaleValY, 1.0f));
-                break;
-            }
-            case ViewState::XZ:
-            {
-                transformation = glm::scale(transformation, glm::vec3(scaleValX, 1.0f, scaleValY));
-                break;
-            }
-            case ViewState::YZ:
-            {
-                transformation = glm::scale(transformation, glm::vec3(1.0f, scaleValX, scaleValY));
-                break;
-            }
-            default:
-                std::cout << "Failed to transform. check mirroring function" << std::endl;
-        }  
-        object->node->setTransformation(transformation);
-    } 
-    else
-        std::cout << "Mirroring operation failed: object is nullptr" << std::endl;
+    float scaleX = xActive ? scaleValX : 1.0f;
+    float scaleY = yActive ? scaleValY : 1.0f;
+    float scaleZ = zActive ? scaleValZ : 1.0f;
+    
+    glm::mat4 transformation = object->node->getTransformation();
+    transformation = glm::scale(transformation, glm::vec3(scaleX, scaleY, scaleZ));
+    object->node->setTransformation(transformation);
 }
 
 void Controller::trySetActiveNode(float lastClickedX, float lastClickedY)
@@ -433,7 +362,7 @@ void Controller::addPoint(const float& x, const float& y)
 
 void Controller::addLine(const float& x1, const float& y1, const float& x2, const float& y2)
 {
-    Line* line = createLine(model.getViewState(), x1, y1, x2, y2);
+    Line* line = createLine(model.getEditState(), x1, y1, x2, y2);
 
     if (line == nullptr)
         std::cout << "Failed to create line. Check line creation function." << std::endl;
@@ -597,11 +526,76 @@ void Controller::processRubberThread()
     }
 }
 
+void Controller::processObjectTranslation(const EditState& editState, Node* object, float relA, float relB)
+{
+    if (editState == EditState::XY)
+    {
+        translateObject(object, relA, relB, 0.0f);
+    }
+    else if (editState == EditState::XZ)
+    {
+        translateObject(object, relA, 0.0f, relB);
+    }
+    else if (editState == EditState::YZ)
+    {
+        translateObject(object, 0.0f, relB, relA);
+    }
+}
+
+void Controller::processObjectRotation(const EditState& editState, Node* object, float relA, float relB)
+{
+    if (editState == EditState::XY)
+    {
+        rotateObject(object, relA, relB, 0.0f);
+    }
+    else if (editState == EditState::XZ)
+    {
+        rotateObject(object, relA, 0.0f, relB);
+    }
+    else if (editState == EditState::YZ)
+    {
+        rotateObject(object, 0.0f, relB, relA);
+    }
+}
+
+void Controller::processObjectScaling(const EditState& editState, Node* object, float relA, float relB)
+{
+    if (editState == EditState::XY)
+    {
+        scaleObject(object, relA, relB, 0.0f);
+    }
+    else if (editState == EditState::XZ)
+    {
+        scaleObject(object, relA, 0.0f, relB);
+    }
+    else if (editState == EditState::YZ)
+    {
+        scaleObject(object, 0.0f, relB, relA);
+    }
+}
+
+void Controller::processObjectMirroring(const EditState& editState, Node* object, float relA, float relB)
+{
+    if (editState == EditState::XY)
+    {
+        mirrorObject(object, relA, relB, 0.0f);
+    }
+    else if (editState == EditState::XZ)
+    {
+        mirrorObject(object, relA, 0.0f, relB);
+    }
+    else if (editState == EditState::YZ)
+    {
+        mirrorObject(object, 0.0f, relB, relA);
+    }
+}
+
 void Controller::processEvent(SDL_Event& event, const float& wWidth, const float& wHeight)      // get full model data in 1 structure
 {
     SDL_Rect glRenderArea = model.getRenderRect();
     WorkModes mode = model.getMode();
     ObjectType objectType = model.getActiveNodeType();
+    EditState editState = model.getEditState();
    
     // get active node 
 
@@ -637,30 +631,29 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             {
                 if (objectType == ObjectType::GROUPMODE)
                 {
-                    std::function<void(const ViewState&, Node*, float, float)> operation = std::bind(&Controller::translateObject, this, 
-                                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
-
-                    doOperationOnGroup(operation, model.getViewState(), model.getActiveGroup(), xRel, -yRel);
-
+                    // std::function<void(Node*, float, float)> operation = std::bind(&Controller::translateObject, this, 
+                    //             std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+                    // 
+                    // doOperationOnGroup(operation, model.getActiveGroup(), xRel, -yRel);
                 }
                 else
                 {
-                    std::cout << "OBJECT TYPE NE GROUPMODE MAZAFAKA!: " << objectType << std::endl;
-                    translateObject(model.getViewState(), model.getActiveNode(), xRel, -yRel);
+                    processObjectTranslation(editState, model.getActiveNode(), xRel, -yRel);
                 }
             }
+
             else if (mode == WorkModes::ROTATE)
             {
                 if (objectType == ObjectType::GROUPMODE)
                 {
-                    std::function<void(const ViewState&, Node*, float, float)> operation = std::bind(&Controller::rotateObject, this, 
-                                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
-
-                    doOperationOnGroup(operation, model.getViewState(), model.getActiveGroup(), xRel, -yRel);
+                    // std::function<void(Node*, float, float)> operation = std::bind(&Controller::translateObject, this, 
+                    //             std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+                    // 
+                    // doOperationOnGroup(operation, model.getActiveGroup(), xRel, -yRel);
                 }
                 else
                 {
-                    rotateObject(model.getViewState(), model.getActiveNode(), xRel, -yRel);            
+                    processObjectRotation(editState, model.getActiveNode(), xRel, -yRel);
                 }
             }
         }
@@ -750,14 +743,14 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
 
             if (objectType == ObjectType::GROUPMODE)
             {
-                std::function<void(const ViewState&, Node*, float, float)> operation = std::bind(&Controller::scaleObject, this, 
-                                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
-
-                doOperationOnGroup(operation, model.getViewState(), model.getActiveGroup(), -aX, aY);
+                //std::function<void(const EditState&, Node*, float, float)> operation = std::bind(&Controller::scaleObject, this, 
+                //                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+//
+                //doOperationOnGroup(operation, model.getEditState(), model.getActiveGroup(), -aX, aY);
             }
             else 
             {
-                scaleObject(model.getViewState(), model.getActiveNode(), -aX, aY);
+                processObjectScaling(editState, model.getActiveNode(), -aX, aY);
             }
         }
 
@@ -765,17 +758,16 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         {
             if (objectType == ObjectType::GROUPMODE)
             {
-                std::function<void(const ViewState&, Node*, float, float)> operation = std::bind(&Controller::mirrorObject, this, 
-                                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
-                                
-                doOperationOnGroup(operation, model.getViewState(), model.getActiveGroup(), lastMouseUpX, lastMouseUpY);
+                // std::function<void(const EditState&, Node*, float, float)> operation = std::bind(&Controller::mirrorObject, this, 
+                //                 std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+                //                 
+                // doOperationOnGroup(operation, model.getEditState(), model.getActiveGroup(), lastMouseUpX, lastMouseUpY);
             }
             else
             {
-                mirrorObject(model.getViewState(), model.getActiveNode(), lastMouseUpX, lastMouseUpY);
+                processObjectMirroring(editState, model.getActiveNode(), lastMouseUpX, lastMouseUpY);
             }
-        }
-        
+        }      
     }
 
     if (event.type == SDL_KEYDOWN)              // fix for current situation: polyline mode, group mode
@@ -801,5 +793,3 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
     processRubberThread();
     // process Controller's events.
 }
-
-    

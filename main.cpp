@@ -11,13 +11,10 @@
 #include <glm/gtx/projection.hpp>
 
 #include "app/Saver.h"
-#include "app/backend/Rotator.h"
 
 #include "app/backend/Objects/GL/Shader.h"
 #include "app/backend/Objects/GL/Point.h"
 #include "app/backend/Objects/GL/Line.h"
-
-#include "app/backend/Objects/Camera.h"
 
 #include "app/backend/Model.h"
 #include "app/backend/Controller.h"
@@ -89,18 +86,9 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
     SDL_Rect glRenderArea = {20, 50, 1400, 800};
 
-
     Model model = Model(glRenderArea);
     Controller controller = Controller(model);
     Renderer renderer = Renderer(model, controller);
-
-    Rotator rotator = Rotator();
-
-    rotator.view1 = glm::translate(rotator.view1, glm::vec3(0, 0, -4));
-
-    Camera camera = Camera();
-
-    std::string filename = "/home/german/Documents/dev/source/sourceC++/CG_SDL_GL/projects/temp";
 
     while (runningWindow)  
     {
@@ -115,48 +103,6 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
             }
 
             controller.processEvent(event, wWidth, wHeight);
-
-            if (event.type == SDL_KEYDOWN)
-            {
-                float deltaTime = 0.1f;
-                if (event.key.keysym.sym == SDLK_UP)
-                {
-                    camera.ProcessKeyboard(Camera_Movement::FORWARD, deltaTime);
-                }
-                else if (event.key.keysym.sym == SDLK_LEFT)
-                {
-                    camera.ProcessKeyboard(Camera_Movement::LEFT, deltaTime);
-                }
-                else if (event.key.keysym.sym == SDLK_RIGHT)
-                {
-                    camera.ProcessKeyboard(Camera_Movement::RIGHT, deltaTime);
-                }
-                else if (event.key.keysym.sym == SDLK_DOWN)
-                {
-                    camera.ProcessKeyboard(Camera_Movement::BACKWARD, deltaTime);
-                }
-                
-
-                float deltaShift = 0.7f;
-                if (event.key.keysym.sym == SDLK_i)
-                {
-                    camera.ProcessKeyboard(Camera_Movement::TURN_UP, deltaShift);
-                }
-                else if (event.key.keysym.sym == SDLK_k)
-                {
-                    camera.ProcessKeyboard(Camera_Movement::TURN_DOWN, deltaShift);
-                }
-                else if (event.key.keysym.sym == SDLK_j)
-                {
-                    camera.ProcessKeyboard(Camera_Movement::TURN_LEFT, deltaShift);
-
-                }
-                else if (event.key.keysym.sym == SDLK_l)
-                {
-                    camera.ProcessKeyboard(Camera_Movement::TURN_RIGHT, deltaShift);
-                }
-            }
-            
         }
 
         glm::mat4 fw = model.getView();
@@ -197,8 +143,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         renderer.drawSceneTree();
         renderer.drawStatusBar();
         renderer.drawModes();
-        renderer.drawViewState();
-        renderer.drawProjectionState();
+        renderer.drawEditState();
         renderer.drawSettings();
         renderer.drawTrimetricMatrixSettings();
 

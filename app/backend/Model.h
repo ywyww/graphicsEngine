@@ -1,8 +1,7 @@
 #include <SDL2/SDL_rect.h>
 #include <map>
 
-#include "Types/ProjectionState.h"
-#include "Types/ViewState.h"
+#include "Types/EditState.h"
 #include "Types/WorkModes.h"
 #include "Types/LineInputData.h"
 #include "Types/ObjectType.h"
@@ -84,15 +83,13 @@ class Model
     Node* activeNode;  // make a massive
     ObjectType activeNodeType;
 
-    ViewState viewState;
-    ProjectionState projectionState;
+    EditState editState;
 
     WorkModes mode;
     
     public:
         static std::map<WorkModes, const char*> modeMap; 
-        static std::map<ViewState, const char*> viewStateMap; 
-        static std::map<ProjectionState, const char*> projectionStateMap;
+        static std::map<EditState, const char*> editStateMap; 
 
     public:
         Model(const SDL_Rect& renderArea);
@@ -118,11 +115,8 @@ class Model
         void setMode(const WorkModes& mode);
         const WorkModes& getMode();
 
-        void setViewState(const ViewState& viewState);
-        const ViewState& getViewState();
-
-        void setProjectionState(const ProjectionState& projectionState);
-        const ProjectionState& getProjectionState();
+        void setEditState(const EditState& editState);
+        const EditState& getEditState();
 
         Nodes& getPoints();
         Nodes& getLines();
