@@ -14,6 +14,10 @@ class Renderer {
     LineInputData* lineInput;
     std::string filename {"/home/german/Documents/dev/source/sourceC++/CG_SDL_GL/projects/"};
 
+    float trX;
+    float trY;
+    float zPos;
+
 
 private:
     void drawSceneTreePoints();
@@ -32,6 +36,8 @@ public:
     void drawSettings();
     void drawViewState();
     void drawProjectionState();
+
+    void drawTrimetricMatrixSettings();
 
     // GL
     void draw();

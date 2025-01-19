@@ -148,7 +148,7 @@ void Model::setViewAndProjection(Nodes& nodes, const glm::mat4& view, const glm:
 
         if (node == nullptr)
         {
-            std::cout << "BAD CAST: FAILED TO SET VIEW AND PROJECTION FOR NODES." << std::endl;
+            throw std::bad_cast();          // "BAD CAST: FAILED TO SET VIEW AND PROJECTION FOR NODES."
         }
         else
         {

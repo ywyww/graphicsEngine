@@ -102,13 +102,6 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
     std::string filename = "/home/german/Documents/dev/source/sourceC++/CG_SDL_GL/projects/temp";
 
-    float f = glm::radians(0.0f);
-    float t = glm::radians(0.0f);
-
-    float zc = 30.0f;
-
-    bool up = true;
-
     while (runningWindow)  
     {
         SDL_Event event;
@@ -156,6 +149,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                 else if (event.key.keysym.sym == SDLK_j)
                 {
                     camera.ProcessKeyboard(Camera_Movement::TURN_LEFT, deltaShift);
+
                 }
                 else if (event.key.keysym.sym == SDLK_l)
                 {
@@ -165,34 +159,8 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
             
         }
 
-        const ViewState& viewState = model.getViewState();
-        const glm::mat4& view = rotator.getView(viewState);
-        
-       // const ProjectionState& projectionState = model.getProjectionState();
-       // const glm::mat4& projection = rotator.getProjection(projectionState);
-
-        controller.coordinateSystem.setView(view);
-        //controller.coordinateSystem.setProjection(projection);
-
-        model.setView(view);
-        //model.setProjection(projection);
-        model.setViewAndProjectionForAll();
-
-        
-        rotator.view0 = glm::rotate(rotator.view0, 0.02f, glm::vec3(1, 0, 1));
-        rotator.view1 = glm::rotate(rotator.view1, 0.02f, glm::vec3(1, 0, 1));
-        rotator.view5 = camera.GetViewMatrix();
-
-        f += glm::radians(0.5f);
-        t += glm::radians(0.5f);
-
-        glm::mat4 nigger = glm::mat4(0.0f);
-        nigger[0] = glm::vec4(cos(f), sin(f) * sin(t), 0, sin(f) * cos(t) / zc);
-        nigger[1] = glm::vec4(0, cos(t), 0, -sin(t) / zc);
-        nigger[2] = glm::vec4(sin(f), -cos(f) * sin(t), 0, -cos(f) * cos(t) / zc);
-        nigger[3] = glm::vec4(0, 0, 0, 1);
-
-        rotator.view4 = nigger;
+        glm::mat4 fw = model.getView();
+        controller.coordinateSystem.setView(fw);
 
         // clear imgui buffer
         glViewport(0, 0, wWidth, wHeight);
@@ -232,6 +200,7 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         renderer.drawViewState();
         renderer.drawProjectionState();
         renderer.drawSettings();
+        renderer.drawTrimetricMatrixSettings();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

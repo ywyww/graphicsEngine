@@ -168,6 +168,17 @@ Controller::~Controller()
 {
 }
 
+glm::mat4 Controller::computeTrimetricMatrix(float angleX, float angleY, float position)
+{
+    glm::mat4 trimetricMatrix = glm::mat4(0.0f);
+    trimetricMatrix[0] = glm::vec4(cos(angleX), sin(angleX) * sin(angleY), 0, sin(angleX) * cos(angleY) / position);
+    trimetricMatrix[1] = glm::vec4(0, cos(angleY), 0, -sin(angleY) / position);
+    trimetricMatrix[2] = glm::vec4(sin(angleX), -cos(angleX) * sin(angleY), 0, -cos(angleX) * cos(angleY) / position);
+    trimetricMatrix[3] = glm::vec4(0, 0, 0, 1);
+    return trimetricMatrix;
+}
+
+
 void Controller::readFromFile(std::string filename)
 {
     if (Saver::readFromAFile(filename, model))

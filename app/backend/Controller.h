@@ -69,6 +69,8 @@ public:
     Controller(Model& model);
     ~Controller();
 
+    glm::mat4 computeTrimetricMatrix(float angleX, float angleY, float position);
+
     void readFromFile(std::string filename);
     void saveIntoFile(std::string filename);
 

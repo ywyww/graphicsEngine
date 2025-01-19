@@ -4,6 +4,9 @@
 Renderer::Renderer(Model& model, Controller& controller): model(model), controller(controller)
 {
     lineInput = new LineInputData();
+    trX = 0.0f;
+    trY = 0.0f;
+    zPos = 0.0f;
 }
 
 void Renderer::drawStatusBar()
@@ -453,6 +456,28 @@ void Renderer::drawProjectionState()
             model.setProjectionState(iter->first);
         }
     }
+
+    ImGui::End();
+}
+
+void Renderer::drawTrimetricMatrixSettings()
+{
+    ImGui::Begin("Trimetric matrix");
+
+    if (ImGui::InputFloat("Y angle in degrees:", &trX)) { }
+
+    if (ImGui::InputFloat("X angle in degrees:", &trY)) { }
+
+
+    if (ImGui::InputFloat("Z position", &zPos)) {}
+
+    if (ImGui::Button("Set trimetric matrix coefficients."))
+    {
+        glm::mat4 matrix = controller.computeTrimetricMatrix(glm::radians(trX), glm::radians(trY), zPos);
+        model.setView(matrix);
+        model.setViewAndProjectionForAll();
+    }
+
 
     ImGui::End();
 }
