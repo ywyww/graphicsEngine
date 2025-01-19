@@ -212,30 +212,6 @@ Node* Controller::isObjectInSpace(const float& x, const float& y)      // can be
     return nullptr;
 }
 
-// void Controller::doOperationOnGroup(std::function<void(Node*,float,float)> operation, Nodes* objects, float relX, float relY)
-// {
-//     std::cout << "FUNCTION DO OPERATION ON GROUP" << std::endl;
-//     if (objects != nullptr)
-//     {
-//         for (int i = 0; i < objects->size(); i++)
-//         {
-//             Node* object = &(objects->operator[](i));
-
-//             if (object == nullptr)
-//             {
-//                 std::cout << "OBJECT IN DO OPERATION ON GROUPP FUNCTION (CONTROLLER) IS NULLPTR!!!!!!!!!" << std::endl;
-//             }
-//             else
-//             {
-//                 std::cout << object->name << std::endl;
-//                 operation(object, relX, relY);
-//             }
-//         }
-//     }
-//     else
-//         std::cout << "operation for group failed." << std::endl;
-// }
-
 void Controller::translateObject(Node* object, float relX, float relY, float relZ)
 {
     if (object == nullptr)
@@ -590,6 +566,34 @@ void Controller::processObjectMirroring(const EditState& editState, Node* object
     }
 }
 
+void Controller::processGroupOperation(const EditState& editState, std::function<void(Node*,float,float,float)> operation, Nodes* objects, float relA, float relB)
+{
+    if (objects == nullptr)
+        throw std::invalid_argument("Objects is nullptr. (operation on group function)");
+    
+    for (int i = 0; i < objects->size(); i++)
+    {
+        Node* object = &(objects->operator[](i));
+
+        if (object == nullptr)
+            throw std::bad_cast();          // bad object cast: do operation on group
+                
+        if (editState == EditState::XY)
+        {
+            operation(object, relA, relB, 0.0f);
+        }
+        else if (editState == EditState::XZ)
+        {
+            operation(object, relA, 0.0f, relB);
+        }
+        else if (editState == EditState::YZ)
+        {
+            operation(object, 0.0f, relB, relA);
+        }
+    }
+}
+
+
 void Controller::processEvent(SDL_Event& event, const float& wWidth, const float& wHeight)      // get full model data in 1 structure
 {
     SDL_Rect glRenderArea = model.getRenderRect();
@@ -631,10 +635,10 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             {
                 if (objectType == ObjectType::GROUPMODE)
                 {
-                    // std::function<void(Node*, float, float)> operation = std::bind(&Controller::translateObject, this, 
-                    //             std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
-                    // 
-                    // doOperationOnGroup(operation, model.getActiveGroup(), xRel, -yRel);
+                    std::function<void(Node*, float, float, float)> operation = std::bind(&Controller::translateObject, this, 
+                                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+                    
+                    processGroupOperation(editState, operation, model.getActiveGroup(), xRel, -yRel);
                 }
                 else
                 {
@@ -646,10 +650,10 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
             {
                 if (objectType == ObjectType::GROUPMODE)
                 {
-                    // std::function<void(Node*, float, float)> operation = std::bind(&Controller::translateObject, this, 
-                    //             std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
-                    // 
-                    // doOperationOnGroup(operation, model.getActiveGroup(), xRel, -yRel);
+                    std::function<void(Node*, float, float, float)> operation = std::bind(&Controller::rotateObject, this, 
+                                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+                    
+                    processGroupOperation(editState, operation, model.getActiveGroup(), xRel, -yRel);
                 }
                 else
                 {
@@ -743,10 +747,10 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
 
             if (objectType == ObjectType::GROUPMODE)
             {
-                //std::function<void(const EditState&, Node*, float, float)> operation = std::bind(&Controller::scaleObject, this, 
-                //                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
-//
-                //doOperationOnGroup(operation, model.getEditState(), model.getActiveGroup(), -aX, aY);
+                std::function<void(Node*, float, float, float)> operation = std::bind(&Controller::scaleObject, this, 
+                                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+                    
+                processGroupOperation(editState, operation, model.getActiveGroup(), -aX, aY);
             }
             else 
             {
@@ -758,10 +762,10 @@ void Controller::processEvent(SDL_Event& event, const float& wWidth, const float
         {
             if (objectType == ObjectType::GROUPMODE)
             {
-                // std::function<void(const EditState&, Node*, float, float)> operation = std::bind(&Controller::mirrorObject, this, 
-                //                 std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
-                //                 
-                // doOperationOnGroup(operation, model.getEditState(), model.getActiveGroup(), lastMouseUpX, lastMouseUpY);
+                std::function<void(Node*, float, float, float)> operation = std::bind(&Controller::mirrorObject, this, 
+                                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+                    
+                processGroupOperation(editState, operation, model.getActiveGroup(), lastMouseUpX, lastMouseUpY);
             }
             else
             {

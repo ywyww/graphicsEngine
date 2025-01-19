@@ -81,8 +81,6 @@ public:
     void trySetActiveNode(float lastClickedX, float lastClickedY);
 
 
-    // void doOperationOnGroup(std::function<void(const EditState&,Node*,float,float)> operation, 
-    //                                                 const EditState& viewState, Nodes* objects, float relX, float relY);
 
 
     void translateObject(Node* object, float relX, float relY, float relZ);
@@ -114,6 +112,10 @@ public:
     void processObjectRotation(const EditState& editState, Node* object, float relA, float relB);
     void processObjectScaling(const EditState& editState, Node* object, float relA, float relB);
     void processObjectMirroring(const EditState& editState, Node* object, float relA, float relB);
+
+    void processGroupOperation(const EditState& editState, std::function<void(Node*,float,float,float)> operation,
+                               Nodes* objects, float relX, float relY);
+    
 
     void processEvent(SDL_Event& event, const float& wWidth, const float& wHeight);
 

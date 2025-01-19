@@ -444,23 +444,6 @@ void Renderer::drawEditState()
     ImGui::End();
 }
 
-// void Renderer::drawEditState()
-// {
-//     ImGui::Begin("ViewState");
-
-//     std::map<EditState, const char*> map = Model::viewStateMap;
-
-//     for (auto iter = map.begin(); iter != map.end(); iter++)
-//     {
-//         if (ImGui::Button(iter->second))
-//         {
-//             model.setEditState(iter->first);
-//         }
-//     }
-
-//     ImGui::End();
-// }
-
 void Renderer::drawTrimetricMatrixSettings()
 {
     ImGui::Begin("Trimetric matrix");
