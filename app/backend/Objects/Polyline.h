@@ -25,6 +25,9 @@ class Polyline: public Object
 
     std::vector<std::pair<float, float>> dots;
     std::vector<Line*> lines;
+
+    glm::mat4 projection;
+    glm::mat4 view;
     
     std::pair<float, float> previousDot;
 
@@ -32,10 +35,15 @@ private:
    void addLine(float newDotX, float newDotY);  // if we have at least 2 points
 public:
     Polyline();
-
+    ~Polyline();
+    
     void addDot(float dotX, float dotY);
 
+    void updateMVP();
     void setTransformation(const glm::mat4x4& transformation) override;
+
+    void setProjection(const glm::mat4& projection);
+    void setView(const glm::mat4& view);
 
     bool isPointBelongs(const float& x, const float& y, const float z, const float& wWidth, const float& wHeight, bool coefficientTrim = true, float precision=0.03f);   // only 2d  // point in human coordinates
 

@@ -1,9 +1,10 @@
-#include "Data.h"
+#include "LineInputData.h"
 LineInputData::LineInputData()
 {
     lineNameSize = 36;
     lineName = new char[lineNameSize] {};
     color = new float[3] {.5f, .5f, .5f};
+    lastLineCoordinates = new float[6] {.0f, .0f, .0f, .0f, .0f, .0f};
     coordinates = new float[6] {.0f, .0f, .0f, .0f, .0f, .0f};
     translation = new float[3] {.0f, .0f, .0f};
     rotation = new float[3] {.0f, .0f, .0f};

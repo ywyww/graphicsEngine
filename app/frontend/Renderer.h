@@ -8,19 +8,25 @@
 #define REDNERER_H
 
 class Renderer {
-    Controller* controller;
-    Model* model;
+    Controller& controller;
+    Model& model;
 
     LineInputData* lineInput;
+    std::string filename {"/home/german/Documents/dev/source/sourceC++/CG_SDL_GL/projects/"};
+
+    float trX;
+    float trY;
+    float zPos;
 
 
 private:
     void drawSceneTreePoints();
     void drawSceneTreeLines();
     void drawSceneTreePolylines();
+    void drawSceneTreeGroups();
     
 public:
-    Renderer(Model* model, Controller* controller);
+    Renderer(Model& model, Controller& controller);
 
     // IMGUI
     void drawStatusBar();
@@ -28,6 +34,10 @@ public:
     void drawSceneTree();
     void drawModes();
     void drawSettings();
+    void drawEditState();
+    void drawViewState();
+
+    void drawTrimetricMatrixSettings();
 
     // GL
     void draw();

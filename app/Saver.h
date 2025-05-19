@@ -1,6 +1,6 @@
 #include <fstream>
 
-#include "backend/Controller.h"
+#include "backend/Model.h"
 
 #include <boost/archive/tmpdir.hpp>
 #include <boost/archive/text_iarchive.hpp>

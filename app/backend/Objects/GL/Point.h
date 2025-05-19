@@ -65,6 +65,9 @@ class Point: public Object {
     float* coords;      // 3 float.
     glm::vec3 color;
 
+    glm::mat4 projection;
+    glm::mat4 view;
+
     float pointSize;
 
 private:
@@ -73,6 +76,7 @@ private:
 public:
     Point();
     Point(const float& x, const float& y, const float& z);
+    ~Point();
 
     void setPointSize(const float& size);
     const float& getPointSize();
@@ -80,11 +84,15 @@ public:
     void setColor(const glm::vec3& color);
     const glm::vec3& getColor();
 
+    void setProjection(const glm::mat4& projection);
+    void setView(const glm::mat4& view);
+
     GLuint getVAO();
     GLuint getVBO();
     GLuint getShaderID();
 
     void updateBuffer(float* buff);     // 3 floats
+    float* getBuffer();
 
     void draw() override;
 };

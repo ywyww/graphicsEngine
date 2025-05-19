@@ -8,8 +8,10 @@
 #include <glm/glm.hpp>
 #include <glm/mat3x3.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/projection.hpp>
 
 #include "app/Saver.h"
+
 #include "app/backend/Objects/GL/Shader.h"
 #include "app/backend/Objects/GL/Point.h"
 #include "app/backend/Objects/GL/Line.h"
@@ -17,6 +19,7 @@
 #include "app/backend/Model.h"
 #include "app/backend/Controller.h"
 #include "app/frontend/Renderer.h"
+#include "app/backend/Objects/CoordinateSystem.h"
 
 #include "include/imgui_impl_sdl2.h"
 #include "include/imgui_impl_opengl3.h"
@@ -83,11 +86,9 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
     SDL_Rect glRenderArea = {20, 50, 1400, 800};
 
-    Model* model = new Model(glRenderArea);
-    Controller* controller = new Controller(model);
+    Model model = Model(glRenderArea);
+    Controller controller = Controller(model);
     Renderer renderer = Renderer(model, controller);
-
-    std::string filename = "temp";
 
     while (runningWindow)  
     {
@@ -101,26 +102,12 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
                 runningWindow = false;
             }
 
-            controller->processEvent(event, wWidth, wHeight);
-
-            if (event.type == SDL_KEYDOWN)
-            {
-                if (event.key.keysym.sym == SDLK_s)
-                {
-                    if (Saver::saveIntoAFile(filename, *model))
-                        std::cout << "Sucess to save" << std::endl;
-                    else
-                        std::cout << "Raised problem" << std::endl;
-                }
-                else if (event.key.keysym.sym == SDLK_r)
-                {
-                    if (Saver::readFromAFile(filename, *model))
-                        std::cout << "Sucess to read" << std::endl;
-                    else
-                        std::cout << "Raised problem" << std::endl;
-                }
-            }
+            controller.processEvent(event, wWidth, wHeight);
         }
+
+        glm::mat4 fw = model.getView();
+        controller.coordinateSystem.setView(fw);
+
         // clear imgui buffer
         glViewport(0, 0, wWidth, wHeight);
         glDisable(GL_SCISSOR_TEST);
@@ -137,14 +124,16 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
 
 		// draw scene
 
-        if (controller->rubberDrawable)
+        if (controller.rubberDrawable)
         {
-            controller->rubberThread->draw();
+            controller.rubberThread->draw();
         }
-
+        
         renderer.draw();
 
-        controller->centerPoint.draw();
+        controller.centerPoint.draw();
+        
+        controller.coordinateSystem.draw();
         
         // draw imgui
         ImGui_ImplOpenGL3_NewFrame();
@@ -154,8 +143,10 @@ void loop(SDL_Window* window, const float& wWidth, const float& wHeight)
         renderer.drawSceneTree();
         renderer.drawStatusBar();
         renderer.drawModes();
+        renderer.drawEditState();
         renderer.drawSettings();
-        
+        renderer.drawTrimetricMatrixSettings();
+
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

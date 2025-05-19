@@ -1,35 +1,46 @@
 #include "Model.h"
 std::map<WorkModes, const char*> Model::modeMap = {
-        std::pair(WorkModes::POINTER, "Pointer"),
-        std::pair(WorkModes::CREATE_POINT, "Point"),
-        std::pair(WorkModes::CREATE_LINE, "Line"),
-        std::pair(WorkModes::CREATE_POLYLINE, "Polyline"),
+    std::pair(WorkModes::POINTER, "Pointer"),
+    std::pair(WorkModes::CREATE_POINT, "Point"),
+    std::pair(WorkModes::CREATE_LINE, "Line"),
+    std::pair(WorkModes::CREATE_POLYLINE, "Polyline"),
+    std::pair(WorkModes::CREATE_GROUP, "Group"),
 
-        std::pair(WorkModes::TRANSLATE, "Translate"),
-        std::pair(WorkModes::ROTATE, "Rotate"),
-        std::pair(WorkModes::SCALE, "Scale"),
-        std::pair(WorkModes::MIRROR, "Mirror"),
-        std::pair(WorkModes::PROJECTION, "Projection"),
+    std::pair(WorkModes::TRANSLATE, "Translate"),
+    std::pair(WorkModes::ROTATE, "Rotate"),
+    std::pair(WorkModes::SCALE, "Scale"),
+    std::pair(WorkModes::MIRROR, "Mirror"),
+    std::pair(WorkModes::PROJECTION, "Projection"),
 
+    std::pair(WorkModes::MODIFY, "Modify active"),
+    std::pair(WorkModes::COLORIZE, "Colorize"),
+};
 
-        std::pair(WorkModes::MODIFY, "Modify active"),
-        std::pair(WorkModes::COLORIZE, "Colorize"),
-    };
-
+std::map<EditState, const char*> Model::editStateMap = {
+    std::pair(EditState::XY, "XY"),
+    std::pair(EditState::XZ, "XZ"),
+    std::pair(EditState::YZ, "YZ"),
+};
 
 Model::Model(const SDL_Rect& renderArea): renderRect(renderArea), windowHeight(renderArea.h), windowWidth(renderArea.w), shiftX(renderArea.x), shiftY(renderArea.y)
 {
     points = Nodes();
     lines = Nodes();
     polyLines = Nodes();
+    groups = Groups();
         
     mode = WorkModes::POINTER;
+    editState = EditState::XY;
 
     activeNode = nullptr;
+    activeGroup = nullptr;
     activeNodeType = ObjectType::NULLTYPE;
 
     centerX = windowWidth / 2;
     centerY = windowHeight / 2;
+
+    projection = glm::mat4(1.0f);
+    view = glm::mat4(1.0f);
 }
 
 Model::~Model()
@@ -109,20 +120,108 @@ Nodes& Model::getPolylines()
     return polyLines;
 }
 
-NodeGroup* Model::getActiveNode()
+Groups& Model::getGroups()
+{
+    return groups;
+}
+
+template <class NodesType>
+void Model::setViewAndProjection(Nodes& nodes, const glm::mat4& view, const glm::mat4& projection)
+{
+    for (int i = 0; i < nodes.size(); i++)
+    {
+        Node& grp = nodes[i];
+        NodesType* node = dynamic_cast<NodesType*>(grp.node);
+
+        if (node == nullptr)
+        {
+            throw std::bad_cast();          // "BAD CAST: FAILED TO SET VIEW AND PROJECTION FOR NODES."
+        }
+        else
+        {
+            node->setView(view);
+            node->setProjection(projection);
+        }
+    }
+}
+
+void Model::setViewAndProjectionForAll()
+{
+    Model::setViewAndProjection<Point>(points, view, projection);
+    Model::setViewAndProjection<Line>(lines, view, projection);
+    Model::setViewAndProjection<Polyline>(polyLines, view, projection);
+}
+
+const glm::mat4& Model::getProjection()
+{
+    return projection;
+}
+
+void Model::setProjection(const glm::mat4& projection)
+{
+    /* for updating general view use setViewAndProjectionForAll */
+    this->projection = projection;
+}
+
+const glm::mat4& Model::getView()
+{
+    return view;
+}
+
+void Model::setView(const glm::mat4& view)
+{
+    /* for updating general view use setViewAndProjectionForAll */
+    this->view = view;
+}
+
+Nodes* Model::getActiveGroup()
+{
+    return activeGroup;
+}
+
+void Model::setActiveGroup(int idx)
+{
+    setActiveNode(nullptr);
+
+    if (idx < groups.getSize())
+        activeGroup = &groups.getGroup(idx).first;
+    else
+        activeGroup = nullptr;
+
+    if (activeGroup == nullptr)
+    {
+        activeNodeType = ObjectType::NULLTYPE;
+        std::cout << "Group: Setted active: NullType" << std::endl;
+    }
+    else
+    {
+        activeNodeType = ObjectType::GROUPMODE;
+        std::cout << "Group: Setted active: GroupMode" << std::endl;
+    }
+
+}
+
+Node* Model::getActiveNode()
 {
     return activeNode;
 }
 
-void Model::setActiveNode(NodeGroup* object)
+void Model::setActiveNode(Node* object)
 {
+    activeGroup = nullptr;
+
     activeNode = object;
 
     if (activeNode == nullptr)
+    {
         activeNodeType = ObjectType::NULLTYPE;
+        std::cout << "Active: Setted active: NullType" << std::endl;
+    }
     else
+    {
         activeNodeType = activeNode->type;
-
+        std::cout << "Active: Setted active: activeNodeType..." << std::endl;
+    }
 }
 
 const ObjectType& Model::getActiveNodeType()
@@ -140,9 +239,19 @@ const WorkModes& Model::getMode()
     return mode;
 }
 
+void Model::setEditState(const EditState& editState)
+{
+    this->editState = editState;
+}
+
+const EditState& Model::getEditState()
+{
+    return editState;
+}
+
 void Model::addPoint(Point* point)
 {
-    NodeGroup pnt;
+    Node pnt;
     pnt.node = point;
     pnt.name = "point1";
     pnt.type = ObjectType::POINT;
@@ -171,7 +280,7 @@ bool Model::deletePoint(int idx)
 
 void Model::addLine(Line* line)
 {
-    NodeGroup lineGrp;
+    Node lineGrp;
     lineGrp.node = line;
     lineGrp.name = "line1";
     lineGrp.type = ObjectType::LINE;
@@ -199,7 +308,7 @@ bool Model::deleteLine(int idx)
 
 void Model::addPolyLine(Polyline* polyline)
 {
-    NodeGroup grp;
+    Node grp;
     grp.name = "polyline1";
     grp.node = polyline;
     grp.type = ObjectType::POLYLINE;
@@ -225,44 +334,13 @@ bool Model::deletePolyLine(int idx)
     return false;
 }
 
-// std::ostream& operator<<(std::ostream& os, const Model& model)
-// {
-//     os << model.renderRect.h << " " << model.renderRect.w << " " << model.renderRect.x << " " << model.renderRect.y << "\n"
-//     << model.shiftX << " " << model.shiftY << "\n"
-//     << model.windowWidth << " " << model.windowHeight << "\n"
-//     << model.cursorX << " " << model.cursorY << "\n"
-//     << model.centerX << " " << model.centerY << "\n"
-//     << ObjectType::NULLTYPE << "\n"
-//     << WorkModes::POINTER << "\n"
-//     << model.points << "\n"
-//     << model.lines << "\n"
-//     << model.polyLines << "\n";
+void Model::addGroup(Nodes group)
+{
+    groups.addGroupAndName(group, "defaultName1");
+    std::cout << "ADDED NEW GROUP." << std::endl;
+}
 
-
-//     return os;
-// }
-
-// std::istream& operator>>(std::istream& is, Model& model)
-// {
-//     is >> model.renderRect.h >> model.renderRect.w >> model.renderRect.x >> model.renderRect.y;
-//     is >> model.shiftX >> model.shiftY;
-//     is >> model.windowWidth >> model.windowHeight;
-//     is >> model.cursorX >> model.cursorY;
-//     is >> model.centerX >> model.centerY;
-
-//     int nodeType;
-
-//     is >> nodeType;
-//     model.activeNodeType = static_cast<ObjectType>(nodeType);
-
-//     int mode;
-//     is >> mode;
-//     model.mode = static_cast<WorkModes>(mode);
-
-//     model.activeNode = nullptr;
-
-    
-
-            
-//     return is;  
-// }
+bool Model::deleteGroup(int idx)
+{
+    return groups.deleteGroupAndName(idx);
+}

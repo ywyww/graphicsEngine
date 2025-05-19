@@ -29,6 +29,8 @@ protected:
     glm::mat4x4 transformation;
 
 public:
+    virtual ~Object() { }
+
     virtual void setTransformation(const glm::mat4x4& transformation)
     {
         this->transformation = transformation;
@@ -39,10 +41,7 @@ public:
         return transformation;
     };
 
-    virtual void draw()
-    {
-
-    }
+    virtual void draw() = 0;
 };
 
 

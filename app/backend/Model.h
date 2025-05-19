@@ -1,13 +1,16 @@
 #include <SDL2/SDL_rect.h>
 #include <map>
 
-#include "Types/Modes.h"
-#include "Types/Data.h"
+#include "Types/EditState.h"
+#include "Types/WorkModes.h"
+#include "Types/LineInputData.h"
+#include "Types/ObjectType.h"
 
-#include "Objects/Scene/Groups.h"
+#include "Objects/Scene/Nodes.h"
 #include "Objects/GL/Point.h"
 #include "Objects/GL/Line.h"
 #include "Objects/Polyline.h"
+#include "Objects/Groups.h"
 
 #include <boost/serialization/access.hpp>
 
@@ -69,17 +72,24 @@ class Model
     Nodes points;
     Nodes lines;
     Nodes polyLines;
+    Groups groups;
+
+    glm::mat4 projection;
+    glm::mat4 view;
 
     // [END]
 
-    NodeGroup* activeNode;  // make a massive
+    Nodes* activeGroup;
+    Node* activeNode;  // make a massive
     ObjectType activeNodeType;
 
+    EditState editState;
 
     WorkModes mode;
     
     public:
         static std::map<WorkModes, const char*> modeMap; 
+        static std::map<EditState, const char*> editStateMap; 
 
     public:
         Model(const SDL_Rect& renderArea);
@@ -105,13 +115,31 @@ class Model
         void setMode(const WorkModes& mode);
         const WorkModes& getMode();
 
+        void setEditState(const EditState& editState);
+        const EditState& getEditState();
+
         Nodes& getPoints();
         Nodes& getLines();
         Nodes& getPolylines();
-
-        NodeGroup* getActiveNode();
-        void setActiveNode(NodeGroup* object);
+        Groups& getGroups();
         
+        template <class NodesType>
+        void setViewAndProjection(Nodes& nodes, const glm::mat4& view, const glm::mat4& projection);
+
+        void setViewAndProjectionForAll();
+
+        const glm::mat4& getProjection();
+        void setProjection(const glm::mat4& projection);
+
+        const glm::mat4& getView();
+        void setView(const glm::mat4& view);
+
+        Nodes* getActiveGroup();
+        void setActiveGroup(int idx);
+
+        Node* getActiveNode();
+        void setActiveNode(Node* object);
+
         const ObjectType& getActiveNodeType();
     
         void addPoint(Point* point);
@@ -123,8 +151,8 @@ class Model
         void addPolyLine(Polyline*);
         bool deletePolyLine(int idx);
 
-        //friend std::ostream& operator<<(std::ostream& os, const Model& model);
-        //friend std::istream& operator>>(std::istream& is, Model& model);
+        void addGroup(Nodes group);
+        bool deleteGroup(int idx);
 };
 
 

@@ -6,24 +6,83 @@
 Модель хранить преобразованные координаты. Только курсор x и y.
 Контроллер преобразует координаты из вьюшки и посылает их модели.
 LineInputData должен посылать view контроллеру.
+
+экранные точки: не меняют view и projection
 ======================= NOTE ======================= 
 
 
 ======================= TODO =======================
-[ ] нужно выделить место под объекты предварительно.
-[ ] split serialization process into save/load
-[ ] fix operations: учитывать данные из матрицы трансформации при проведении операций.
-[ ] operator << and operator >> for all classes.
 
+[ ] рефакторинг при добавлении линии (убрать enum`ы, вынести все в отдельное место)
+
+// Точно:
+[ ] fix trimetrix camera views: XY, XZ, YZ
+    [ ] Добавить поддержку видов: автоматическое изменение состояния триметрической матрицы
+    [x] Переключение в режим триметрической матрицы
+    [x] Убрать перспективу и орто
+
+[ ] добавить работу с группами:
+    [ ] удаление с объектами
+    [ ] удаление без объектов
+    [ ] копирование с объектами (создание новых объектов)
+
+
+[ ] add 3d support (full function)
+    [x] вид слева, вращение
+    [x] Rotor class - состояние матриц view
+    [1/3] изменение координат в настройках
+        [ ] точки
+        [x] линии
+        [ ] полилинии
+    [x] редактирование в зависимости от view
+    [-] (ДАЛЕКОЕ БУДУЩЕЕ - Minimap для ориентирования)
+
+//EndТочно
+
+[ ] добавить плоскости на которых идет отрисовка (тянуть за ползунки)
+
+[ ] добавить сокрытие объектов
+
+[ ] фиксить иерархию классов: провести более точное наследование
+[ ] править изменение линий: проекции
+
+[ ] убрать viewState`ы из функций, обрабатывающих объекты
+[ ] view и projection не работают: искать ошибки.
+[ ] в идеале должны быть глобальные настройки сцены: общие переменные и проч. 
+    + вынести сцену в отдельный класс (много рефакторинга)
+    
+
+[ ] active Node должен лежать в контроллере, но не в модели
+
+[ ] убрать колизии при добавлении групп
+
+[ ] turn active node from model to controller
+
+[ ] fix operations: учитывать данные из матрицы трансформации при проведении операций.
 [ ] fix scaling and mirroring
     mirror: division by the point
     scaling: absolute coordinates
 
 [ ] check Model class: glRenderArea width and window width.
-[ ] upload button
-[ ] save button
+[ ] добавить флажки: isFileReading | isFileSaving в модель, активировать через рендер и обрабатывать на контроллере
 
-[ ] add object grouping 
+[ ] при изменении имени объекта не меняется имя в группе. 
+        (работа с памятью)
+
+[ ] рефакторинг:
+        вместо указателей на экземпляры модели и контроллера 
+        (или рендера и проч.) поставить ссылки на объекты,
+        т.к объекты существуют
+        
+[ ] рефакторинг:
+        добавить новое звено в иерархию классов: 
+        object -> drawable -> Line, Polyline и проч. 
+        object чисто для transform и для полиморфизма
+
+[ ] декомпозировать Controller на классы
+
+[ ] Object -> Transformable Object -> ...
+
 ======================= TODO =======================
 
 ======================= TODO (OLD) =======================
@@ -49,9 +108,6 @@ LineInputData должен посылать view контроллеру.
 [ ] code refactoring: Line -> 2 points, Polyline: multiply points.
 [ ] add polylines editing mode
 [ ] refactoring interface (нормальная палитра объектов, взаимодействие с объектом в отдельном окне: список возможных взаимодействий)
-[ ] NodeGroup формируется через new. Он хранит указатель на объект. При удалении NodeGroup удаляется и сам объект. 
-    Итого утечка памяти (невозможно удалить NodeGroup)
-[ ] addActiveNodeType for no dynamic casts
 
 [ ] implement events system
 [ ] add mode for current object e.g. modify on or off
@@ -69,18 +125,50 @@ LineInputData должен посылать view контроллеру.
 [ ] make own class for each type x - glRenderArea.xof objects
 [ ] make structure for Controller`s objects 
 
-[ ] fix point belong function: one line overlaps another
-[ ] if x1 == x2 or y1 == y2 in LineBelongFunction, it isn`t work
-
 [ ] make different threads for computing and rendering
 [ ] make events for sending value to the status bar | now just a problem to rapid transmission of information / log bar
 [ ] make a logger
 
-[ ] camera class
-[ ] scaling polzunok
+[ ] Прописать объекты-обработчики, которые бы обрабатывали объекты-группы, отрисоовчные объекты и прочее (рефакторинг)
 ======================= TODO (OLD) ======================= 
 
-======================= DONE ======================= 
+======================= DONE =======================
+[x] пофиксить добавление группы
+[x] убрать objectType, либо сделать указатель на группу в функциях обработки операций
+[x] фиксить деструкторы, не работают
+    [x] + фикс системы (после ввода деструктора не работает)
+[x] рефакторинг операций над объектом
+[x] fix save/load
+[x] add line in interface 
+[x] coordinate system works with no pointer. For pointers overload new operator
+[x] добавить поддержку перспективы
+[x] camera class
+
+[x] ошибка в классе линия: нет оператора =
+[x] ошибка в деструкторе Линии.   && деструктор линии вызывается 2 раза. (не вызывая конструктор)  
+[x] поправить по правилу трех
+[x] реализовать конструкторы копирования
+[x] add X,Y,Z axis
+[x] отрисовка с учетом матрицы проецирования
+[x] add projection in checking function
+[+-] возможность задавать плоскость редактирования: просмотр с камеры не зависит от плоскости редактирования
+[x] add operations on groups
+[x] add active group mode
+[x] править все для видов xy, xz, yz
+[x] убрать указатели, поставить ссылки.
+[x] добавить perspective и ortho    
+[x] после изменения активной группы на активный объект, группа также перемещается
+        (работа с условиями в цикле контроллера и коррекция режимов работы приложения)
+[x] вчерашняя ошибка на час: == вместо = в присвоении объекта.
+[x] рефакторинг кода: вынесение функций работы над объектами
+[x] add group view
+[x] add object grouping
+[x] fix point belong function: one line overlaps another
+[#] upload button
+[#] save button
+[x] file saving and loading. (boost)
+[x] split serialization process into save/load
+[x] operator << and operator >> for all classes. [ не нужен -> boost]
 [x] add "zero" point - beginning for the transformation
 [x] add mirroring
 [x] refactor: centerPoint   (make in normal coordinates)
@@ -161,6 +249,12 @@ LineInputData должен посылать view контроллеру.
 
 
 ======================= NONE ======================= 
+[-] make world grid.    // потом
+[x] переключение из групмода в режим полилайна, лайна и прочего кала.
+[x] возможно ошибка в самой функции do operation в Controller: не работает ссылка на функцию, т.к. объекты не нуллптр.
+[x] do operation function: возможно не загружается ссылка на объект Nodes, поэтому нет ссылок на объекты группы
+[x] провал в памяти: выделение места под NodeGroup*: объекты-нуллптры в группах
+[-] нужно выделить место под объекты предварительно.
 [-] add projection operation
 [-] after adding set object to active node
 [-] refactoring: xml other enum with stringss
